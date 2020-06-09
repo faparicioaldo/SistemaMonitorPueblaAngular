@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+	<Properties>
+		<Property name="filename">/opt/oracle/logs/SistemaMonitoreo/SistemaMonitoreo.log
+		</Property>
+		<Property name="LOG_PATTERN">
+			%d{yyyy-MM-dd HH:mm:ss.SSS} %5p - %c{1}:%L -> %m%n%ex
+		</Property>
+	</Properties>
+	<Appenders>			
+		<RollingFile name="ArchivoAppender"
+			fileName="${filename}"
+			filePattern="${filename}-%d{yyyy-MM-dd}.log">			
+			<PatternLayout pattern="${LOG_PATTERN}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1"
+					modulate="true" />
+			</Policies>
+		</RollingFile>
+		<Console name="ConsoleAppender" target="SYSTEM_OUT"
+			follow="true">
+			<PatternLayout pattern="${LOG_PATTERN}" />
+		</Console>
+	</Appenders>
+	<Loggers>
+		<Logger name="com.stv.quartzdemo" level="info"
+			additivity="false">
+			<AppenderRef ref="ConsoleAppender" />
+		</Logger>
+		
+		<Logger name="com.stv.quartzdemo" level="info"
+			additivity="false">
+			<AppenderRef ref="ArchivoAppender" />
+		</Logger>
+		
+
+		<Root level="info">
+			<AppenderRef ref="ArchivoAppender" />
+			<AppenderRef ref="ConsoleAppender" />
+		</Root>
+	</Loggers>
+</Configuration>
