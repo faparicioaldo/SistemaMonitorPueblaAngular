@@ -43,9 +43,9 @@
 </script>
 </head>
 <body>
-	<center>
-		<h1>FOLIOS DE ALARMAS ENVIADAS A GOBIERNO</h1>
-	</center>
+
+	<h1>FOLIOS DE ALARMAS ENVIADAS A GOBIERNO</h1>
+
 	<table class="blueTable">
 		<!-- here should go some titles... -->
 		<tr>
@@ -67,9 +67,7 @@
 		</c:forEach>
 	</table>
 
-	<center>
-		<a href="monitorAlarmas">Ir a Monitor de Alarmas</a>
-	</center>
+	<a href="monitorAlarmas">Ir a Monitor de Alarmas</a>
 
 </body>
 </html>

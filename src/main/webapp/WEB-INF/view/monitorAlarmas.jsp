@@ -29,10 +29,10 @@
 	
 	function onConnected() {
 	    stompClient.subscribe('/topic/public', onMessageReceived);
-	}
+<	}
 
 	function onError(error) {
-		alert("Could not connect to WebSocket server. Please refresh this page to try again!");
+		alert("No se ha podido conectart al servidor de websocket. Por favor, recargue la pagina para intentar nuevamente!");
 	}
 
 	function onMessageReceived(payload) {
@@ -88,9 +88,7 @@
 </head>
 <body onload="connect();">
 
-	<center>
-		<h1>MONITOR DE ALARMAS (BOTON DE PANICO)</h1>
-	</center>
+	<h1>MONITOR DE ALARMAS (BOTON DE PANICO)</h1>
 	
 	<br>
 	  <div class="container">
@@ -154,13 +152,11 @@
 		</c:forEach>
 	</table>
 
-	<center>
-		<a href="/monitorFoliosAlarmas">Ir a Monitor de Folios</a>
-	</center>
-<br>
-	<center>
-		<a href="/datosVehiculos">Agregar Vehiculo</a>
-	</center>
+	<a href="/monitorFoliosAlarmas">Ir a Monitor de Folios</a>
+	
+	<br>
+	
+	<a href="/datosVehiculos">Agregar Vehiculo</a>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
