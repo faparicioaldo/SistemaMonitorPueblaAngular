@@ -12,7 +12,7 @@ public class GlobalSession {
 	private static Integer ciclosContadorGPS = 8;
 	private static String fechaUltimaConsultaAlarma;
 	private static String ultimaAlarmaId; 
-	private static String semoviUrl = "http://semovi-puebladev.webmaps.com.mx/api/1.0/send";
+	private static String semoviUrl = "http://semovi-puebla.webmaps.com.mx/api/1.0/send";
     private static String semoviUsername = "sinergia";
     private static String semoviPassword = "ZWZjZGI3MzMzZTM0YTY5MGQ3NzkwMzNhMDBhNjZlZTI5ZjJlZjkyNWJhZDFmNmFjYmZjNjNlZjIyYTY0ZTk4NQ==";
 	private static boolean mostrarCadenasAlertas = false;

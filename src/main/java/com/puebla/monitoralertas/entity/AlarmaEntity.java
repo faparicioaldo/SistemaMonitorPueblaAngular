@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -37,4 +38,10 @@ public class AlarmaEntity {
 	private String direccion;
 	private String alarma;
 	private String ruta;
+	
+	@PrePersist
+	public void prePersist() {
+		fecha = new Date();
+	}
+
 }

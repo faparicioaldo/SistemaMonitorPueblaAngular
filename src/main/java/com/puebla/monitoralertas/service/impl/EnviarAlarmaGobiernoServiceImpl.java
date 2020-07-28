@@ -92,8 +92,15 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 		try {
 			
 			List<String> alarmTypes = new ArrayList<>();
-			alarmTypes.add("5");//Solo alarmas de Boton de Panico
-			alarmTypes.add("13");//Solo alarmas de Boton de Panico
+			alarmTypes.add("5"); //Considera alertas de Sensor 1
+			alarmTypes.add("6"); //Considera alertas de Sensor 2
+			alarmTypes.add("7"); //Considera alertas de Sensor 3
+			alarmTypes.add("8"); //Considera alertas de Sensor 4
+			alarmTypes.add("9"); //Considera alertas de Sensor 5
+			alarmTypes.add("10");//Considera alertas de Sensor 6
+			alarmTypes.add("11");//Considera alertas de Sensor 7
+			alarmTypes.add("12");//Considera alertas de Sensor 8
+			alarmTypes.add("13");//Considera alertas de Boton de Panico
 			
 			String starttime = formatFechaOnlyDay(new Date()) + " 00:00:00";
 			String endtime = formatFechaOnlyDay(new Date()) + " 23:59:59";

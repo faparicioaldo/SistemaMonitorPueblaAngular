@@ -58,24 +58,25 @@ public class APISistemaVideoVigilanciaServiceImpl implements APISistemaVideoVigi
 		Ceiba2KeyPojo key = null;
 		String jsonKey = "";
 		try {
+			log.info("Obteniendo token para acceder a API ceiba...");
 			//Valida si el token se perdio o caduco
 			if(session.getKeyCeiba2() == null || session.getKeyCeiba2().trim().equals("")) {
+				log.info("Solicitando token a ceiba... ");
 				//Solicita un nuevo token
 				url = ceiba2ArmaUrlHelper.getUrlServiceKey();
-				log.info("URL login ceiba: " + url);
-				System.out.println("URL login ceiba: " + url);
+				log.info("URL de ceiba para obtener token: " + url);
 				jsonKey = httpClient.peticionHttpGet(url);
 				key = new ObjectMapper().readValue(jsonKey, Ceiba2KeyPojo.class);
-				log.info("SE SOLICITA KEY A CEIBA 2" + key.getData().getKey());
+				log.info("token obtenido de CEIBA 2: " + key.getData().getKey());
 			}else {
 				//Utiliza el token de la session
 				Ceiba2KeyPojo keyPojo = new Ceiba2KeyPojo();
 				keyPojo.getData().setKey(session.getKeyCeiba2());
 				key = keyPojo;
-				log.info("SE OBTINE KEY DE LA SESSION: " + key.getData().getKey());
+				log.info("Se obtuvo token de la session: " + key.getData().getKey());
 			}
 		} catch (Exception e) {
-			log.error("Error al obtener key ceiba2: " + url , e);
+			log.error("Error al obtener token para el API de ceiba2: " + url , e);
 		}
 
 		return key;
@@ -87,11 +88,13 @@ public class APISistemaVideoVigilanciaServiceImpl implements APISistemaVideoVigi
 		String jsonDevices = "";
 		Ceiba2DevicesPojo devices = null;
 		try {
+			log.info("Obteniendo lista de vehiculos registrados en CEIBA...");
 			url = ceiba2ArmaUrlHelper.getUrlDevices(key);
 			jsonDevices = httpClient.peticionHttpGet(url);
 			devices = new ObjectMapper().readValue(jsonDevices, Ceiba2DevicesPojo.class);
+			log.info("Obteniendo lista de vehiculos registrados en CEIBA...");
 		} catch (Exception e) {
-			log.error("Error: ", e);
+			log.error("No se pudo obtener vehiculos registrados en CEIBA", e);
 		}
 
 		return devices;
