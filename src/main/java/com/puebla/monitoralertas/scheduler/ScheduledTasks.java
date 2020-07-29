@@ -32,7 +32,9 @@ public class ScheduledTasks {
 	 * */
 	@Scheduled(fixedRate = 2000)
 	public void scheduleTaskWithFixedRate() {
+		log.info("------------------------------------------------------------------");
 		log.info("INICIO: scheduler");
+		log.info("------------------------------------------------------------------");
 		
 		//Consulta lista de vehiculos registrados en CEIBA2
 		enviarAlarmasSemovi.obtenerListaVehiculosCeiba2();
@@ -48,7 +50,9 @@ public class ScheduledTasks {
 			enviarAlarmasSemovi.enviarGPSs();
 		}
 		
+		log.info("------------------------------------------------------------------");
 		log.info("FIN: scheduler");
+		log.info("------------------------------------------------------------------");
 	}
 
 	public void scheduleTaskWithFixedDelay() {

@@ -25,7 +25,12 @@ public class AlertaSemoviEntity {
 	private Integer idalerta;
 	@Column(name="id_dispositivo")
 	private String iddispositivo;
-	private String estatus;
+	@Column(name="semovi_estatus")
+	private String semoviestatus;
+	@Column(name="semovi_mensaje")
+	private String semovimensaje;
+	@Column(name="semovi_respuesta")
+	private String semovirespuesta;
 	private String latitud;
 	private String longitud;
 	@Column(name="fecha_recepcion_alerta")

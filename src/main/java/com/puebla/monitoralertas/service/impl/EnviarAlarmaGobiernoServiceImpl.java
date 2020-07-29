@@ -10,12 +10,17 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.puebla.monitoralertas.common.FechasCommon;
 import com.puebla.monitoralertas.config.GlobalSession;
 import com.puebla.monitoralertas.dto.ChatMessage;
 import com.puebla.monitoralertas.dto.ChatMessage.MessageType;
+import com.puebla.monitoralertas.dto.DatosAlertaSemoviDTO;
+import com.puebla.monitoralertas.dto.DatosAlertasTeridsDTO;
 import com.puebla.monitoralertas.dto.SemoviRequestDTO;
 import com.puebla.monitoralertas.dto.SemoviResponseDTO;
+import com.puebla.monitoralertas.dto.SemoviResponseWrapperDTO;
 import com.puebla.monitoralertas.entity.AlarmaEntity;
+import com.puebla.monitoralertas.entity.AlertaSemoviEntity;
 import com.puebla.monitoralertas.helper.GeneraCadenaPeticionHelper;
 import com.puebla.monitoralertas.json.pojo.Ceiba2DeviceAlarmResponseDTO;
 import com.puebla.monitoralertas.json.pojo.Ceiba2DevicesAlarmResponseDTO;
@@ -23,6 +28,7 @@ import com.puebla.monitoralertas.json.pojo.Ceiba2DevicesPojo;
 import com.puebla.monitoralertas.json.pojo.Ceiba2KeyPojo;
 import com.puebla.monitoralertas.json.pojo.DataDevicePojo;
 import com.puebla.monitoralertas.repository.AlarmaRepository;
+import com.puebla.monitoralertas.repository.AlertaSemoviRepository;
 import com.puebla.monitoralertas.repository.DatosVehiculoRepository;
 import com.puebla.monitoralertas.rest.client.ClienteSemoviPuebla;
 import com.puebla.monitoralertas.service.APISistemaVideoVigilanciaService;
@@ -41,13 +47,16 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 	private GeneraCadenaPeticionHelper generaCadenaPeticion;
 
 	@Autowired
-	DatosVehiculoRepository datosVehiculoRepository;
+	private DatosVehiculoRepository datosVehiculoRepository;
 	
 	@Autowired
 	private APISistemaVideoVigilanciaService apiCeiba2;
 
 	@Autowired
-	AlarmaRepository alarmaRepository;
+	private AlarmaRepository alarmaRepository;
+	
+	@Autowired
+	private FechasCommon fechasCommon;
 	
 	@Autowired
 	private ClienteSemoviPuebla semoviPuebla;
@@ -55,10 +64,15 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 	@Autowired
 	private SimpMessagingTemplate template;
 
+	@Autowired
+	private AlertaSemoviRepository alertaSemoviRepository;
+
 	private List<String> terids;
 
 	private String key;
 
+	private final boolean IS_ALERTA_PANICO = true;
+	
 	/**
 	 * Consulta la lista de vehiculos de CEIBA2
 	 * Tambien consulta llave necesaria para consumir el API de CEIBA2
@@ -76,7 +90,7 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 		Ceiba2DevicesPojo vehicles = apiCeiba2.getAllVehicles(key);
 		terids = obtenVehicleList(vehicles);
 
-		log.info("LISTA VEHICULOS CEIBA: " + terids);
+		log.info("TOTAL VEHICULOS REGISTRADOS EN CEIBA: " + terids.size());
 
 	}
 	
@@ -84,6 +98,9 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 	 * Envia alertas de boton 
 	 * 
 	 * */
+	/**
+	 *
+	 */
 	@Override
 	public void enviarAlarmaGobierno() {
 
@@ -107,60 +124,91 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 
 			System.err.println("CONSULTA ALARMAS FECHA INICIO: " + starttime + " : FECHA FIN" + endtime );
 
-			/*
-			 * Consulta en CEIBA2 si hay alertas de boton de panico:
-			 * <ul>
-			 * 	<li>Si se encuentran se envian a SEMOVI.</li>
-			 * 	<li>Si estan registradas en la base de datos no las envia a SEMOVI.</li>
-			 * </ul>
-			 * */
-			/*ALARMAS*/ Ceiba2DevicesAlarmResponseDTO alarmas = apiCeiba2.getDevicesAlarmInfo(key, terids, alarmTypes, starttime, endtime);
+			//Consulta en CEIBA2 si hay alertas de boton de panico:
+			//Si se encuentran se envian a SEMOVI.
+			//Si estan registradas en la base de datos no las envia a SEMOVI.
+			/*ALARMAS*/ Ceiba2DevicesAlarmResponseDTO alertas = apiCeiba2.getDevicesAlarmInfo(key, terids, alarmTypes, starttime, endtime);
 
-			if(alarmas != null && alarmas.getData()!=null&&alarmas.getData().size()>0) {
-	
-				System.out.println("ALERTAS PANICO: " + alarmas.toString());
-				List<String> teridsAlarmas = new ArrayList<>();
-				if(alarmas!=null && alarmas.getData()!=null)
-				for(Ceiba2DeviceAlarmResponseDTO alertaID : alarmas.getData()) {
-					teridsAlarmas.add(alertaID.getTerid());
+			//SE ENCONTRO ALERTAS DE PANICO??
+			if(alertas != null && alertas.getData()!=null&&alertas.getData().size()>0) {
+				log.info("ALERTAS PANICO ENCONTRADAS: " + alertas.getData().size());
+					
+				//GENERA LISTA DE ID_DISPOSITIVO (TERIDS) CON ALERTAS DISPONIBLES
+				DatosAlertasTeridsDTO datosAlertasTeridsDto = new DatosAlertasTeridsDTO (); 
+				List<DatosAlertaSemoviDTO> teridsYDatosAlarmas = new ArrayList<>();
+				List<String> teridsAlertas = new ArrayList<>();
+				if(alertas!=null && alertas.getData()!=null)
+				for(Ceiba2DeviceAlarmResponseDTO alerta : alertas.getData()) {
+					DatosAlertaSemoviDTO envaseTerId = new DatosAlertaSemoviDTO();
+					envaseTerId.setIdDispositivo(alerta.getTerid());
+					envaseTerId.setCeibaAlarmId(alerta.getAlarmid());
+					envaseTerId.setCeibaCmdType(alerta.getCmdtype());
+					envaseTerId.setCeibaContent(alerta.getContent());
+					envaseTerId.setCeibaGpsTime(alerta.getGpstime());
+					envaseTerId.setCeibaTime(alerta.getTime());
+					envaseTerId.setCeibaType(alerta.getType());
+					envaseTerId.setFechaRecepcionAlerta(fechasCommon.dateToString(new Date()));
+					
+					teridsYDatosAlarmas.add(envaseTerId);
+					teridsAlertas.add(alerta.getTerid());
 				}
-				if(teridsAlarmas!=null && teridsAlarmas.size()>0)
-					if(alarmas != null && alarmas.getData() != null&& alarmas.getData().size() > 0) {
+				datosAlertasTeridsDto.setDatosAlertas(teridsYDatosAlarmas);
+				datosAlertasTeridsDto.setTeridsList(teridsAlertas);
+				
+				//SI HAY ALERTAS DISPONIBLES LAS PROCESA PARA ENVIAR A SEMOVI
+				if(teridsYDatosAlarmas!=null && teridsYDatosAlarmas.size()>0)
+					if(alertas != null && alertas.getData() != null&& alertas.getData().size() > 0) {
 
-						generaCadenaPeticion.obtieneDatosNecesarios(teridsAlarmas, key);
-						List<SemoviRequestDTO> alertasBtnPanico = generaCadenaPeticion.generaCadenaPeticion("true");
+						//OBTIENE DATOS NECESARIOS PARA ALERTAS
+						generaCadenaPeticion.obtieneDatosNecesarios(datosAlertasTeridsDto, key);
+						//GENERA CADENAS DE ALERTAS PARA ENVIAR A SEMOVI
+						List<DatosAlertaSemoviDTO> alertasBtnPanico = generaCadenaPeticion.generaCadenasSemovi("true");
 										
-						for(SemoviRequestDTO alerta : alertasBtnPanico){
+						//ENVIA CADENAS DE ALERTAS A SEMOVI
+						for(DatosAlertaSemoviDTO datosAlerta : alertasBtnPanico){
 							hayAlarmas = true;
-							log.info("ALERTAS PANICO ENCONTRADAS: " + alerta.toString());
-							SemoviResponseDTO semoviResponse = semoviPuebla.enviarMensajeSemovi(alerta);
+							SemoviResponseWrapperDTO semoviResponse = semoviPuebla.enviarMensajeSemovi(datosAlerta.getDatosSemovi());
 							log.info("-------------------------------");
-							log.info("ALERTA ENVIADA A SEMOVI: " + alerta.getUrl_camera());
-							log.info("RESPUESTA SEMOVI: " + semoviResponse.getMsg());
+							log.info("ENVIANDO ALERTA " + datosAlerta.getCeibaAlarmId() + " A SEMOVI... ");
+							log.info("RESPUESTA SEMOVI: " + semoviResponse.getSemoviResponse().getMsg());
 							log.info("-------------------------------");
-
-							System.err.println("-------------------------------");
-							System.err.println("ALERTA ENVIADA A SEMOVI: " + alerta.getUrl_camera());
-							System.err.println("RESPUESTA SEMOVI: " + semoviResponse.getMsg());
-							System.err.println("-------------------------------");
 
 							AlarmaEntity alarmaEntity = new AlarmaEntity();
-							alarmaEntity.setEstatus(semoviResponse.getMsg());
-							alarmaEntity.setEconomico(alerta.getEco());
-							alarmaEntity.setImei(alerta.getImei());
-							alarmaEntity.setAlarma(alerta.getPanic_button());
-							alarmaEntity.setPlaca(alerta.getPlate());
+							alarmaEntity.setEstatus(semoviResponse.getSemoviResponse().getMsg());
+							alarmaEntity.setEconomico(datosAlerta.getDatosSemovi().getEco());
+							alarmaEntity.setImei(datosAlerta.getDatosSemovi().getImei());
+							alarmaEntity.setAlarma(datosAlerta.getDatosSemovi().getPanic_button());
+							alarmaEntity.setPlaca(datosAlerta.getDatosSemovi().getPlate());
+							alarmaEntity.setFecha(fechasCommon.stringToDate(datosAlerta.getCeibaGpsTime()));
 							alarmaRepository.save(alarmaEntity);
-							log.info("Alerta de Panico guardada en tabla ALARMA");
+							
+							AlertaSemoviEntity alertaEnviada = new AlertaSemoviEntity();
+							alertaEnviada.setIddispositivo(datosAlerta.getIdDispositivo());							
+							alertaEnviada.setSemoviestatus(semoviResponse.getSemoviResponse().getStatus());
+							alertaEnviada.setSemovimensaje(semoviResponse.getSemoviResponse().getMsg());
+							alertaEnviada.setSemovirespuesta(semoviResponse.getSemoviResponseJson());
+							alertaEnviada.setLatitud(datosAlerta.getDatosSemovi().getLatitude());
+							alertaEnviada.setLongitud(datosAlerta.getDatosSemovi().getLongitude());
+							alertaEnviada.setFecharecepcionalerta(fechasCommon.stringToDate(datosAlerta.getFechaRecepcionAlerta()));
+							alertaEnviada.setCeibatime(fechasCommon.stringToDate(datosAlerta.getCeibaTime()));
+							alertaEnviada.setCeibagpstime(fechasCommon.stringToDate(datosAlerta.getCeibaGpsTime()));
+							alertaEnviada.setCeibatype(datosAlerta.getCeibaType());
+							alertaEnviada.setCeibacontent(datosAlerta.getCeibaContent());
+							alertaEnviada.setCeibacmdtype(datosAlerta.getCeibaCmdType());
+							alertaEnviada.setCeibaalarmid(datosAlerta.getCeibaAlarmId());						
+							
+							alertaSemoviRepository.save(alertaEnviada);
+							
+							log.info("Alerta de Panico guardada en tabla ALARMA Y tabla ALERTAS_SEMOVI");
 						}
 					}
 				
 			}else {
-				log.info("No se encontro alarmas");
+				log.info("NO SE ENCONTRO ALERTAS DE PANICO NUEVAS");
 			}
 			
 		} catch (Exception e) {
-			log.error("No se pudo enviar alertas a SEMOVI ", e);
+			log.error("No se pudo enviar alertas DE PANICO A SEMOVI ", e);
 		}
 		
 		/*
@@ -205,17 +253,31 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 		try {
 				log.info("INICIO: ENVIO DE GPS's A SEMOVI");
 
-//				List<SemoviRequestDTO> alertasBtnPanico = generaCadenaPeticion.generaCadenaPeticion(terids, key, "false");
-				generaCadenaPeticion.obtieneDatosNecesarios(terids, key);
-				List<SemoviRequestDTO> alertasBtnPanico = generaCadenaPeticion.generaCadenaPeticion("true");
+				//GENERA LISTA DE ID_DISPOSITIVO (TERIDS) CON ALERTAS DISPONIBLES
+				DatosAlertasTeridsDTO datosAlertasTeridsDto = new DatosAlertasTeridsDTO (); 
+				List<DatosAlertaSemoviDTO> teridsAlarmas = new ArrayList<>();
 
-				if(alertasBtnPanico!=null)
-					log.info("#GPS encontrados: " + alertasBtnPanico.size());
+				Date fechaActual = new Date();
+				for(String terid : terids) {
+					DatosAlertaSemoviDTO envaseTerId = new DatosAlertaSemoviDTO();
+					envaseTerId.setIdDispositivo(terid);
+					envaseTerId.setCeibaGpsTime(fechasCommon.dateToString(fechaActual));
+					envaseTerId.setFechaRecepcionAlerta(fechasCommon.dateToString(new Date()));
+					
+					teridsAlarmas.add(envaseTerId);
+				}
+				datosAlertasTeridsDto.setDatosAlertas(teridsAlarmas);
+				datosAlertasTeridsDto.setTeridsList(terids);
 				
-				for(SemoviRequestDTO alerta : alertasBtnPanico){
-					System.err.println("GPS ENVIADA A SEMOVI: " + alerta.toString());
-					log.info("Enviando gps semovi: " + alerta.getImei());
-					SemoviResponseDTO respuesta = semoviPuebla.enviarMensajeSemovi(alerta);
+				generaCadenaPeticion.obtieneDatosNecesarios(datosAlertasTeridsDto, key);
+				List<DatosAlertaSemoviDTO> cadenasGps = generaCadenaPeticion.generaCadenasSemovi("false");
+
+				if(cadenasGps!=null)
+					log.info("VEHICULOS CON DATOS DE GPS CORRECTAMENTE: " + cadenasGps.size());
+				
+				for(DatosAlertaSemoviDTO alerta : cadenasGps){
+					log.info("ENVIANDO GPS A SEMOVI: " + alerta.getDatosSemovi().getImei());
+					SemoviResponseWrapperDTO respuesta = semoviPuebla.enviarMensajeSemovi(alerta.getDatosSemovi());
 					
 					if(session.isMostrarCadenasAlertas()) {
 						log.error("Cadena de GPS: ");
@@ -224,7 +286,7 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 						log.error(jsonAlerta);
 					}
 					
-					log.info("RESPUESTA DE SEMOVI AL ENVIAR GPS: " + respuesta.getMsg());
+					log.info("RESPUESTA DE SEMOVI AL ENVIAR GPS: " + respuesta.getSemoviResponse().getMsg());
 				}				
 				
 				log.info("FIN: ENVIO DE GPS's A SEMOVI");			

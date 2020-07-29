@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.puebla.monitoralertas.config.GlobalSession;
 import com.puebla.monitoralertas.dto.SemoviRequestDTO;
 import com.puebla.monitoralertas.dto.SemoviResponseDTO;
+import com.puebla.monitoralertas.dto.SemoviResponseWrapperDTO;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -26,8 +27,10 @@ public class ClienteSemoviPuebla {
 	@Autowired
 	private GlobalSession session;
 		
-	public SemoviResponseDTO enviarMensajeSemovi(SemoviRequestDTO datos ) {
+	public SemoviResponseWrapperDTO enviarMensajeSemovi(SemoviRequestDTO datos ) {
 
+		SemoviResponseWrapperDTO responseWrapper = new SemoviResponseWrapperDTO(); 
+		
 		RestTemplate api = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
 
@@ -46,13 +49,15 @@ public class ClienteSemoviPuebla {
 			System.err.println("Semovi Username: " + session.getSemoviUsername());
 			System.err.println("Semovi Password: " + session.getSemoviPassword());
 			result = api.exchange(session.getSemoviUrl(), HttpMethod.POST, entityRequest, String.class).getBody();
-
+			log.info("RESPUESTA SEMOVI: " + result);
 			response = mapper.readValue(result, SemoviResponseDTO.class);
+			responseWrapper.setSemoviResponse(response);
+			responseWrapper.setSemoviResponseJson(result);
 		} catch (Exception e) {
-			log.error("Error fallo al enviar alarma a semovi jsonResult: " + result, e);
+			log.error("Error fallo al enviar datos a semovi jsonResult: " + result, e);
 		}
 
-		return response;
+		return responseWrapper;
 	}
 
 	private HttpHeaders createHeaders(String username, String password) {

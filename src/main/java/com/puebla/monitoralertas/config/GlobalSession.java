@@ -14,7 +14,7 @@ public class GlobalSession {
 	private static String ultimaAlarmaId; 
 	private static String semoviUrl = "http://semovi-puebla.webmaps.com.mx/api/1.0/send";
     private static String semoviUsername = "sinergia";
-    private static String semoviPassword = "ZWZjZGI3MzMzZTM0YTY5MGQ3NzkwMzNhMDBhNjZlZTI5ZjJlZjkyNWJhZDFmNmFjYmZjNjNlZjIyYTY0ZTk4NQ==";
+    private static String semoviPassword = "6230dbb2179423c8b05d1f8d3920ff3856e34f85";
 	private static boolean mostrarCadenasAlertas = false;
 	private static String keyCeiba2;
 	

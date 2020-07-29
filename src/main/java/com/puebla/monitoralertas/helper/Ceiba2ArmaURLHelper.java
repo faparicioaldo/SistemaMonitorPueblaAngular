@@ -112,7 +112,6 @@ public class Ceiba2ArmaURLHelper {
 	public String getUrlDeviceGpsLast() {
 		String rutaServicio = ceiba2ServerProperties.getDeviceGpsLast();
 		String url = urlDominioCeiba2Api + rutaServicio;
-		log.info("Url ceiba DeviceGpsLast: " + url);
 		return url;
 	}
 	
@@ -125,7 +124,6 @@ public class Ceiba2ArmaURLHelper {
 	public String getUrlDevicesOnlineNow() {
 		String rutaServicio = ceiba2ServerProperties.getDeviceOnlineNow();
 		String url = urlDominioCeiba2Api + rutaServicio;
-		log.info("Url ceiba DeviceOnlineNow: " + url);
 		return url;
 	}
 	
@@ -137,7 +135,6 @@ public class Ceiba2ArmaURLHelper {
 	public String getUrlDevicesAlarmInfo() {
 		String rutaServicio = ceiba2ServerProperties.getDeviceAlarmInfo();
 		String url = urlDominioCeiba2Api + rutaServicio;
-		log.info("Url ceiba DeviceAlarmInfo: " + url);
 		return url;
 	}
 }

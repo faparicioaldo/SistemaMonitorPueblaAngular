@@ -64,7 +64,6 @@ public class APISistemaVideoVigilanciaServiceImpl implements APISistemaVideoVigi
 				log.info("Solicitando token a ceiba... ");
 				//Solicita un nuevo token
 				url = ceiba2ArmaUrlHelper.getUrlServiceKey();
-				log.info("URL de ceiba para obtener token: " + url);
 				jsonKey = httpClient.peticionHttpGet(url);
 				key = new ObjectMapper().readValue(jsonKey, Ceiba2KeyPojo.class);
 				log.info("token obtenido de CEIBA 2: " + key.getData().getKey());
@@ -92,7 +91,6 @@ public class APISistemaVideoVigilanciaServiceImpl implements APISistemaVideoVigi
 			url = ceiba2ArmaUrlHelper.getUrlDevices(key);
 			jsonDevices = httpClient.peticionHttpGet(url);
 			devices = new ObjectMapper().readValue(jsonDevices, Ceiba2DevicesPojo.class);
-			log.info("Obteniendo lista de vehiculos registrados en CEIBA...");
 		} catch (Exception e) {
 			log.error("No se pudo obtener vehiculos registrados en CEIBA", e);
 		}
@@ -211,7 +209,7 @@ public class APISistemaVideoVigilanciaServiceImpl implements APISistemaVideoVigi
 							for(AlertaCeibaEntity alertaEnBase : alertasGuardadas) {
 								if(alertaEnBase.getAlarmid().equals(alarma.getAlarmid())) {
 									existeAlerta = true;
-									log.warn("ALERTA YA SE ENVIO PREVIAMENTE: " + alertaEnBase.getAlarmid());
+//									log.warn("ALERTA YA SE ENVIO PREVIAMENTE: " + alertaEnBase.getAlarmid());
 									break;
 								}
 							}
@@ -228,18 +226,18 @@ public class APISistemaVideoVigilanciaServiceImpl implements APISistemaVideoVigi
 						alertaEntity.setType(alarma.getType());
 						
 						alertaRepository.save(alertaEntity);	
-						log.info("Se agrega nueva alerta ala base:" + alarma.getAlarmid());
+						log.info("ALERTA NUEVA ENCONTRADA: " + alarma.getAlarmid() + " - SE AGREGA A TABLA: ALERTAS_CEIBA. ");
 						
 						responseDepurado.getData().add(alarma);
 
 					}catch(Exception e) {
-						log.error("Error al guardar alerta en base: ", e);
+						log.error("Error al guardar alerta en tabla: ALERTAS_CEIBA ", e);
 					}
 				}
 			}
 			
 		} catch (Exception e) {
-			log.error("Error al obetener alarmas de ceiba2, json result: " + deviceGpsLastJson, e);
+			log.error("Error al OBTENER alarmas de ceiba2, json result: " + deviceGpsLastJson, e);
 		}
 
 

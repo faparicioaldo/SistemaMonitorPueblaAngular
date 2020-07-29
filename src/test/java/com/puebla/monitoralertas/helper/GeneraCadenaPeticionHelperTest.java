@@ -44,15 +44,14 @@ public class GeneraCadenaPeticionHelperTest {
 		Ceiba2DevicesPojo vehicles = apiCeiba2.getAllVehicles(key);
 		List<String> terids = obtenVehicleList(vehicles);
 	
-//		List<SemoviRequestDTO> mensajesSemovi = generaCadenaPeticion.generaCadenaPeticion(terids, key, "false");
-		generaCadenaPeticion.obtieneDatosNecesarios(terids, key);
-		List<SemoviRequestDTO> mensajesSemovi = generaCadenaPeticion.generaCadenaPeticion("true");
-
-		assertNotNull(mensajesSemovi);
-		assertTrue(mensajesSemovi.size()>0);
-		System.err.println("PRUEBA DE MENSAJES GPS PARA ENVIO A SEMOVI");
-		System.err.println("Numero de Mensajes: " + mensajesSemovi.size());
-		System.err.println("Primer Mensaje: " + mensajesSemovi.get(0).toString());
+//		generaCadenaPeticion.obtieneDatosNecesarios(terids, key);
+//		List<SemoviRequestDTO> mensajesSemovi = generaCadenaPeticion.generaCadenasSemovi("true");
+//
+//		assertNotNull(mensajesSemovi);
+//		assertTrue(mensajesSemovi.size()>0);
+//		System.err.println("PRUEBA DE MENSAJES GPS PARA ENVIO A SEMOVI");
+//		System.err.println("Numero de Mensajes: " + mensajesSemovi.size());
+//		System.err.println("Primer Mensaje: " + mensajesSemovi.get(0).toString());
 	}
 
 	private List<String> obtenVehicleList(Ceiba2DevicesPojo vehicles) {

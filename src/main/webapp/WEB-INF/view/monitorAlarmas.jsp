@@ -29,16 +29,15 @@
 	
 	function onConnected() {
 	    stompClient.subscribe('/topic/public', onMessageReceived);
-<	}
+	}
 
 	function onError(error) {
 		alert("No se ha podido conectart al servidor de websocket. Por favor, recargue la pagina para intentar nuevamente!");
 	}
 
 	function onMessageReceived(payload) {
-	    var message = JSON.parse(payload.body);
-
-// 	    alert(message.content + " Hay alarmas nuevas!!");
+ 	    var message = JSON.parse(payload.body);
+ 	    alert(message.content + " Se encontraron alertas nuevas!!");
 	    location.reload();
 	    
 	}
@@ -85,6 +84,16 @@
 	  	});
 	}
 </script>
+<style>
+	h1 {
+		text-align: center
+	}
+	
+	.centrar {
+		text-align: center
+	}
+	
+</style>
 </head>
 <body onload="connect();">
 
@@ -106,58 +115,57 @@
 		<!-- here should go some titles... -->
 		<tr>
 			<th>#ALARMA</th>
+			<th>ID_CEIBA</th>
 			<th>DISPOSITIVO_ID</th>
 			<th>PLACA</th>
 			<th>ECONOMICO</th>
+			<th>FECHA</th>
+			<th>ESTATUS SEMOVI</th>
 			<th>EMPRESA</th>
-			<th>SOCIO</th>
-			<th>HORA/FECHA</th>
-			<th>ESTATUS</th>
+			<th>RUTA</th>
+			<th>PUERTO</th>
 			<th></th>
 			<th></th>
 			<th></th>
 		</tr>
 		<c:forEach varStatus="loopCounter" items="${alarmas}" var="alarma">
 			<tr>
-				<td><c:out value="${alarma.alarmaid}" /></td>
-				<td><c:out value="${alarma.deviceid}" /></td>
-
-<%-- 				<td><c:out value="${alarma.placa}" /></td> --%>
-<%-- 				<td><c:out value="${alarma.economico}" /></td> --%>
-<%-- 				<td><c:out value="${alarma.empresa}" /></td> --%>
-
-				<td><c:out value="B08673" /></td>
-				<td><c:out value="ECO260819" /></td>
-				<td><c:out value="Transporte Mexicano S.A. de C.V." /></td>
-
-				<td><c:out value="${alarma.socio}" /></td>
-				<td><c:out value="${alarma.fecha}" /></td>
-				<td><c:out value="${alarma.estatus}" /></td>
-				<c:if test="${alarma.estatus == 'Cargada'}">
+				<td><c:out value="${alarma.idAlerta}" /></td>
+				<td><c:out value="${alarma.ceibaAlarmid}" /></td>
+				<td><c:out value="${alarma.idDispositivo}" /></td>
+				<td><c:out value="${alarma.plate}" /></td>
+				<td><c:out value="${alarma.eco}" /></td>
+				<td><c:out value="${alarma.ceibaGpsTime}" /></td>
+				<td><c:out value="${alarma.semoviMensaje}" /></td>
+				<td><c:out value="${alarma.empresa}" /></td>
+				<td><c:out value="${alarma.route}" /></td>
+				<td><c:out value="${alarma.ceibaType}" /></td>				
+				<c:if test="${alarma.semoviEstatus == 'Cargada'}">
 					<td><input type="button" value="Enviar" id="nuevo"
-						name="nuevo" onclick="enviarAlarmaPOST(${alarma.alarmaid},${alarma.deviceid})" /></td>
+						name="nuevo" onclick="enviarAlarmaPOST(${alarma.idAlerta},${alarma.idDispositivo})" /></td>
 					<td><input type="button" value="Descartar" id="nuevo"
-						name="nuevo" onclick="descartarAlarmaPOST(${alarma.alarmaid},${alarma.deviceid})" />
+						name="nuevo" onclick="descartarAlarmaPOST(${alarma.idAlerta},${alarma.idDispositivo})" />
 					</td>
 				</c:if>
-				<c:if test="${alarma.estatus != 'Cargada'}">
+				<c:if test="${alarma.semoviEstatus != 'Cargada'}">
 					<td></td>
 					<td></td>
 				</c:if>
 				<td>
-					<input type="button" value="Agregar Datos" id="add" name="add" onclick="window.location='/agregarDatosAlarma/'+${alarma.alarmaid}+'/'+${alarma.deviceid}"/>
+					<input type="button" value="Agregar Datos" id="add" name="add" onclick="window.location='/agregarDatosAlarma/'+${alarma.idAlerta}+'/'+${alarma.idDispositivo}"/>
 				</td>
 
 			</tr>
 		</c:forEach>
 	</table>
 
-	<a href="/monitorFoliosAlarmas">Ir a Monitor de Folios</a>
+	<div class="centrar">
+		<a href="/monitorFoliosAlarmas">Ir a Monitor de Folios</a>
 	
-	<br>
+		<br>
 	
-	<a href="/datosVehiculos">Agregar Vehiculo</a>
-
+		<a href="/datosVehiculos">Agregar Vehiculo</a>
+	</div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
