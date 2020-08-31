@@ -61,7 +61,7 @@ public class GeneraCadenaPeticionHelper {
 					log.error("Error al obtener datos de vehiculo para GPS de la base: " + e.getMessage());
 				}
 				if(complementoDatosVehiculo!=null && !complementoDatosVehiculo.getImei().trim().equals("")) {
-					complementosDataVehicle.put(complementoDatosVehiculo.getIdDispositivo(), complementoDatosVehiculo);
+					complementosDataVehicle.put(complementoDatosVehiculo.getIddispositivo(), complementoDatosVehiculo);
 					String c2LiveVehicle = apiCeiba2.getLiveVideo(datosAlertaTeridDto.getIdDispositivo());
 					liveVideoVehicles.put(datosAlertaTeridDto.getIdDispositivo(),c2LiveVehicle);
 					datosTeridsCorrectos.add(datosAlertaTeridDto);

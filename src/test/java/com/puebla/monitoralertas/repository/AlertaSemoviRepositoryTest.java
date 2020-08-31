@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +16,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.puebla.monitoralertas.entity.AlertaSemoviEntity;
 
+import lombok.extern.log4j.Log4j2;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
+@Log4j2
 public class AlertaSemoviRepositoryTest {
 
 	@Autowired
 	private AlertaSemoviRepository alertaSemoviRepository;
 	
 	@Test
+	@Ignore
 	@Rollback(true)
 	public void test() {
 		AlertaSemoviEntity entity = new AlertaSemoviEntity();
@@ -41,14 +46,20 @@ public class AlertaSemoviRepositoryTest {
 	
 	@Test
 	public void consultaAlertasEnviadasSemoviTest() {
-		List<Object[]> alertasEnviadas = alertaSemoviRepository.consultaAlertasEnviadasSemovi();
 		
-		assertNotNull(alertasEnviadas);
-		System.out.println("ALERTA ENVIADA: "+alertasEnviadas.get(0)[0]);
-		System.out.println("ALERTA ENVIADA: "+alertasEnviadas.get(0)[1]);
-		System.out.println("ALERTA ENVIADA: "+alertasEnviadas.get(0)[2]);
-		System.out.println("ALERTA ENVIADA: "+alertasEnviadas.get(0)[3]);
-		System.out.println("ALERTA ENVIADA: "+alertasEnviadas.get(0)[4]);
+		try {
+			List<Object[]> alertasEnviadas = alertaSemoviRepository.consultaAlertasEnviadasSemovi();
+			
+			assertNotNull(alertasEnviadas);
+			System.out.println("ALERTA ENVIADA: "+alertasEnviadas.get(0)[0]);
+			System.out.println("ALERTA ENVIADA: "+alertasEnviadas.get(0)[1]);
+			System.out.println("ALERTA ENVIADA: "+alertasEnviadas.get(0)[2]);
+			System.out.println("ALERTA ENVIADA: "+alertasEnviadas.get(0)[3]);
+			System.out.println("ALERTA ENVIADA: "+alertasEnviadas.get(0)[4]);
+		}catch(Exception e) {
+			log.error("Ocuarrio un probklema: ", e);
+		}
+
 	}
 
 }

@@ -7,9 +7,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.puebla.monitoralertas.dto.ListaDatosVehiculosRegistradosDTO;
+import com.puebla.monitoralertas.dto.RespuestaJSON;
 import com.puebla.monitoralertas.entity.AlarmaEntity;
 import com.puebla.monitoralertas.entity.DatosVehiculoEntity;
 import com.puebla.monitoralertas.repository.AlarmaRepository;
@@ -27,13 +31,15 @@ public class DatosVehiculoController {
 	@Autowired
 	AlarmaRepository alarmaRepository;
 
-	@RequestMapping("/datosVehiculos")
-	public String datosVehiculos(String name, Model model) {
+	@RequestMapping(value = "/cargaDatosVehiculos", method = RequestMethod.POST)
+	public @ResponseBody ListaDatosVehiculosRegistradosDTO cargaDatosVehiculos() {
 
+		ListaDatosVehiculosRegistradosDTO listaVehiculosRegistrados = new ListaDatosVehiculosRegistradosDTO();
+		
 		List<DatosVehiculoEntity> datosVehiculos = datosVehiculoService.obtenerDatosVehiculos();
-		model.addAttribute("datosVehiculos", datosVehiculos);
+		listaVehiculosRegistrados.setListaVehiculosRegistrados(datosVehiculos);
 
-		return "datosVehiculos";
+		return listaVehiculosRegistrados;
 	}
 
 	@RequestMapping(value = "/agregarVehiculo/{idDispositivo}", method = RequestMethod.GET)
@@ -66,9 +72,9 @@ public class DatosVehiculoController {
 	}
 
 	@RequestMapping(value = "/guardarDatosVehiculo", method = RequestMethod.POST)
-	public String guardarDatosVehiculo(@ModelAttribute("datosVehiculo") DatosVehiculoEntity datosVehiculo) {
+	public @ResponseBody RespuestaJSON guardarDatosVehiculo(@RequestBody DatosVehiculoEntity datosVehiculo) {
 		datosVehiculoService.guardaDatosVehiculo(datosVehiculo);
-		return "datosVehiculos";
+		return new RespuestaJSON();
 	}
 
 	@RequestMapping(value = "/guardarDatosAlarma", method = RequestMethod.POST)

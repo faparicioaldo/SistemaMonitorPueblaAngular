@@ -1,36 +1,36 @@
 package com.puebla.monitoralertas.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
 
-@Data
+import lombok.Getter;
+import lombok.Setter;
+
 @Entity
 @Table(name = "DATOS_VEHICULO", schema = "QUARTZ_DEMO")
-public class DatosVehiculoEntity {
+@DynamicUpdate(true)
+@Getter
+@Setter
+public class DatosVehiculoEntity implements Serializable {
+
+	private static final long serialVersionUID = -1119260550162574380L;
 
 	@Id
-	private String idDispositivo;
+	@Column(name="ID_DISPOSITIVO")
+	private String iddispositivo;
 	private String empresa;
-	private String socio;
-	private String ip;
-	private Date fechaModificacion;
-	private Date fechaCaptura;
-	
+	@Column(name="FECHA_CAPTURA")
+	private Date fechacaptura;
+	@Column(name="FECHA_MODIFICACION")
+	private Date fechamodificacion;	
 	private String imei;
-	private String longitude;
-	private String latitude;
-	private String address;
-	private String speed;
-	private String course;
-	private String date;
-	private String ignition;
-	private String fix;
-	private String sat;
 	private String plate;
 	private String vin;
 	private String engine;
@@ -41,7 +41,9 @@ public class DatosVehiculoEntity {
 	private String eco;
 	private String branch;
 	private String subbranch;
-	private String url_camera;
-	private String panic_button;
+	private String municipio;
+	private String concesion;	
+	@Column(name="URL_CAMERA")
+	private String urlcamera;
 
 }

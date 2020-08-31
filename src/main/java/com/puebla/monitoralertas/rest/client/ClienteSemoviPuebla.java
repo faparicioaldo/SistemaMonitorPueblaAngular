@@ -45,9 +45,9 @@ public class ClienteSemoviPuebla {
 		HttpEntity<SemoviRequestDTO> entityRequest = null;
 		try {
 			entityRequest = new HttpEntity(datos, createHeaders(session.getSemoviUsername(), session.getSemoviPassword()));
-			System.err.println("Semovi URL: " + session.getSemoviUrl());
-			System.err.println("Semovi Username: " + session.getSemoviUsername());
-			System.err.println("Semovi Password: " + session.getSemoviPassword());
+			log.info("Semovi URL: " + session.getSemoviUrl());
+			log.info("Semovi Username: " + session.getSemoviUsername());
+			log.info("Semovi Password: " + session.getSemoviPassword());
 			result = api.exchange(session.getSemoviUrl(), HttpMethod.POST, entityRequest, String.class).getBody();
 			log.info("RESPUESTA SEMOVI: " + result);
 			response = mapper.readValue(result, SemoviResponseDTO.class);

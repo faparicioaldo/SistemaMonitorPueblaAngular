@@ -4,21 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.puebla.monitoralertas.dto.DatosAlertaEnviadasDTO;
 import com.puebla.monitoralertas.dto.EnviarAlarmaDTO;
+import com.puebla.monitoralertas.dto.ListaDatosAlertaEnviadasSemoviDTO;
 import com.puebla.monitoralertas.repository.AlarmaRepository;
 import com.puebla.monitoralertas.repository.AlertaSemoviRepository;
 
 import lombok.extern.log4j.Log4j2;
 
-@Controller
+@RestController
 @Log4j2
 public class MonitorAlarmasController {
 	
@@ -28,11 +29,13 @@ public class MonitorAlarmasController {
 	@Autowired
 	private AlertaSemoviRepository alertaSemoviRepository;	
 	
-	@RequestMapping("/monitorAlarmas")
-	public String monitorAlarmas(String name, Model model) {
+	@RequestMapping(value = "/cargaAlertasEnviadasSemovi", method = RequestMethod.POST)
+	public @ResponseBody ListaDatosAlertaEnviadasSemoviDTO cargaAlertasEnviadasSemovi() {
 
-		List<Object[]> alarmas = alertaSemoviRepository.consultaAlertasEnviadasSemovi();
+		ListaDatosAlertaEnviadasSemoviDTO listaAlertasEnviadas = new ListaDatosAlertaEnviadasSemoviDTO();
 		List<DatosAlertaEnviadasDTO> alertasEnviadas = new ArrayList<>(); 
+		
+		List<Object[]> alarmas = alertaSemoviRepository.consultaAlertasEnviadasSemovi();
 		
 		for(Object[] alarma : alarmas) {
 			DatosAlertaEnviadasDTO datosAlerta=new DatosAlertaEnviadasDTO();
@@ -50,10 +53,10 @@ public class MonitorAlarmasController {
 			
 			alertasEnviadas.add(datosAlerta);
 		}
-		
-		model.addAttribute("alarmas", alertasEnviadas);
 
-		return "monitorAlarmas";
+		listaAlertasEnviadas.setListaAlertasEnviadasSemovi(alertasEnviadas);
+		
+		return listaAlertasEnviadas;
 	}
 
 	@PostMapping(

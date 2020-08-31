@@ -33,6 +33,11 @@ public class AlertaSemoviEntity {
 	private String semovirespuesta;
 	private String latitud;
 	private String longitud;
+	private String address;
+	private String speed;
+	private String course;
+	private String ignition;
+	private String panicbutton;
 	@Column(name="fecha_recepcion_alerta")
 	private Date fecharecepcionalerta;
 	@Column(name="ceiba_time")
