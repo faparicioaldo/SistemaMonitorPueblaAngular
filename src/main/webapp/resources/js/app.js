@@ -105,10 +105,9 @@ var app = angular.module("fonacotApp", [ "ngRoute", "ngSanitize", "ngMaterial",
 
 app.config([ '$routeProvider', '$compileProvider',
 	function($routeProvider, $compileProvider) {
+			
 			$compileProvider.debugInfoEnabled(true);
-	
     		$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|javascript|local|data|chrome-extension):/);
-			$logProvider.debugEnabled(true);
 			$compileProvider.commentDirectivesEnabled(false);
 			$compileProvider.cssClassDirectivesEnabled(false);
 		
