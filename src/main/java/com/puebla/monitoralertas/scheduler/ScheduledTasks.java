@@ -1,10 +1,13 @@
 package com.puebla.monitoralertas.scheduler;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.puebla.monitoralertas.config.GlobalSession;
+import com.puebla.monitoralertas.dto.ChatMessage;
+import com.puebla.monitoralertas.dto.ChatMessage.MessageType;
 import com.puebla.monitoralertas.service.CeibaVehiculoService;
 import com.puebla.monitoralertas.service.EnviarAlarmaGobiernoService;
 
@@ -26,6 +29,9 @@ public class ScheduledTasks {
 	private CeibaVehiculoService ceibaVehiculoService;
 	
 	@Autowired
+	private SimpMessagingTemplate template;
+	
+	@Autowired
 	private GlobalSession session;
 
 	/**
@@ -34,15 +40,24 @@ public class ScheduledTasks {
 	 * @author Aldo Flores
 	 * 
 	 * */
-	@Scheduled(fixedRate = 2000)
+	@Scheduled(fixedRate = 10000)
 	public void scheduleTaskWithFixedRate() {
 		log.info("------------------------------------------------------------------");
 		log.info("INICIO: scheduler");
 		log.info("------------------------------------------------------------------");
 		
+		
+//	      ChatMessage mensaje = new ChatMessage();
+//	      mensaje.setContent("HOLAA");
+//	      mensaje.setType(MessageType.CHAT);
+//	      mensaje.setSender("HOLAA");
+//	
+//	      template.convertAndSend("/topic/public", mensaje);
+
+	      
 		//Consulta lista de vehiculos registrados en CEIBA2
 //		enviarAlarmasSemovi.obtenerListaVehiculosCeiba2();
-//		ceibaVehiculoService.actualizarVehiculosCeibaInMonitor();
+		ceibaVehiculoService.actualizarVehiculosCeibaInMonitor();
 		
 		//Valida si existen alertas en CEIBA2 si existen las enviar a SEMOVI
 //		enviarAlarmasSemovi.enviarAlarmaGobierno();

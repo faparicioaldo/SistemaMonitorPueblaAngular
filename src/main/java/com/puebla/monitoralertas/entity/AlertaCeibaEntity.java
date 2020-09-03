@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name="alertas_ceiba", schema="quartz_demo")
+@Table(name="alertas_ceiba", schema="db_monitor")
 public class AlertaCeibaEntity {
 	
 	@Id

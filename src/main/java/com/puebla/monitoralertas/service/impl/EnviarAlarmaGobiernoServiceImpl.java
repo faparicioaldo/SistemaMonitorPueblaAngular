@@ -16,8 +16,6 @@ import com.puebla.monitoralertas.dto.ChatMessage;
 import com.puebla.monitoralertas.dto.ChatMessage.MessageType;
 import com.puebla.monitoralertas.dto.DatosAlertaSemoviDTO;
 import com.puebla.monitoralertas.dto.DatosAlertasTeridsDTO;
-import com.puebla.monitoralertas.dto.SemoviRequestDTO;
-import com.puebla.monitoralertas.dto.SemoviResponseDTO;
 import com.puebla.monitoralertas.dto.SemoviResponseWrapperDTO;
 import com.puebla.monitoralertas.entity.AlarmaEntity;
 import com.puebla.monitoralertas.entity.AlertaSemoviEntity;
@@ -30,7 +28,6 @@ import com.puebla.monitoralertas.json.pojo.DataDevicePojo;
 import com.puebla.monitoralertas.repository.AlarmaRepository;
 import com.puebla.monitoralertas.repository.AlertaSemoviRepository;
 import com.puebla.monitoralertas.repository.DatosVehiculoRepository;
-import com.puebla.monitoralertas.rest.client.ClienteSemoviPuebla;
 import com.puebla.monitoralertas.service.APISistemaVideoVigilanciaService;
 import com.puebla.monitoralertas.service.EnviarAlarmaGobiernoService;
 
@@ -59,9 +56,6 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 	private FechasCommon fechasCommon;
 	
 	@Autowired
-	private ClienteSemoviPuebla semoviPuebla;
-	
-	@Autowired
 	private SimpMessagingTemplate template;
 
 	@Autowired
@@ -71,8 +65,6 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 
 	private String key;
 
-	private final boolean IS_ALERTA_PANICO = true;
-	
 	/**
 	 * Consulta la lista de vehiculos de CEIBA2
 	 * Tambien consulta llave necesaria para consumir el API de CEIBA2
@@ -167,7 +159,7 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 						//ENVIA CADENAS DE ALERTAS A SEMOVI
 						for(DatosAlertaSemoviDTO datosAlerta : alertasBtnPanico){
 							hayAlarmas = true;
-							SemoviResponseWrapperDTO semoviResponse = semoviPuebla.enviarMensajeSemovi(datosAlerta.getDatosSemovi());
+							SemoviResponseWrapperDTO semoviResponse = null;/*semoviPuebla.enviarMensajeSemovi(datosAlerta.getDatosSemovi());*/
 							log.info("-------------------------------");
 							log.info("ENVIANDO ALERTA " + datosAlerta.getCeibaAlarmId() + " A SEMOVI... ");
 							log.info("RESPUESTA SEMOVI: " + semoviResponse.getSemoviResponse().getMsg());
@@ -184,7 +176,7 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 							
 							AlertaSemoviEntity alertaEnviada = new AlertaSemoviEntity();
 							alertaEnviada.setIddispositivo(datosAlerta.getIdDispositivo());							
-							alertaEnviada.setSemoviestatus(semoviResponse.getSemoviResponse().getStatus());
+							alertaEnviada.setSemoviestatus(semoviResponse.getSemoviResponse().getStatus().toString());
 							alertaEnviada.setSemovimensaje(semoviResponse.getSemoviResponse().getMsg());
 							alertaEnviada.setSemovirespuesta(semoviResponse.getSemoviResponseJson());
 							alertaEnviada.setLatitud(datosAlerta.getDatosSemovi().getLatitude());
@@ -226,27 +218,6 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 		      template.convertAndSend("/topic/public", mensaje);
 		}
 		
-//		try {
-//			/* DECODIFICA CADENA DE GOBIERNO */
-//			RespuestaGobiernoDTO respuestaDTO = generaCadenaPeticion.decodificaCadenaResultado(resultado);
-//
-//			
-//			/* ACTUALIZA ESTATUS Y FOLIO EN TABLA ALARMA */
-//			if(!session.getCadenaRespuesta().equals("No se obtuvo respuesta de gobierno."))
-//			alarmaRepository.updateAlarmaEstatusByAlarmaid(idAlarma.getIdAlarma(), "Enviada");
-//
-//			/* GUARDA FOLIO OTORGADO POR GOBIERNO */
-//			FolioAlarmaEntity folioAlarma = new FolioAlarmaEntity();
-//			folioAlarma.setFolio(respuestaDTO.getFolioCAD());
-//			folioAlarma.setIpdispositivo(respuestaDTO.getIdentificadorCampoTres());
-//			folioAlarma.setFechagenerado(new Date());
-//			folioAlarma.setEstatus("Generado");
-//			folioAlarmaRepository.save(folioAlarma);
-//		} catch (Exception e) {
-//			log.error("Error al decodificar respuesta de gobierno o al guardar respuesta de buro! ", e);
-//			throw new ConsultaBuroException(
-//					"Error al decodificar respuesta de gobierno o al guardar respuesta de buro!");
-//		}
 	}
 	
 	public void enviarGPSs() {
@@ -277,7 +248,7 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 				
 				for(DatosAlertaSemoviDTO alerta : cadenasGps){
 					log.info("ENVIANDO GPS A SEMOVI: " + alerta.getDatosSemovi().getImei());
-					SemoviResponseWrapperDTO respuesta = semoviPuebla.enviarMensajeSemovi(alerta.getDatosSemovi());
+					SemoviResponseWrapperDTO respuesta = null;/*semoviPuebla.enviarMensajeSemovi(alerta.getDatosSemovi());*/
 					
 					if(session.isMostrarCadenasAlertas()) {
 						log.error("Cadena de GPS: ");

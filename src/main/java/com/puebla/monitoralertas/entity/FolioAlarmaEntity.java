@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name="folio_alarma", schema="quartz_demo")
+@Table(name="folio_alarma", schema="db_monitor")
 public class FolioAlarmaEntity {
 
 	@Id

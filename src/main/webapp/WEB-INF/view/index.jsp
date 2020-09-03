@@ -12,15 +12,16 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	
-	<style type="text/css">
-		body {
-			cursor: pointer
-		}
+ 	<style type="text/css">
+  		.cursorManita {  
+  			cursor: pointer  
+  		}  
 	</style>
 	
 	<link href="${contextPath}/resources/css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/resources/styles.css">
 	<link href="<%=request.getContextPath()%>/css/adicionales.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 	
 	<script src="<%=request.getContextPath()%>/js/rsaGenerator.js" type="application/javascript"></script>
 	<script type="application/javascript" src="<%=request.getContextPath()%>/js/scriptsInternet.js"	type="application/javascript"></script>
@@ -28,16 +29,8 @@
 	
 	<!-- CSS -->
 	<link href="/favicon.ico" rel="shortcut icon">
-	<link href="https://framework-gb.cdn.gob.mx/assets/styles/main.css" rel="stylesheet">
 	
 	<!-- Angular Material requires Angular.js Libraries -->
-<!-- 	<script	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script> -->
-<!-- 	<script	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script> -->
-<!-- 	<script	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-sanitize.js"></script> -->
-<!-- 	<script	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.min.js"></script> -->
-<!-- 	<script	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-aria.min.js"></script> -->
-<!-- 	<script	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-messages.min.js"></script> -->
-
 	<script	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.js"></script>
 	<script	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
 	<script	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-sanitize.js"></script>
@@ -48,10 +41,52 @@
 	<!-- Angular Material Library -->
 	<script	src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.js"></script>
 
-</head>
-<body ng-app="fonacotApp" ng-controller="appController" ng-init="init()" ng-strict-di>
 
-	<br>
+	<script type="text/javascript">
+
+	/*
+	 * INICIA FUNCIONALIDAD DE CLIENTE WEB SOCKET
+	 */
+		
+		'use strict';
+		
+		var stompClient = null;
+		
+		function connect() {
+	        var socket = new SockJS('/MonitorAlertasPuebla/ws');
+	        stompClient = Stomp.over(socket);
+
+	        stompClient.connect({}, onConnected, onError);
+		}
+		
+		function onConnected() {
+		    stompClient.subscribe('/topic/public', onMessageReceived);
+		}
+
+		function onError(error) {
+			alert("No se ha podido conectart al servidor de websocket. Por favor, recargue la pagina para intentar nuevamente!");
+		}
+
+		function onMessageReceived(payload) {
+	 	    var message = JSON.parse(payload.body);
+	 	    alert(message.content + " Se encontraron alertas nuevas!!");
+// 		    location.reload();
+		    
+		}
+		
+		/*
+		 * TERMINA FUNCIONALIDAD DE CLIENTE WEB SOCKET
+		 */
+	
+	</script>
+
+</head>
+<body onload="connect();" ng-app="fonacotApp" ng-controller="appController" ng-init="init()" ng-strict-di>
+
+	<br/><br/>
+	
+	<div class="container">
+
 	<div class="container">
 		<c:if test="${pageContext.request.userPrincipal.name != null}">
 			<form id="logoutForm" method="POST"	action="<%=request.getContextPath()%>/logout">
@@ -64,33 +99,31 @@
 		</c:if>
 	</div>
 
-<!-- 	<img ng-src="{{$root.pathUDM}}" height="1" width="1" alt="*" ng-show="false"></img> -->
-	<div class="ns_ form-horizontal">
 		<div class="container">
-			<div class="row">
-				<div class="col-md-6 col-sm-6 col-xs-6">
-<%-- 					<img src="<%=request.getContextPath()%>/imgs/logoSTPS2.jpg"	style="width: 120px;" /> --%>
-				</div>
-				<div class="col-md-6 col-sm-6 col-xs-6">
-<%-- 					<img src="<%=request.getContextPath()%>/imgs/infonacotlogdocrgb2.jpg" style="width: 120px;" class="pull-right" /> --%>
-				</div>
-			</div>
-			<div class="row">&nbsp;</div>
-		</div>
-
-		<div class="container">
-			<ol class="breadcrumb">
-				<li><a href="https://www.gob.mx/"
-					onclick="uid_call('fonacotCTGob.index.ligaGobernacion','clickout')"><i
-						class="icon icon-home"></i></a></li>
-				<li><a ng-click="redirect('preafiliacionesPorValidar')">Inicio</a></li>
-				<li class="active" ng-bind="$root.tabs[$root.numberTab]"></li>
-				<p class="pull-right">Fecha Actual: {{fechaActual |	date:'dd-MM-yyyy'}}</p>
-			</ol>
+<!-- 			<div class="row"> -->
+<!-- 				<div class="col"> -->
+					<ol class="breadcrumb">
+						<li>
+							<a href="https://www.gob.mx/">
+								<i class="icon icon-home"></i>
+							</a>
+						</li>
+						<li>
+							<a ng-click="redirect('preafiliacionesPorValidar')">Inicio</a>
+						</li>
+						<li class="active" ng-bind="$root.tabs[$root.numberTab]"></li>
+					</ol>
+<!-- 				</div>	 -->
+<!-- 				<div class="row"> -->
+<!-- 					<div class="col"> -->
+<!-- 						<span class="float-right">Fecha Actual: {{fechaActual |	date:'dd-MM-yyyy'}}</span> -->
+<!-- 					</div> -->
+<!-- 				</div> -->
+<!-- 			</div> -->
 		</div>
 		<div class="container">
 
-			<ul class="nav nav-tabs container">
+			<ul class="nav nav-tabs container cursorManita">
 
 				<li ng-class="isTabActive(0)">
 					<a
@@ -143,7 +176,7 @@
 		}		
 	</script>
 
-	<modal-editar-vehiculo mensaje="{{datosVehiculoEditar}}"></modal-editar-vehiculo>
+	<modal-editar-vehiculo></modal-editar-vehiculo>
 	<modal-buscadorct></modal-buscadorct>
 	<modal-buscadorcp cp="datosPreafiliacion.codPostal"></modal-buscadorcp>
 	<loading></loading>
@@ -164,7 +197,7 @@
 	
 <%-- 	<script type="application/javascript" src="<%=request.getContextPath()%>/js/jquery.min.js"></script> --%>
 	<script type="application/javascript" src="<%=request.getContextPath()%>/js/jquery-ui-1.12.1.min.js"></script>
-	<script	src="https://framework-gb.cdn.gob.mx/assets/scripts/jquery-ui-datepicker.js"></script>
+<!-- 	<script	src="https://framework-gb.cdn.gob.mx/assets/scripts/jquery-ui-datepicker.js"></script> -->
 
 <!-- 	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.1/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" /> -->
 <!-- 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.1/js/fileinput.min.js"></script> -->

@@ -1,8 +1,13 @@
 package com.puebla.monitoralertas.dto;
 
-import lombok.Data;
+import java.util.List;
 
-@Data
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class EnviarAlarmaDTO {
 
 	private Integer idAlarma;

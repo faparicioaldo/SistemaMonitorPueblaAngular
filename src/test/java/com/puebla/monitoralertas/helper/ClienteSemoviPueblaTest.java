@@ -1,25 +1,16 @@
 package com.puebla.monitoralertas.helper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.puebla.monitoralertas.dto.SemoviRequestDTO;
-import com.puebla.monitoralertas.dto.SemoviResponseDTO;
-import com.puebla.monitoralertas.rest.client.ClienteSemoviPuebla;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 //@SpringBootTest(properties = "spring.main.web-application-type=reactive")
 public class ClienteSemoviPueblaTest {
-
-	@Autowired
-	private ClienteSemoviPuebla clienteSemovi;
 
 	@Test
 	public void testNOK() {

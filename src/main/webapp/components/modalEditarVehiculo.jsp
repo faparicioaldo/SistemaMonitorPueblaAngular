@@ -6,7 +6,7 @@
 
 <!-- ventana captcha modal -->
 <!-- <form name="captchaForm" autocomplete="off" ng-submit="submit()"> -->
-	<div class="modal fade" id="modalEditarVehiculo" onshow="alert(1)">
+	<div class="modal fade" id="modalEditarVehiculo">
 		<div class="modal-dialog modal-xl">
 			<div class="modal-content" >
 				<div class="modal-header">

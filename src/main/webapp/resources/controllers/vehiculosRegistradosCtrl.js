@@ -2,7 +2,10 @@ app.controller("vehiculosRegistradosCtrl", ['$scope','utilityService','Funciones
 	$rootScope.numberTab = 1;
 	
 	$scope.listaVehiculosRegistrados = [];
-
+	$scope.infoVehiculos = {};
+	$scope.infoVehiculos.total = 0;
+	$scope.infoVehiculos.totalFaltaDatos = 0;
+	
 	var vm = this;
   	vm.sendEvent = function(datosVehiculo) {
     	$scope.$parent.$broadcast('msg', datosVehiculo);
@@ -14,32 +17,37 @@ app.controller("vehiculosRegistradosCtrl", ['$scope','utilityService','Funciones
 	}
 
 	$scope.faltanDatos = function(datosVehiculo) {
+		
+		//console.log("datos vehiculo: " + JSON.stringify(datosVehiculo, null, '\t'));
+
 		var faltanDatos = false;
-				
+		if(datosVehiculo == undefined){
+			faltanDatos = true;			
+		}else
 		if(datosVehiculo.empresa == undefined || datosVehiculo.iddispositivo == ''){
 			faltanDatos = true;
-		}
+		}else
 		if(datosVehiculo.imei == undefined || datosVehiculo.imei == ''){
 			faltanDatos = true;
-		}
+		}else
 		if(datosVehiculo.plate == undefined || datosVehiculo.plate == ''){
 			faltanDatos = true;
-		}
+		}else
 		if(datosVehiculo.vin == undefined || datosVehiculo.vin == ''){
 			faltanDatos = true;
-		}
+		}else
 		if(datosVehiculo.engine == undefined || datosVehiculo.engine == ''){
 			faltanDatos = true;
-		}
+		}else
 		if(datosVehiculo.year == undefined || datosVehiculo.year == ''){
 			faltanDatos = true;
-		}
+		}else
 		if(datosVehiculo.color == undefined || datosVehiculo.color == ''){
 			faltanDatos = true;
-		}
+		}else
 		if(datosVehiculo.route == undefined || datosVehiculo.route == ''){
 			faltanDatos = true;
-		}
+		}else
 		if(datosVehiculo.rs == undefined || datosVehiculo.rs == ''){
 			faltanDatos = true;
 		}
@@ -60,7 +68,7 @@ app.controller("vehiculosRegistradosCtrl", ['$scope','utilityService','Funciones
 	$scope.editarDatosVehiculo = function(datosVehiculo) {
 		console.log("init editarDatosVehiculo")
 		
-		console.log("datos alertas enviadas semovi respuesta: " + JSON.stringify(datosVehiculo, null, '\t'));
+		//console.log("datos alertas enviadas semovi respuesta: " + JSON.stringify(datosVehiculo, null, '\t'));
 		
 		$rootScope.datosVehiculoEditar = datosVehiculo;		
 		
@@ -77,7 +85,12 @@ app.controller("vehiculosRegistradosCtrl", ['$scope','utilityService','Funciones
 				//console.log("datos alertas enviadas semovi respuesta: " + JSON.stringify(respuesta, null, '\t'));
 				
                 if (respuesta) {
-                	$scope.listaVehiculosRegistrados = respuesta.listaVehiculosRegistrados;                	
+                	$scope.listaVehiculosRegistrados = respuesta.listaVehiculosRegistrados;
+                	
+                	$scope.infoVehiculos.total = $scope.listaVehiculosRegistrados.length;
+                	
+                	console.log("Total vehiculos: " + $scope.infoVehiculos.total);
+                	//console.log("Total vehiculos: " + $scope.infoVehiculos.totalFaltaDatos.length);
                 }
             }
         );
@@ -123,38 +136,5 @@ app.controller("vehiculosRegistradosCtrl", ['$scope','utilityService','Funciones
 	  	});
 	}
 	*/
-	/*
- * INICIA FUNCIONALIDAD DE CLIENTE WEB SOCKET
- */
-	/*
-	'use strict';
-	
-	var stompClient = null;
-	
-	function connect() {
-        var socket = new SockJS('/ws');
-        stompClient = Stomp.over(socket);
-
-        stompClient.connect({}, onConnected, onError);
-	}
-	
-	function onConnected() {
-	    stompClient.subscribe('/topic/public', onMessageReceived);
-	}
-
-	function onError(error) {
-		alert("No se ha podido conectart al servidor de websocket. Por favor, recargue la pagina para intentar nuevamente!");
-	}
-
-	function onMessageReceived(payload) {
- 	    var message = JSON.parse(payload.body);
- 	    alert(message.content + " Se encontraron alertas nuevas!!");
-	    location.reload();
-	    
-	}
-	*/
-	/*
-	 * TERMINA FUNCIONALIDAD DE CLIENTE WEB SOCKET
-	 */
 	
 }]);

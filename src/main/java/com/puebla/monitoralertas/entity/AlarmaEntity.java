@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name="alarma", schema="quartz_demo")
+@Table(name="alarma", schema="db_monitor")
 public class AlarmaEntity {
 	
 	@Id

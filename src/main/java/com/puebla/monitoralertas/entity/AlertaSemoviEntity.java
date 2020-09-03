@@ -16,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name="alertas_semovi", schema="quartz_demo")
+@Table(name="alertas_semovi", schema="db_monitor")
 public class AlertaSemoviEntity {
 	
 	@Id

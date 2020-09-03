@@ -105,12 +105,12 @@ var app = angular.module("fonacotApp", [ "ngRoute", "ngSanitize", "ngMaterial",
 
 app.config([ '$routeProvider', '$compileProvider',
 	function($routeProvider, $compileProvider) {
-				$compileProvider.debugInfoEnabled(false);
+			$compileProvider.debugInfoEnabled(true);
 	
-    	$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|javascript|local|data|chrome-extension):/);
-		$compileProvider.debugInfoEnabled(false);
-		$compileProvider.commentDirectivesEnabled(false);
-		$compileProvider.cssClassDirectivesEnabled(false);
+    		$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|javascript|local|data|chrome-extension):/);
+			$logProvider.debugEnabled(true);
+			$compileProvider.commentDirectivesEnabled(false);
+			$compileProvider.cssClassDirectivesEnabled(false);
 		
 			$routeProvider.when("/", {
 				templateUrl : "views/indexView.jsp",
@@ -474,7 +474,8 @@ app.service('FuncionesService',['$http','$q','$rootScope', function($http, $q, $
 				$rootScope.loading = false;
 				var respuesta = response.data;
 
-				console.log("RESPONSE: " + JSON.stringify(response, null, '\t'));
+				//console.log("RESPONSE: " + JSON.stringify(response, null, '\t'));
+				console.log("Peticion POST....");
 
 				if ($rootScope.validaMensajeFatal(respuesta)) {
 					defered.resolve(respuesta);

@@ -14,7 +14,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "DATOS_VEHICULO", schema = "QUARTZ_DEMO")
+@Table(name = "DATOS_VEHICULO", schema = "db_monitor")
 @DynamicUpdate(true)
 @Getter
 @Setter

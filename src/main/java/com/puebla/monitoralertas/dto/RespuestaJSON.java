@@ -4,9 +4,11 @@ import org.apache.logging.log4j.message.MessageFormatMessage;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class RespuestaJSON {
 	protected int respuestaCode = 0;
 	protected String descripcionCode = "";

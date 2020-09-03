@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.5.48, for Win32 (x86)
 --
--- Host: localhost    Database: quartz_demo
+-- Host: localhost    Database: db_monitor
 -- ------------------------------------------------------
 -- Server version	5.5.48
 

@@ -21,7 +21,7 @@ git clone https://github.com/callicoder/spring-boot-mysql-rest-api-tutorial.git
 **2. Create MySQL database**
 
 ```bash
-create database quartz_demo
+create database db_monitor
 ```
 
 **3. Change MySQL username and password as per your MySQL installation**
