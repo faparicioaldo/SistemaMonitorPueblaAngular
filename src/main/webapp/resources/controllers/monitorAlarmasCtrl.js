@@ -5,13 +5,13 @@ app.controller("monitorAlarmasCtrl", ['$scope','FuncionesService', '$location', 
 
 	$scope.init = function() {
 		console.log("init monitorAlarmasCtrl")
-		cargaAlertasEnviadasSemovi();
+		getPannicButtonAlerts();
 	}
 	
-	function cargaAlertasEnviadasSemovi() {
+	function getPannicButtonAlerts() {
 		console.log('Cargando alertas enviadas a semovi....');
 
-        FuncionesService.POST("/MonitorAlertasPuebla/cargaAlertasEnviadasSemovi").then(
+        FuncionesService.POST("/MonitorAlertasPuebla/getPannicButtonAlerts").then(
             function(respuesta) {
 				//console.log("datos alertas enviadas semovi respuesta: " + JSON.stringify(respuesta, null, '\t'));
 				

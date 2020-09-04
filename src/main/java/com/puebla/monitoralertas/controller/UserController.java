@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.puebla.monitoralertas.dto.DatosAlertaEnviadasDTO;
 import com.puebla.monitoralertas.entity.User;
-import com.puebla.monitoralertas.repository.AlarmaRepository;
 import com.puebla.monitoralertas.repository.AlertaSemoviRepository;
 import com.puebla.monitoralertas.service.SecurityService;
 import com.puebla.monitoralertas.service.UserService;
@@ -30,9 +29,6 @@ public class UserController {
     @Autowired
     private UserValidator userValidator;
     
-	@Autowired
-	private AlarmaRepository alarmaRepository;
-
 	@Autowired
 	private AlertaSemoviRepository alertaSemoviRepository;	
 	

@@ -5,9 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.puebla.monitoralertas.entity.AlarmaEntity;
 import com.puebla.monitoralertas.entity.DatosVehiculoEntity;
-import com.puebla.monitoralertas.repository.AlarmaRepository;
 import com.puebla.monitoralertas.repository.DatosVehiculoRepository;
 import com.puebla.monitoralertas.service.DatosVehiculoService;
 
@@ -16,9 +14,6 @@ public class DatosVehiculoServiceImpl implements DatosVehiculoService {
 	
 	@Autowired
 	private DatosVehiculoRepository datosVehiculoRepository;
-
-	@Autowired
-	private AlarmaRepository alarmaRepository;
 
 	@Override
 	public DatosVehiculoEntity obtenerDatosVehiculo(String idDispositivo) {
@@ -35,8 +30,4 @@ public class DatosVehiculoServiceImpl implements DatosVehiculoService {
 		datosVehiculoRepository.save(datosVehiculo);
 	}
 
-	@Override
-	public void guardaDatosAlarma(AlarmaEntity datosAlarma) {
-		alarmaRepository.save(datosAlarma);
-	}
 }

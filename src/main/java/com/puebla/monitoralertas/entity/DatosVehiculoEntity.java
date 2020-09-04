@@ -45,5 +45,6 @@ public class DatosVehiculoEntity implements Serializable {
 	private String concesion;	
 	@Column(name="URL_CAMERA")
 	private String urlcamera;
+	private String estatus;
 
 }

@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import feign.auth.BasicAuthRequestInterceptor;
 
 @Configuration
-public class FeignClientConfig {
+public class SemoviFeignClientConfig {
 	
 	@Value("${semovi.username}")
 	String semoviUsername;

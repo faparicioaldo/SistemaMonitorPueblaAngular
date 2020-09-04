@@ -3,8 +3,11 @@ package com.puebla.monitoralertas.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.puebla.monitoralertas.entity.AlertaSemoviEntity;
 
@@ -45,16 +48,25 @@ public interface AlertaSemoviRepository extends JpaRepository<AlertaSemoviEntity
 			, nativeQuery=true)
 	public List<Object[]> consultaAlertasEnviadasSemovi();
 	
+	
+	@Query(value=
+			"select " 
+				+ "a.ceiba_alarmid "
+		    + "from "
+				+ "db_monitor.alertas_semovi a "
+			, nativeQuery=true)
+	public List<String> consultaListaIdAlertasCeiba();
+
 	public List<AlertaSemoviEntity> findTop15ByOrderByIdalertaDesc();
 
 	public List<AlertaSemoviEntity> findByIdalertaAndIddispositivo(Integer alarmaid, String deviceid);
 
 	public List<AlertaSemoviEntity> findByIddispositivo(String deviceid);
 
-//	@Transactional
-//	@Modifying(clearAutomatically = true)
-//	@Query("UPDATE AlertaSemoviEntity c SET c.estatus = :status WHERE c.alarmaid = :alarmaid")
-//	int updateAlarmaEstatusByAlarmaid(@Param("alarmaid") Integer alarmaid, @Param("status") String status);
+	@Transactional
+	@Modifying(clearAutomatically = true)
+	@Query("UPDATE AlertaSemoviEntity c SET c.estatus = :status WHERE c.alarmaid = :alarmaid")
+	int updateAlarmaEstatusByAlarmaid(@Param("alarmaid") Integer alarmaid, @Param("status") String status);
 
 //	@Transactional
 //	@Modifying(clearAutomatically = true)

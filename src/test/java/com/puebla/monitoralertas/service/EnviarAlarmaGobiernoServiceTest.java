@@ -15,7 +15,7 @@ public class EnviarAlarmaGobiernoServiceTest {
 	
 	@Test
 	public void test() {
-		enviaAlarmasSemovi.enviarAlarmaGobierno();
+		enviaAlarmasSemovi.actualizarConAlertasCeiba();
 //		enviaAlarmasSemovi.enviarAlarmaGobierno();
 //		enviaAlarmasSemovi.enviarAlarmaGobierno();
 //		enviaAlarmasSemovi.enviarAlarmaGobierno();

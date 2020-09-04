@@ -2,8 +2,9 @@ package com.puebla.monitoralertas.service;
 
 public interface EnviarAlarmaGobiernoService {
 
-	public void enviarAlarmaGobierno();
-	public void obtenerListaVehiculosCeiba2();
+	public void actualizarConAlertasCeiba();
 	public void enviarGPSs();
+	public void enviarAlertaSemovi(Integer idAlerta);
+	public void descartarAlertaSemovi(Integer idAlerta);
 	
 }

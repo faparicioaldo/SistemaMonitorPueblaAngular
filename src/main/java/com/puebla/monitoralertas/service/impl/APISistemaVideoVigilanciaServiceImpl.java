@@ -1,6 +1,5 @@
 package com.puebla.monitoralertas.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,10 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.puebla.monitoralertas.config.GlobalSession;
-import com.puebla.monitoralertas.entity.AlertaCeibaEntity;
 import com.puebla.monitoralertas.helper.Ceiba2ArmaURLHelper;
 import com.puebla.monitoralertas.helper.ClientHttpHelper;
-import com.puebla.monitoralertas.json.pojo.Ceiba2DeviceAlarmResponseDTO;
 import com.puebla.monitoralertas.json.pojo.Ceiba2DeviceTerIdPojo;
 import com.puebla.monitoralertas.json.pojo.Ceiba2DevicesAlarmRequestDTO;
 import com.puebla.monitoralertas.json.pojo.Ceiba2DevicesAlarmResponseDTO;
@@ -19,7 +16,7 @@ import com.puebla.monitoralertas.json.pojo.Ceiba2DevicesGpsLastRequestPojo;
 import com.puebla.monitoralertas.json.pojo.Ceiba2DevicesGpsLastResponsePojo;
 import com.puebla.monitoralertas.json.pojo.Ceiba2DevicesPojo;
 import com.puebla.monitoralertas.json.pojo.Ceiba2KeyPojo;
-import com.puebla.monitoralertas.repository.AlertaCeibaRepository;
+import com.puebla.monitoralertas.repository.AlertaSemoviRepository;
 import com.puebla.monitoralertas.service.APISistemaVideoVigilanciaService;
 import com.puebla.monitoralertas.service.VideoFrameService;
 
@@ -33,10 +30,10 @@ public class APISistemaVideoVigilanciaServiceImpl implements APISistemaVideoVigi
 	private GlobalSession session;
 	
 	@Autowired
-	private Ceiba2ArmaURLHelper ceiba2ArmaUrlHelper;
-
+	private AlertaSemoviRepository alertasSemoviRepository;
+	
 	@Autowired
-	private AlertaCeibaRepository alertaRepository;
+	private Ceiba2ArmaURLHelper ceiba2ArmaUrlHelper;
 
 	@Autowired
 	private ClientHttpHelper httpClient;
@@ -170,13 +167,10 @@ public class APISistemaVideoVigilanciaServiceImpl implements APISistemaVideoVigi
 		String url = null;
 		Ceiba2DevicesAlarmRequestDTO request = null;
 		Ceiba2DevicesAlarmResponseDTO response = null;
-		Ceiba2DevicesAlarmResponseDTO responseDepurado = null;
 		String deviceGpsLastJson = "";
-		List<AlertaCeibaEntity> alertasGuardadas = null;
 		ObjectMapper mapper = null;
 		
 		try {
-			responseDepurado = new Ceiba2DevicesAlarmResponseDTO();
 			mapper = new ObjectMapper();
 
 			url = ceiba2ArmaUrlHelper.getUrlDevicesAlarmInfo();
@@ -189,59 +183,13 @@ public class APISistemaVideoVigilanciaServiceImpl implements APISistemaVideoVigi
 			deviceGpsLastJson = httpClient.peticionHttpPost(url, request);
 
 			response = mapper.readValue(deviceGpsLastJson, Ceiba2DevicesAlarmResponseDTO.class);
-
-			if(response != null && response.getData()!=null&& response.getData().size() > 0) {
-				AlertaCeibaEntity alertaEntity= new AlertaCeibaEntity();
-
-				try {
-					alertasGuardadas = alertaRepository.findAll();
-				}catch(Exception e) {
-					log.error("Error al obtener aletas de base ALERTAS_CEIBA", e);
-				}
-				responseDepurado.setData(new ArrayList<Ceiba2DeviceAlarmResponseDTO>());
-				for(Ceiba2DeviceAlarmResponseDTO alarma : response.getData()) {
-					try {
-						/*
-						 * Valida si la alerta ya reporto previamente
-						 * */
-						boolean existeAlerta = false;
-						if(alertasGuardadas != null && alertasGuardadas.size() > 0) {
-							for(AlertaCeibaEntity alertaEnBase : alertasGuardadas) {
-								if(alertaEnBase.getAlarmid().equals(alarma.getAlarmid())) {
-									existeAlerta = true;
-//									log.warn("ALERTA YA SE ENVIO PREVIAMENTE: " + alertaEnBase.getAlarmid());
-									break;
-								}
-							}
-							if(existeAlerta)
-								continue;
-						}
-
-						/*
-						 * Si la alerta no se ha reposrtado previamente
-						 * Se ingresa a la base
-						 * */
-						alertaEntity.setAlarmid(alarma.getAlarmid());
-						alertaEntity.setTerid(alarma.getTerid());
-						alertaEntity.setType(alarma.getType());
-						
-						alertaRepository.save(alertaEntity);	
-						log.info("ALERTA NUEVA ENCONTRADA: " + alarma.getAlarmid() + " - SE AGREGA A TABLA: ALERTAS_CEIBA. ");
-						
-						responseDepurado.getData().add(alarma);
-
-					}catch(Exception e) {
-						log.error("Error al guardar alerta en tabla: ALERTAS_CEIBA ", e);
-					}
-				}
-			}
 			
 		} catch (Exception e) {
 			log.error("Error al OBTENER alarmas de ceiba2, json result: " + deviceGpsLastJson, e);
 		}
 
 
-		return responseDepurado;
+		return response;
 	}
 
 }

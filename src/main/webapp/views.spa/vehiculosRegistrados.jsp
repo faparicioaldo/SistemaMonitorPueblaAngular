@@ -15,8 +15,8 @@
 					<div>	
 						<div class="row">
 							<div class="col">
-								<span class="float-right">Total Vehiculos: {{infoVehiculos.total}}</span><br/>
-								<span class="float-right">Total Vehiculos Falta Datos: {{infoVehiculos.totalFaltaDatos}}</span>
+								<span class="pull-right">Total Vehiculos: {{infoVehiculos.total}}</span><br/>
+								<span class="pull-right">Total Vehiculos Falta Datos: {{infoVehiculos.totalFaltaDatos}}</span>
 							</div>
 						</div>
 					</div>
@@ -28,7 +28,7 @@
 					            <label 
 					            class="form-control" 
 					            >Search</label>
-					            <input type="text" ng-model="search" class="form-control" oninput="this.value = this.value.toUpperCase()" placeholder="Search">
+					            <input type="text" ng-model="search" class="form-control" placeholder="Search">
 					        </div>
 					    </form>
 					</div>
@@ -89,6 +89,14 @@
 				    	            	</span>
 							    	</th>
 							    	
+							    	<th ng-click="sort('faltanDatos')">
+							    		<strong>FALTAN DATOS</strong>
+				    	            	<span class="glyphicon sort-icon" 
+				    	            		  ng-show="sortKey=='faltanDatos'" 
+				    	            		  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
+				    	            	</span>
+							    	</th>
+
 							    	<th></th>
 							    	<th></th>
 							  	</tr>
@@ -103,6 +111,7 @@
 							    	<td>{{ x.imei }}</td>
 							    	<td>{{ x.municipio }}</td>
 				 					<td>{{ x.concesion}}</td> 
+				 					<td>{{ faltanDatos(x) }}</td> 
 	
 							    	<td>						    
 							    		<a href="{{x.urlcamera}}" target="_blank" class="btn btn-primary">CAMARAS</a>

@@ -114,31 +114,6 @@ app.config([ '$routeProvider', '$compileProvider',
 			$routeProvider.when("/", {
 				templateUrl : "views/indexView.jsp",
 				controller : "indexCtrl"
-					
-			}).when("/datosGeneralesTrabajador", {
-				templateUrl : "/PortalAnalistasAfiliacion/views/cliente/datosGeneralesTrabajadorView.jsp",
-				controller : "datosGeneralesTrabajadorCtrl"
-			}).when("/datosLaborales", {
-				templateUrl : "/PortalAnalistasAfiliacion/views/cliente/datosLaboralesView.jsp",
-				controller : "datosLaboralesCtrl"
-			}).when("/domicilioTrabajador", {
-				templateUrl : "/PortalAnalistasAfiliacion/views/cliente/domicilioTrabajadorView.jsp",
-				controller : "domicilioTrabajadorCtrl"
-			}).when("/otrosDatos", {
-				templateUrl : "/PortalAnalistasAfiliacion/views/cliente/otrosDatosView.jsp",
-				controller : "otrosDatosCtrl"
-			}).when("/datosConyuge", {
-				templateUrl : "/PortalAnalistasAfiliacion/views/cliente/datosConyugeView.jsp",
-				controller : "datosConyugeCtrl"
-			}).when("/datosReferencia1", {
-				templateUrl : "/PortalAnalistasAfiliacion/views/cliente/datosReferencia1View.jsp",
-				controller : "datosReferencia1Ctrl"
-			}).when("/datosReferencia2", {
-				templateUrl : "/PortalAnalistasAfiliacion/views/cliente/datosReferencia2View.jsp",
-				controller : "datosReferencia2Ctrl"
-			}).when("/documentosGeneralesTrabajador", {
-				templateUrl : "/PortalAnalistasAfiliacion/views/cliente/documentosGeneralesTrabajadorView.jsp",
-				controller : "documentosGeneralesTrabajadorCtrl"
 
 			}).when("/monitorAlarmas", {
 				templateUrl : "/MonitorAlertasPuebla/views.spa/monitorAlarmas.jsp",

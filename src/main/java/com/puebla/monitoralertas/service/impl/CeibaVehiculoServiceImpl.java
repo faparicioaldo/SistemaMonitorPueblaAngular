@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.puebla.monitoralertas.dto.SemoviDelRequestDTO;
 import com.puebla.monitoralertas.entity.DatosVehiculoEntity;
+import com.puebla.monitoralertas.feign.client.SemoviDelFeignClient;
 import com.puebla.monitoralertas.json.pojo.Ceiba2DevicesPojo;
 import com.puebla.monitoralertas.json.pojo.Ceiba2KeyPojo;
 import com.puebla.monitoralertas.json.pojo.DataDevicePojo;
@@ -30,6 +32,9 @@ public class CeibaVehiculoServiceImpl implements CeibaVehiculoService {
 
 	@Autowired
 	private VideoFrameService videoFrameService;
+	
+	@Autowired
+	private SemoviDelFeignClient semoviDelFeignClient; 
 	
 	/**
 	 * Actualiza la lista de vehiculos de CEIBA2 en la base de monitor, Tambien consulta llave necesaria
@@ -54,17 +59,40 @@ public class CeibaVehiculoServiceImpl implements CeibaVehiculoService {
 
 			// Actualiza vehiculos en tabla datos_vehiculo
 			for (DataDevicePojo vehiculoCeiba : vehicles.getData()) {
+				
 				String idDispositivoCeiba = vehiculoCeiba.getDeviceid();					
 				Optional<DatosVehiculoEntity> vehiculoEncontrado = datosVehiculoRepository.findById(idDispositivoCeiba);
 				vehiculo = null;
 				
+				if(vehiculoCeiba.getGroupid().equals("4")) { // SIN ASIGNAR
+					
+				}
+				
 				// Si el vehiculo no se encuentra en la base lo crea, de lo contrario lo actualiza
 				if(vehiculoEncontrado == null || !vehiculoEncontrado.isPresent() || vehiculoEncontrado.get() == null || vehiculoEncontrado.get().getIddispositivo() == null) {
+
+					//en caso de q dispositivo no este asignado no lo procesa
+					if(vehiculoCeiba.getGroupid().equals("4")) { // SIN ASIGNAR
+						continue;
+					}
+
 					vehiculo = new DatosVehiculoEntity();
 					//Datos que se agregan solo si es nuevo registro
 					vehiculo.setIddispositivo(idDispositivoCeiba);
 					vehiculo.setFechacaptura(new Date());
+					vehiculo.setEstatus("FALTAN_DATOS");
 				}else {
+					
+					//En caso de que dispositivo ya no este asignado los elimina de semovi y base
+					if(vehiculoCeiba.getGroupid().equals("4")) { // SIN ASIGNAR
+						SemoviDelRequestDTO request = new SemoviDelRequestDTO();
+						request.setId(vehiculoCeiba.getDeviceid());
+						semoviDelFeignClient.del(request);
+						
+						datosVehiculoRepository.deleteById(vehiculoCeiba.getDeviceid());
+						continue;
+					}
+
 					vehiculo = vehiculoEncontrado.get();
 				}
 				
@@ -78,5 +106,7 @@ public class CeibaVehiculoServiceImpl implements CeibaVehiculoService {
 			log.error("Ocurrio un problema al actualizar vehiculos de ceiba a monitor", e);
 		}
 	}
+	
+
 
 }

@@ -16,7 +16,7 @@ import lombok.ToString;
 public class Ceiba2DevicesAlarmResponseDTO {
 
 	@JsonProperty("errorcode")
-	private String errorcode;
+	private Integer errorcode;
 	@JsonProperty("data")
 	private List<Ceiba2DeviceAlarmResponseDTO> data;
 

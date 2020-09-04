@@ -1,8 +1,5 @@
 package com.puebla.monitoralertas.helper;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.puebla.monitoralertas.dto.SemoviRequestDTO;
 import com.puebla.monitoralertas.json.pojo.Ceiba2DevicesPojo;
 import com.puebla.monitoralertas.json.pojo.Ceiba2KeyPojo;
 import com.puebla.monitoralertas.json.pojo.DataDevicePojo;
@@ -21,9 +17,6 @@ import com.puebla.monitoralertas.service.APISistemaVideoVigilanciaService;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class GeneraCadenaPeticionHelperTest {
-
-	@Autowired
-	GeneraCadenaPeticionHelper generaCadenaPeticion;
 
 	@Autowired
 	private APISistemaVideoVigilanciaService apiCeiba2;
