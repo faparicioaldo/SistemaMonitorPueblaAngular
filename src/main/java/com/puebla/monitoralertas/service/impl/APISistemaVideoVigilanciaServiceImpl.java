@@ -57,7 +57,7 @@ public class APISistemaVideoVigilanciaServiceImpl implements APISistemaVideoVigi
 		try {
 			log.info("Obteniendo token para acceder a API ceiba...");
 			//Valida si el token se perdio o caduco
-			if(session.getKeyCeiba2() == null || session.getKeyCeiba2().trim().equals("")) {
+			if(session.getKeyCeiba2() == null) {
 				log.info("Solicitando token a ceiba... ");
 				//Solicita un nuevo token
 				url = ceiba2ArmaUrlHelper.getUrlServiceKey();

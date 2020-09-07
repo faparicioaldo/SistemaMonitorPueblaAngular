@@ -37,7 +37,11 @@
 	<script	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.js"></script>
 	<script	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-aria.js"></script>
 	<script	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-messages.js"></script>
-	
+<%-- 	<script type="application/javascript" src="<%=request.getContextPath()%>/js/angular-websocket.js"></script> --%>
+	<script	src="https://cdn.rawgit.com/AngularClass/angular-websocket/v2.0.0/dist/angular-websocket.js"></script>
+<!-- 	<script	src="https://cdn.rawgit.com/AngularClass/angular-websocket/v2.0.0/dist/angular-websocket.min.js"></script> -->
+
+
 	<!-- Angular Material Library -->
 	<script	src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.js"></script>
 
@@ -82,7 +86,7 @@
 
 </head>
 <body onload="connect();" ng-app="fonacotApp" ng-controller="appController" ng-init="init()" ng-strict-di>
-
+<!-- onload="connect();" -->
 	<br/><br/>
 	
 	<div class="container">
@@ -127,7 +131,7 @@
 
 				<li ng-class="isTabActive(0)">
 					<a
-						ng-click="redirect('monitorAlarmas')"
+						ng-click="redirect('alertasBtnPanico')"
 						style="font-weight: bold; align-content: center">
 						{{tabs[0]}}
 					</a>
@@ -141,7 +145,7 @@
 				</li>
 				<li ng-class="isTabActive(2)">
 					<a
-						ng-click="redirect('domicilioTrabajador')"
+						ng-click="redirect('monitor')"
 						style="font-weight: bold; align-content: center">
 						{{tabs[2]}}
 					</a>
@@ -178,12 +182,8 @@
 	</script>
 
 	<modal-editar-vehiculo></modal-editar-vehiculo>
-	<modal-buscadorct></modal-buscadorct>
-	<modal-buscadorcp cp="datosPreafiliacion.codPostal"></modal-buscadorcp>
 	<loading></loading>
 	<modal-mensaje></modal-mensaje>
-	<modal-mensajepdf></modal-mensajepdf>
-	<modal-terminar-preafiliacion></modal-terminar-preafiliacion>
 
 
 	<!-- JS -->
@@ -214,17 +214,9 @@
 	<script type="application/javascript" src="<%=request.getContextPath()%>/controllers/components.js"></script>
 	<script type="application/javascript" src="<%=request.getContextPath()%>/controllers/CommonsCtrl.js"></script>
 
-	<script type="application/javascript" src="<%=request.getContextPath()%>/controllers/cliente/datosGeneralesTrabajadorCtrl.js"></script>
-	<script type="application/javascript" src="<%=request.getContextPath()%>/controllers/cliente/datosLaboralesCtrl.js"></script>
-	<script type="application/javascript" src="<%=request.getContextPath()%>/controllers/cliente/domicilioTrabajadorCtrl.js"></script>
-	<script type="application/javascript" src="<%=request.getContextPath()%>/controllers/cliente/otrosDatosCtrl.js"></script>
-	<script type="application/javascript" src="<%=request.getContextPath()%>/controllers/cliente/datosConyugeCtrl.js"></script>
-	<script type="application/javascript" src="<%=request.getContextPath()%>/controllers/cliente/datosReferencia1Ctrl.js"></script>
-	<script type="application/javascript" src="<%=request.getContextPath()%>/controllers/cliente/datosReferencia2Ctrl.js"></script>
-	<script type="application/javascript" src="<%=request.getContextPath()%>/controllers/cliente/documentosGeneralesTrabajadorCtrl.js"></script>
-
-	<script type="application/javascript" src="<%=request.getContextPath()%>/controllers/monitorAlarmasCtrl.js"></script>
+	<script type="application/javascript" src="<%=request.getContextPath()%>/controllers/alertasBtnPanicoCtrl.js"></script>
 	<script type="application/javascript" src="<%=request.getContextPath()%>/controllers/vehiculosRegistradosCtrl.js"></script>
+	<script type="application/javascript" src="<%=request.getContextPath()%>/controllers/monitorCtrl.js"></script>
 
 </body>
 </html>

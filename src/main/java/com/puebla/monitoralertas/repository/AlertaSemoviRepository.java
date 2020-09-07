@@ -57,6 +57,16 @@ public interface AlertaSemoviRepository extends JpaRepository<AlertaSemoviEntity
 			, nativeQuery=true)
 	public List<String> consultaListaIdAlertasCeiba();
 
+	@Query(value=
+			"select " 
+				+ "a.semovi_estatus "
+		    + "from "
+				+ "db_monitor.alertas_semovi a "
+		    + "where "
+				+	"a.id_alerta =:idalerta "
+			, nativeQuery=true)
+	public List<String> consultaSemoviEstatusByCeibaAlarmid(@Param("idalerta") Integer idalerta);
+	
 	public List<AlertaSemoviEntity> findTop15ByOrderByIdalertaDesc();
 
 	public List<AlertaSemoviEntity> findByIdalertaAndIddispositivo(Integer alarmaid, String deviceid);
@@ -65,8 +75,8 @@ public interface AlertaSemoviRepository extends JpaRepository<AlertaSemoviEntity
 
 	@Transactional
 	@Modifying(clearAutomatically = true)
-	@Query("UPDATE AlertaSemoviEntity c SET c.estatus = :status WHERE c.alarmaid = :alarmaid")
-	int updateAlarmaEstatusByAlarmaid(@Param("alarmaid") Integer alarmaid, @Param("status") String status);
+	@Query(value="UPDATE alertas_Semovi c SET c.semovi_estatus =:estatus, c.semovi_mensaje =:mensaje WHERE c.id_alerta =:idalerta", nativeQuery=true)
+	public int updateAlarmaEstatusByAlarmaid(@Param("idalerta") Integer idalerta, @Param("estatus") String status, @Param("mensaje") String mensaje);
 
 //	@Transactional
 //	@Modifying(clearAutomatically = true)

@@ -27,11 +27,11 @@ public class AlertaSemoviEntity {
 	@Column(name="id_dispositivo")
 	private String iddispositivo;
 	@Column(name="semovi_estatus")
-	private String semoviestatus;
+	private String semoviestatus = "";
 	@Column(name="semovi_mensaje")
-	private String semovimensaje;
+	private String semovimensaje = "";
 	@Column(name="semovi_respuesta")
-	private String semovirespuesta;
+	private String semovirespuesta = "";
 	private String latitud;
 	private String longitud;
 	private String address;

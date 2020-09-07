@@ -1,35 +1,26 @@
 package com.puebla.monitoralertas.config;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import org.springframework.stereotype.Component;
 
+import com.puebla.monitoralertas.dto.GpsCoordinatesDTO;
+
+import lombok.Getter;
+import lombok.Setter;
+
 @Component
+@Getter
+@Setter
 public class GlobalSession {
 
-	private static Integer contadorEnviarGPSs = 0;
-	private static Integer ciclosContadorGPS = 8;
-	private static String keyCeiba2;
-	
-    public String getKeyCeiba2() {
-		return keyCeiba2;
-	}
-    public void setKeyCeiba2(String key) {
-    	GlobalSession.keyCeiba2 = key;
-	}
+	private Integer contadorEnviarGPSs = 0;
+	private Integer ciclosContadorGPS = 8;
+	private String keyCeiba2;
+	private Map<String,GpsCoordinatesDTO> mapLastGps = new HashMap<>();
+	private Map<String,Set<String>> mapGpsStatus = new HashMap<>();
 
-	public Integer getContadorEnviarGPSs() {
-		return contadorEnviarGPSs;
-	}
-
-	public void setContadorEnviarGPSs(Integer contadorEnviarGPSs) {
-		GlobalSession.contadorEnviarGPSs = contadorEnviarGPSs;
-	}
-
-	public Integer getCiclosContadorGPS() {
-		return ciclosContadorGPS;
-	}
-
-	public void setCiclosContadorGPS(Integer ciclosContadorGPS) {
-		GlobalSession.ciclosContadorGPS = ciclosContadorGPS;
-	}
 	
 }

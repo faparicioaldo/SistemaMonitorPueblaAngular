@@ -20,5 +20,5 @@ public interface DatosVehiculoRepository extends JpaRepository<DatosVehiculoEnti
 	@Query(value=
 			"SELECT id_dispositivo FROM datos_vehiculo dv WHERE dv.estatus =:estatus"
 			, nativeQuery=true)
-	public List<String> consultaListaVehiculosCompletos(@Param("estatus") String estatus);
+	public List<String> consultaListaVehiculosCompletosByStatus(@Param("estatus") String estatus);
 }

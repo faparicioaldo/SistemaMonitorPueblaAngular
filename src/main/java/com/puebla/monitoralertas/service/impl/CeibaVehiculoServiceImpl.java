@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +36,9 @@ public class CeibaVehiculoServiceImpl implements CeibaVehiculoService {
 	
 	@Autowired
 	private SemoviDelFeignClient semoviDelFeignClient; 
+	
+	@Value("${monitor.video.url}")
+	private String videoPath;
 	
 	/**
 	 * Actualiza la lista de vehiculos de CEIBA2 en la base de monitor, Tambien consulta llave necesaria
@@ -98,7 +102,7 @@ public class CeibaVehiculoServiceImpl implements CeibaVehiculoService {
 				
 				// Datos de los vehiculos q se agregan si es nuevo registro o actualizacion
 				vehiculo.setFechamodificacion(new Date());
-				vehiculo.setUrlcamera(videoFrameService.getUrlFrameLiveVideo(idDispositivoCeiba));
+				vehiculo.setUrlcamera(videoPath + idDispositivoCeiba);
 
 				datosVehiculoRepository.save(vehiculo);
 			}

@@ -2,6 +2,7 @@ package com.puebla.monitoralertas.repository;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -45,6 +46,7 @@ public class AlertaSemoviRepositoryTest {
 	}
 	
 	@Test
+	@Ignore
 	public void consultaAlertasEnviadasSemoviTest() {
 		
 		try {
@@ -58,6 +60,27 @@ public class AlertaSemoviRepositoryTest {
 			System.out.println("ALERTA ENVIADA: "+alertasEnviadas.get(0)[4]);
 		}catch(Exception e) {
 			log.error("Ocuarrio un probklema: ", e);
+		}
+
+	}
+
+	@Test
+//	@Ignore
+	@Rollback(false)
+	public void updateAlarmaEstatusByAlarmaidTest() {
+		
+		try {
+			Integer alarmid = 1;
+			String newStatus = "ESTATUS_PRUEBA";
+			
+			alertaSemoviRepository.updateAlarmaEstatusByAlarmaid(alarmid, newStatus, "descripcion mensaje");
+			List<String> result = alertaSemoviRepository.consultaSemoviEstatusByCeibaAlarmid(alarmid);
+			
+			assertEquals(newStatus, result.get(0));
+			
+		}catch(Exception e) {
+			log.error("Ocuarrio un probklema: ", e);
+			fail();
 		}
 
 	}

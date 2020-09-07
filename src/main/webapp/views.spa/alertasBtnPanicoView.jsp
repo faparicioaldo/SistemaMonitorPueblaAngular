@@ -42,7 +42,7 @@
 							<thead>
 							  	<tr>
 							    	<th ng-click="sort('idAlerta')">
-							    		<strong>#</strong>
+							    		<strong>#ALERTA</strong>
 			    	                	<span class="glyphicon sort-icon" 
 			    	                		  ng-show="sortKey=='idAlerta'" 
 			    	                		  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
@@ -133,12 +133,12 @@
 	
 							    	<td>
 							    
-							    	<input type="button" ng-click="redirect(x.idAlerta)" value = "ENVIAR" class="btn btn-info"/>
+							    	<input type="button" ng-if="x.semoviMensaje != 'DESCARTADA' && x.semoviMensaje != 'OK'" ng-click="enviarAlertaSemovi(x.idAlerta)" value = "ENVIAR" class="btn btn-info"/>
 							
 							    	</td>
 							    	<td>
 							    
-							    	<input type="button" ng-click="redirect(x.idAlerta)" value = "RECHAZAR" class="btn btn-info"/>
+							    	<input type="button" ng-if="x.semoviMensaje != 'DESCARTADA' && x.semoviMensaje != 'OK'" ng-click="descartarAlertaCeiba(x.idAlerta)" value = "DESCARTAR" class="btn btn-info"/>
 							
 							    	</td>
 							  	</tr>

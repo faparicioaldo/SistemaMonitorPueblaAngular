@@ -1,0 +1,55 @@
+server:
+    port: 8080
+    servlet:
+        contextPath: /MonitorAlertasPuebla
+
+spring:
+    datasource:
+        password: cmsserverv6
+        url: jdbc:mysql://localhost:3311/db_monitor?useSSL=false
+        username: root
+    jpa:
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    mail:
+        host: smtp.gmail.com
+        password: M4ng3k10Sh4r1ng4n
+        port: 587
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+        username: faparicioaldo@gmail.com
+    messages:
+        basename: validation
+    mvc:
+        view:
+            prefix: /WEB-INF/view/
+            suffix: .jsp
+    quartz:
+        jdbc:
+            schema: classpath:org/quartz/impl/jdbcjobstore/tables_mysql_innodb.sql
+        job-store-type: jdbc
+        properties:
+            org:
+                quartz:
+                    threadPool:
+                        threadCount: 5
+
+feign:
+    url:
+        semovi:
+            del: http://semovi-puebla.webmaps.com.mx/api/2.2/del
+            list: http://semovi-puebla.webmaps.com.mx/api/2.2/list
+            load: http://semovi-puebla.webmaps.com.mx/api/2.2/load
+            send: http://semovi-puebla.webmaps.com.mx/api/2.2/send
+semovi:
+    password: 6230dbb2179423c8b05d1f8d3920ff3856e34f85
+    username: sinergia
+
+monitor:
+  video:
+    url:  http://localhost:8080/video/

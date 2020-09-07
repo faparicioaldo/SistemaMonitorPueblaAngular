@@ -1,26 +1,3 @@
-function cambiarTexto(idArchivo, idCajita){
-	var fileInput = document.getElementById(""+idArchivo+"");
-	var filename = fileInput.files[0].name;
-	$("#"+idCajita+"").val(filename);
-}
-
-function completeLeftZeroes(strValue, nNumDigits)
-{
-  if(nNumDigits <= 0 )
-    return strValue;
-  
-  if(!strValue)
-    strValue = "";
-    
-  var numDigitsLeft = nNumDigits - strValue.length;
-  
-  for(var i = 0; i < numDigitsLeft; i++)
-  {
-    strValue = '0' + strValue;
-  }
-  
-  return strValue;
-}
 
 function upperCase(value) {
 	if (value.length > 0) {
@@ -35,73 +12,11 @@ function desactivaAutocompletar() {
 	}
 }
 
-function acceptNum(evt) {
-	var nav4 = window.Event.srcElement ? true : false;
-	var key = nav4 ? evt.which : evt.keyCode;
-	if (key <= 13) {
-		return true;
-	} else if (key >= 48 && key <= 57) {
-		return true;
-	}
-	return false;
-}
-
-function validarAlfa(e) {
-	tecla = (document.all) ? e.keyCode : e.which;
-	if (tecla == 8)
-		return true;
-	patron = /^[a-zA-Z0-9.,& \u00E0-\u00FC]+$/i;
-	te = String.fromCharCode(tecla);
-	return patron.test(te);
-}
-
-function validarAlfaRazonSocial(e) {
-	tecla = (document.all) ? e.keyCode : e.which;
-	if (tecla == 8)
-		return true;
-	patron = /^[a-zA-Z0-9-.,&)( \u00E0-\u00FC]+$/i;
-	te = String.fromCharCode(tecla);
-	return patron.test(te);
-}
-
-function validarNumerico(e) {
-	teclan = (document.all) ? e.keyCode : e.which;
-	if (teclan == 8)
-		return true;
-	patronn = /[0-9]/;
-	ten = String.fromCharCode(teclan);
-	return patronn.test(ten);
-}
-
-function validarDir(e) {
-	tecla = (document.all) ? e.keyCode : e.which;
-	if (tecla == 8)
-		return true;
-	patron = /^[a-zA-Z0-9.,#&\- \u00E0-\u00FC]+$/i;
-	te = String.fromCharCode(tecla);
-	return patron.test(te);
-}
-
-function validarAlfaPuro(e) {
-	tecla = (document.all) ? e.keyCode : e.which;
-	if (tecla == 8)
-		return true;
-	patron = /^[a-zA-Z0-9&]/;
-	te = String.fromCharCode(tecla);
-	return patron.test(te);
-}
-
-function validarAlfaLatinoPuro(e) {
-	tecla = (document.all) ? e.keyCode : e.which;
-	if (tecla == 8)
-		return true;
-	patron = /^[a-zñA-ZÑ0-9&]/;
-	te = String.fromCharCode(tecla);
-	return patron.test(te);
-}
-
+'use strict'
 var app = angular.module("fonacotApp", [ "ngRoute", "ngSanitize", "ngMaterial",
-		"ngMessages", "ui.mask", "angularUtils.directives.dirPagination" ]);
+		"ngMessages", "ui.mask", "angularUtils.directives.dirPagination", "ngWebSocket"]);
+
+//"ngWebSocket"
 
 app.config([ '$routeProvider', '$compileProvider',
 	function($routeProvider, $compileProvider) {
@@ -115,19 +30,15 @@ app.config([ '$routeProvider', '$compileProvider',
 				templateUrl : "views/indexView.jsp",
 				controller : "indexCtrl"
 
-			}).when("/monitorAlarmas", {
-				templateUrl : "/MonitorAlertasPuebla/views.spa/monitorAlarmas.jsp",
-				controller : "monitorAlarmasCtrl"
+			}).when("/alertasBtnPanico", {
+				templateUrl : "/MonitorAlertasPuebla/views.spa/alertasBtnPanicoView.jsp",
+				controller : "alertasBtnPanicoCtrl"
 			}).when("/vehiculosRegistrados", {
 				templateUrl : "/MonitorAlertasPuebla/views.spa/vehiculosRegistrados.jsp",
 				controller : "vehiculosRegistradosCtrl"
-
-			}).when("/preafiliacionesPorValidar", {
-				templateUrl : "/PortalAnalistasAfiliacion/views/analista/preafiliacionesPorValidarView.jsp",
-				controller : "preafiliacionesPorValidarCtrl"
-			}).when("/preafiliacionesValidadas", {
-				templateUrl : "/PortalAnalistasAfiliacion/views/analista/preafiliacionesValidadasView.jsp",
-				controller : "preafiliacionesValidadasCtrl"
+			}).when("/monitor", {
+				templateUrl : "/MonitorAlertasPuebla/views.spa/monitorView.jsp",
+				controller : "monitorCtrl"
 			});
 	}]);
 
@@ -141,54 +52,17 @@ app.run([
 	'FuncionesService',
 	function($rootScope, $q, $interval, $sce, $timeout, $location, FuncionesService) {
 		$rootScope.fechaActual = new Date();		
-		$rootScope.datosGeneralesTrabajador = {};
-
-		$rootScope.datosConyuge = {};
-
-		$rootScope.datosRef1 = {};
-		$rootScope.datosRef2 = {};
-		$rootScope.datosLaborales = {};
-		$rootScope.otrosDatos = {};
-		
-		$rootScope.datosPreafiliacion = {};
-		$rootScope.datosComplemento = {};
-
-		$rootScope.datosDocumentos = {};
-		$rootScope.catalogos = {};
-		$rootScope.faltaCompletarCampos = true;
-
-		$rootScope.formDatosGenerales = {};
-		$rootScope.formDatosGenerales.complete = false;
-		$rootScope.formDatosLaborales = {};
-		$rootScope.formDatosLaborales.complete = false;
-		$rootScope.formDomicilioTrabajador = {};
-		$rootScope.formDomicilioTrabajador.complete = false;
-		$rootScope.formOtrosDatos = {};
-		$rootScope.formOtrosDatos.complete = false;
-		$rootScope.formDatosConyuge = {};
-		$rootScope.formDatosConyuge.complete = false;
-		$rootScope.formDatosRef1 = {};
-		$rootScope.formDatosRef1.complete = false;
-		$rootScope.formDatosRef2 = {};
-		$rootScope.formDatosRef2.complete = false;
-
-        $rootScope.datosComplemento.rutaComprobanteDomicilio = 'NO_CARGADO';
-        $rootScope.datosComplemento.rutaIdentificacionOficial = 'NO_CARGADO';
-        $rootScope.datosComplemento.rutaReciboNomina1 = 'NO_CARGADO';
-        $rootScope.datosComplemento.rutaReciboNomina2 = 'NO_CARGADO';
-        $rootScope.datosComplemento.rutaReciboNomina3 = 'NO_CARGADO';
-
         
 		$rootScope.datosVehiculoEditar = [];
 
-			$location.path('/monitorAlarmas');
+		$location.path('/alertasBtnPanico');
 			
-			$rootScope.tabs = [ 
-					"Alertas Panico",
-					"Vehiculos Registrados",
-					"Monitor",
-					"Operaciones Semovi"
-					];
+		$rootScope.tabs = [ 
+				"Alertas Panico",
+				"Vehiculos Registrados",
+				"Monitor",
+				"Operaciones Semovi"
+				];
 
 		$rootScope.isTabActive = function(number) {
 			return ($rootScope.numberTab == number) ? "active" : "";
@@ -238,35 +112,6 @@ app.run([
 			return true;
 		};
 		
-		$rootScope.modalDescargaPDF = function(respuesta) {
-			if (respuesta.respuestaCode != 0) {
-				if (respuesta.descripcionCode.length > 0) {
-					$rootScope
-						.existJQuery()
-						.then(
-							function(data) {
-								$rootScope.errores = respuesta;
-//								if (typeof respuesta.ruta != 'undefined') {
-//									$("#btnModalMensaje").attr("href","#!" + respuesta.ruta)
-//								} else {
-//									$("#btnModalMensaje").removeAttr("href");
-//								}
-								$("#mensajePDF").modal('toggle');
-							});
-					return false;
-				}
-			}
-			return true;
-		};
-		
-		$rootScope.mostrarTerminarPreafiliacion = function() {
-					$rootScope
-						.existJQuery()
-						.then(
-							function(data) {
-								$("#modalTerminarPreafiliacion").modal('toggle');
-							});
-		};
 		$rootScope.servicioNoDisponible = function(mensaje) {
 			var respuesta = {};
 			respuesta.respuestaCode = -1;
@@ -277,16 +122,6 @@ app.run([
 			$rootScope.existJQuery().then(function(data) {
 				$('[data-toggle="tooltip"]').tooltip();
 			})
-		};
-		var intento = 0;
-		$rootScope.consultarOtroCaptcha = function(actualizaObj) {
-			$rootScope.existJQuery().then(
-				function(data) {
-					intento++;
-					$("#imagenCaptcha").removeAttr("src");
-					$("#imagenCaptcha").attr("src","consultaImagenCaptcha.infonacot?intento="
-									+ (actualizaObj ? intento * -1 : intento));
-				})
 		};
 		$rootScope.$on(
 			"$locationChangeStart",
@@ -305,8 +140,6 @@ app.run([
 							function() {
 								desactivaAutocompletar();
 								$rootScope
-										.consultarOtroCaptcha();
-								$rootScope
 										.resetTooltip();
 							}, 2000);
 				}
@@ -318,42 +151,6 @@ app.run([
 				$(document).scrollTop(position);
 			});
 		};
-		$rootScope.guardaDatosPreafiliacion = function() {
-			
-				$rootScope.preafiliacionDTO = {};
-									
-				$rootScope.preafiliacionDTO.datosPreafiliacion = $rootScope.datosPreafiliacion; 
-				$rootScope.preafiliacionDTO.datosComplemento = $rootScope.datosComplemento;
-				
-				console.log("Datos enviados: " + JSON.stringify($rootScope.preafiliacionDTO, null, '\t'));
-				
-				FuncionesService.POST("/PortalTrabajadoresAfiliacion/guardaDatosPreafiliacion", $rootScope.preafiliacionDTO).then(
-		            function(respuesta) {
-		                if (respuesta) {
-		                			                	
-		        			var datosModal = {};
-		        			datosModal.respuestaCode = -1;
-		        			datosModal.descripcionCode = respuesta.cadenaBase64;
-		        			
-		        			$rootScope.modalDescargaPDF(datosModal);
-		                	
-		                }
-		            }
-		        );			
-		};
-		$rootScope.cargaCombos = function() {
-			console.log('Cargando combos....');		
-	
-	        FuncionesService.POST("/PortalTrabajadoresAfiliacion/consultaDatosCombos", $scope.consulta).then(
-	            function(respuesta) {
-	        		console.log('combos respuesta: ' + respuesta);		
-	
-	                if (respuesta) {
-	                	$scope.estados = respuesta.estados;
-	                }
-	            }
-	        );
-	    };
 	}
 ]);
 
@@ -537,27 +334,6 @@ app.service('FuncionesService',['$http','$q','$rootScope', function($http, $q, $
 
 app.factory('utilityService', ['$http','$q','$rootScope', function($http, $q, $rootScope) {
 	  return {
-			getCatalogoEstados: function() {
-				return $rootScope.catalogos;
-			},
-			getCodigoPostalSeleccionado: function() {
-			  return $rootScope.datosPreafiliacion.codPostal;
-			},
-			asignaDatosCentroTrabajo: function(ctSeleccionado) {
-				$rootScope.datosLaborales.nombreCt = ctSeleccionado.nomCompleto;
-				$rootScope.datosLaborales.numSegSocialCt = ctSeleccionado.numSegSocial;			    	
-				$rootScope.datosPreafiliacion.idClienteCt = ctSeleccionado.clienteId;
-			},
-			asignaDatosDomicilioCP: function(domicilioSeleccionado) {
-				$rootScope.datosPreafiliacion.codPostal = domicilioSeleccionado.codPostal;
-				$rootScope.datosPreafiliacion.nombreColonia = domicilioSeleccionado.nombreColonia;
-				$rootScope.datosPreafiliacion.nombreMunicipio = domicilioSeleccionado.nombreMunicipio;			    	
-				$rootScope.datosPreafiliacion.nombreEstado = domicilioSeleccionado.nombreEstado;
-				$rootScope.datosPreafiliacion.claveColonia = domicilioSeleccionado.claveColonia;
-			},
-			terminarPreafiliacion: function() {
-				$rootScope.guardaDatosPreafiliacion();
-			},
 			mensaje: 'jeje...',
 	  		getIdDispositivo: function() {
 				return this.mensaje;

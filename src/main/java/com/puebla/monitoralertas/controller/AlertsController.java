@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.puebla.monitoralertas.dto.DatosAlertaEnviadasDTO;
 import com.puebla.monitoralertas.dto.ListaDatosAlertaEnviadasSemoviDTO;
 import com.puebla.monitoralertas.dto.RespuestaJSON;
+import com.puebla.monitoralertas.dto.SemoviResponseDTO;
 import com.puebla.monitoralertas.repository.AlertaSemoviRepository;
 import com.puebla.monitoralertas.service.EnviarAlarmaGobiernoService;
 
@@ -29,7 +30,7 @@ public class AlertsController {
 	@Autowired
 	private AlertaSemoviRepository alertaSemoviRepository;	
 	
-	@RequestMapping(value = "/getPannicButtonAlerts", method = RequestMethod.POST)
+	@PostMapping("/getPannicButtonAlerts")
 	public @ResponseBody ListaDatosAlertaEnviadasSemoviDTO getPannicButtonAlerts() {
 
 		ListaDatosAlertaEnviadasSemoviDTO listaAlertasEnviadas = new ListaDatosAlertaEnviadasSemoviDTO();
@@ -59,17 +60,13 @@ public class AlertsController {
 		return listaAlertasEnviadas;
 	}
 
-	@PostMapping(
-			value = "/descartarAlarma"
-            , produces = {"application/json", "application/xml"}
-            ,  consumes = {"application/json", "application/xml"}
-			)
-	public @ResponseBody RespuestaJSON descartarAlarma(@RequestBody Integer idAlarma) {
+	@PostMapping("/descartarAlarma")
+	public @ResponseBody RespuestaJSON descartarAlarma(@RequestBody Integer idAlerta) {
 
-		log.info("DESCARTAR ALARMA: " + idAlarma);
+		log.info("DESCARTAR ALARMA: " + idAlerta);
 		RespuestaJSON response = new RespuestaJSON();
 		
-		enviarAlarmaGobiernoService.descartarAlertaSemovi(idAlarma);
+		enviarAlarmaGobiernoService.descartarAlertaSemovi(idAlerta);
 		
 		response.setRespuestaCode(200);
 		response.setDescripcionCode("Se descarto alerta correctamente");
@@ -77,20 +74,23 @@ public class AlertsController {
 		return response;
 	}
 
-	@PostMapping(
-			value = "/enviarAlertaSemovi"
-            , produces = {"application/json", "application/xml"}
-            ,  consumes = {"application/json", "application/xml"}
-			)
+	@PostMapping("/enviarAlertaSemovi")
 	public @ResponseBody RespuestaJSON enviarAlertaSemovi(@RequestBody Integer idAlerta) {
 
 		log.info("DESCARTAR ALARMA: " + idAlerta);
 		RespuestaJSON response = new RespuestaJSON();
 		
-		enviarAlarmaGobiernoService.enviarAlertaSemovi(idAlerta);
+		SemoviResponseDTO semoviResponse = enviarAlarmaGobiernoService.enviarAlertaSemovi(idAlerta);
 		
-		response.setRespuestaCode(200);
-		response.setDescripcionCode("Se descarto alerta correctamente");
+		if(semoviResponse.getStatus() && semoviResponse.getMsg().equals("OK")) {
+			response.setRespuestaCode(200);
+			response.setDescripcionCode("El envio de la alerta "+ idAlerta +" a semovi exitoso");			
+		}else{
+			response.setRespuestaCode(500);
+			response.setDescripcionCode("El envio de la alerta "+ idAlerta +" a semovi fallo, semovi dice: " + semoviResponse.getMsg());			
+		}
+		
+		
 		
 		return response;
 	}

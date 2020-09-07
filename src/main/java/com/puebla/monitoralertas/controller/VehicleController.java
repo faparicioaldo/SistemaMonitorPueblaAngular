@@ -36,6 +36,7 @@ public class VehicleController {
 
 	@RequestMapping(value = "/guardarDatosVehiculo", method = RequestMethod.POST)
 	public @ResponseBody RespuestaJSON guardarDatosVehiculo(@RequestBody DatosVehiculoEntity datosVehiculo) {
+		datosVehiculo.setEstatus("DATOS_COMPLETOS");
 		datosVehiculoService.guardaDatosVehiculo(datosVehiculo);
 		return new RespuestaJSON();
 	}

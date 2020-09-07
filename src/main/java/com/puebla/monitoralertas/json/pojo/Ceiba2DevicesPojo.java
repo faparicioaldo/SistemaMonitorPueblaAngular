@@ -17,5 +17,5 @@ public class Ceiba2DevicesPojo {
 	@JsonProperty("data")
 	public List<DataDevicePojo> data;
 	@JsonProperty("errorcode")
-	public String errorcode;
+	public int errorcode;
 }

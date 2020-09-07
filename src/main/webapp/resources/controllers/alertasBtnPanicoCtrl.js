@@ -1,10 +1,10 @@
-app.controller("monitorAlarmasCtrl", ['$scope','FuncionesService', '$location', '$rootScope', function($scope, FuncionesService, $location, $rootScope) {
+app.controller("alertasBtnPanicoCtrl", ['$scope','FuncionesService', '$location', '$rootScope', function($scope, FuncionesService, $location, $rootScope) {
 	$rootScope.numberTab = 0;
 	
 	$scope.listaAlertasEnviadasSemovi = [];
 
 	$scope.init = function() {
-		console.log("init monitorAlarmasCtrl")
+		console.log("init alertasBtnPanicoCtrl")
 		getPannicButtonAlerts();
 	}
 	
@@ -22,28 +22,31 @@ app.controller("monitorAlarmasCtrl", ['$scope','FuncionesService', '$location', 
         );
     };
     
-	/*
-	$scope.enviarAlarmaPOST = function(idAlarma, deviceid){
-		var formData = {
-	        idAlarma : idAlarma,
-	        deviceid : deviceid
-	    }
-	    alert("Enviando alarma....");
-	    $.ajax({
-		    type : "POST",
-		    contentType : "application/json",
-		    url : "/enviarAlarma",
-		    data : JSON.stringify(formData),
-		    dataType : 'json',
-		    success : function(result) {
-		    	if(result.idAlarma == -1 )
-			        alert('Atencion: No ha capturado datos del vehiculo, presione la opcion Ir a Datos del Vehiculo.');
-		    	else
-		    		alert('Alarma ' + result.idAlarma + ' enviada. RESPUESTA: ' + result.deviceid);
-	    		location.reload();
-		    }
-	  	});
+	$scope.enviarAlertaSemovi = function(idAlerta){
+		console.log("Enviando alerta: " + idAlerta);
+		FuncionesService.POST("/MonitorAlertasPuebla/enviarAlertaSemovi", idAlerta).then(
+            function(respuesta) {
+				console.log("respuesta envio de alerta: " + JSON.stringify(respuesta, null, '\t'));
+				
+                if (respuesta) {
+                }
+            }
+        );
 	}
+
+	$scope.descartarAlertaCeiba = function(idAlerta){
+		console.log("Descartando alerta: " + idAlerta);
+		FuncionesService.POST("/MonitorAlertasPuebla/descartarAlarma", idAlerta).then(
+            function(respuesta) {
+				console.log("respuesta descartar alerta: " + JSON.stringify(respuesta, null, '\t'));
+				
+                if (respuesta) {
+                }
+            }
+        );
+	}
+	/*
+	
 	$scope.descartarAlarmaPOST = function(idAlarma, deviceid){
 		var formData = {
 		        idAlarma : idAlarma, 
