@@ -1,12 +1,12 @@
 server:
-    port: 8080
+    port: 8084
     servlet:
         contextPath: /MonitorAlertasPuebla
 
 spring:
     datasource:
         password: cmsserverv6
-        url: jdbc:mysql://localhost:3311/db_monitor?useSSL=false
+        url: jdbc:mysql://localhost:3311/db_monitor?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
         username: root
     jpa:
         properties:
