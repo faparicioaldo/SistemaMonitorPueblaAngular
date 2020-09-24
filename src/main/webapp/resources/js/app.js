@@ -235,16 +235,13 @@ app.service('MonitorService',['$rootScope', '$q', '$timeout', function($rootScop
        	 listener.notify("hola");
       });      
       socket.stomp.subscribe(service.VEHICLE_TOPIC, function(data) {
-      	 //console.log("RESPONSE: " + JSON.stringify(data.body, null, '\t'));
-      	 //console.log("vehicl: " + data.body);
-      	 //console.log("Esto hay" + $rootScope.listaVehiculosRegistrados);
-      	 //$rootScope.listaVehiculosRegistrados = [];
       	 var newVehicles = JSON.parse(data.body);
+      	 console.log("NUEVOS VEHICULOS ENCONTRADOS: " + JSON.stringify(newVehicles, null, '\t'));
       	 
-		 $rootScope.listaVehiculosRegistrados.unshift(newVehicles[0]);      	 
+		 $rootScope.listaVehiculosRegistrados.unshift(...newVehicles);
+		 
        	 $rootScope.message.vehicles += 1;
-       	 console.log("RES: " + newVehicles[0]);
-       	 //listener.notify("hola");
+       	 listener.notify("hola");
       });
       socket.stomp.subscribe(service.GPS_TOPIC, function(data) {
     	 $rootScope.message.gpss += 1;
