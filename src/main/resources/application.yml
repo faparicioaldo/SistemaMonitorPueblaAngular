@@ -2,6 +2,8 @@ server:
     port: 8084
     servlet:
         contextPath: /MonitorAlertasPuebla
+        session:
+          timeout:  5m
 
 spring:
     datasource:
@@ -53,3 +55,4 @@ semovi:
 monitor:
   video:
     url:  http://localhost:8080/video/
+    

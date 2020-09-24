@@ -1,5 +1,6 @@
 package com.puebla.monitoralertas.config;
 
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -8,20 +9,13 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 @Configuration
 @EnableWebSocketMessageBroker
+@ComponentScan(basePackages = "com.puebla.monitoralertas.controller")
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws")
-//        .setAllowedOrigins("*")
-//        .setHandshakeHandler(defaultHandshakeHandler())
-        .withSockJS();
-    }
-
-    @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.setApplicationDestinationPrefixes("/app");
         registry.enableSimpleBroker("/topic");   // Enables a simple in-memory broker
+        registry.setApplicationDestinationPrefixes("/app");
 
         //   Use this for enabling a Full featured broker like RabbitMQ
 
@@ -33,4 +27,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .setClientPasscode("guest");
         */
     }
+    
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/ws")
+//        .setAllowedOrigins("*")
+//        .setHandshakeHandler(defaultHandshakeHandler())
+        .withSockJS();
+    }    
 }

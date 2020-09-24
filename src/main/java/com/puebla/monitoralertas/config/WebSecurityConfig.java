@@ -25,7 +25,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-        	.csrf().disable()
+//        	.cors()
+//        	.and()
+        	.csrf()
+        	.disable()
             .authorizeRequests()
                 .antMatchers("/resources/**", "/registration").permitAll()
                 .antMatchers("/video/**").permitAll()
@@ -39,8 +42,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
             .logout()
-                .permitAll();
-        
+                .permitAll()
+//            .and()
+//            	.sessionManagement()
+//        		.maximumSessions(1)
+//        		.expiredUrl("/login?expired")
+        		;
+
     }
 
     @Bean

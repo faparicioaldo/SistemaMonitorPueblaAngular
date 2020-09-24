@@ -14,9 +14,7 @@ function desactivaAutocompletar() {
 
 'use strict'
 var app = angular.module("fonacotApp", [ "ngRoute", "ngSanitize", "ngMaterial",
-		"ngMessages", "ui.mask", "angularUtils.directives.dirPagination", "ngWebSocket"]);
-
-//"ngWebSocket"
+		"ngMessages", "ui.mask", "angularUtils.directives.dirPagination"]);
 
 app.config([ '$routeProvider', '$compileProvider',
 	function($routeProvider, $compileProvider) {
@@ -39,6 +37,9 @@ app.config([ '$routeProvider', '$compileProvider',
 			}).when("/monitor", {
 				templateUrl : "/MonitorAlertasPuebla/views.spa/monitorView.jsp",
 				controller : "monitorCtrl"
+			}).when("/historicoAlertasBtnPanico", {
+				templateUrl : "/MonitorAlertasPuebla/views.spa/historicoAlertasBtnPanicoView.jsp",
+				controller : "historicoAlertasBtnPanicoCtrl"
 			});
 	}]);
 
@@ -53,6 +54,11 @@ app.run([
 	function($rootScope, $q, $interval, $sce, $timeout, $location, FuncionesService) {
 		$rootScope.fechaActual = new Date();		
         
+        $rootScope.message = {};
+        $rootScope.message.alerts = 0;
+        $rootScope.message.vehicles = 0;
+        $rootScope.message.gpss = 0;
+        
 		$rootScope.datosVehiculoEditar = [];
 
 		$location.path('/alertasBtnPanico');
@@ -61,7 +67,7 @@ app.run([
 				"Alertas Panico",
 				"Vehiculos Registrados",
 				"Monitor",
-				"Operaciones Semovi"
+				"Historico Alertas Panico"
 				];
 
 		$rootScope.isTabActive = function(number) {
@@ -186,6 +192,67 @@ function($location, FuncionesService, $rootScope) {
 	this.obtieneDatos = function() {
 		return datos;
 	};
+}]);
+	
+//https://dimitr.im/spring-angular-sockjs	
+app.service('MonitorService',['$rootScope', '$q', '$timeout', function($rootScope, $q, $timeout) {
+
+	var service = {}; 
+
+	var socket = { client: null, stomp: null };
+    var messageIds = [];
+    
+    service.RECONNECT_TIMEOUT = 30000;
+    service.SOCKET_URL = "/MonitorAlertasPuebla/ws";
+
+    service.VEHICLE_TOPIC = "/topic/vehicle";
+    service.ALERT_TOPIC = "/topic/alert";
+    service.GPS_TOPIC = "/topic/gps";
+    
+    var reconnect = function() {
+   	  console.log('reconexion a websocket....');
+      $timeout(function() {
+        initialize();
+      }, this.RECONNECT_TIMEOUT);
+    };
+    
+    var getMessage = function(data) {    
+	  var message = JSON.parse(data), out = {};
+      out.message = message.content;
+      out.time = new Date(message.time);
+      return out;
+    };
+    
+    var startListener = function() {
+      socket.stomp.subscribe(service.ALERT_TOPIC, function(data) {
+    	 $rootScope.message.alerts += 1;
+      });      
+      socket.stomp.subscribe(service.VEHICLE_TOPIC, function(data) {
+      	//alert(1);
+      	//console.log("RESPONSE: " + JSON.stringify(data, null, '\t'));
+      	
+       	 $rootScope.message.vehicles += 1;
+      });
+      socket.stomp.subscribe(service.GPS_TOPIC, function(data) {
+    	 $rootScope.message.gpss += 1;
+      });      
+    };
+
+    var errorConexion = function() {
+   	  console.log('error conexion de websocket....');
+	  alert("Hubo un problema al conectar con el socket");
+    };
+
+    var initialize = function() {
+   	  console.log('inicializando conecion a websocket....');
+      socket.client = new SockJS(service.SOCKET_URL);
+      socket.stomp = Stomp.over(socket.client);
+      socket.stomp.connect({}, startListener, errorConexion);
+      socket.stomp.onclose = reconnect;
+    };
+    
+    initialize();
+    return service;
 }]);
 		
 app.service('FuncionesService',['$http','$q','$rootScope', function($http, $q, $rootScope) {

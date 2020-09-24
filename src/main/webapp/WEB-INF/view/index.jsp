@@ -37,56 +37,13 @@
 	<script	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.js"></script>
 	<script	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-aria.js"></script>
 	<script	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-messages.js"></script>
-<%-- 	<script type="application/javascript" src="<%=request.getContextPath()%>/js/angular-websocket.js"></script> --%>
 	<script	src="https://cdn.rawgit.com/AngularClass/angular-websocket/v2.0.0/dist/angular-websocket.js"></script>
-<!-- 	<script	src="https://cdn.rawgit.com/AngularClass/angular-websocket/v2.0.0/dist/angular-websocket.min.js"></script> -->
-
 
 	<!-- Angular Material Library -->
 	<script	src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.js"></script>
 
-
-	<script type="text/javascript">
-
-	/*
-	 * INICIA FUNCIONALIDAD DE CLIENTE WEB SOCKET
-	 */
-		
-		'use strict';
-		
-		var stompClient = null;
-		
-		function connect() {
-	        var socket = new SockJS('/MonitorAlertasPuebla/ws');
-	        stompClient = Stomp.over(socket);
-
-	        stompClient.connect({}, onConnected, onError);
-		}
-		
-		function onConnected() {
-		    stompClient.subscribe('/topic/public', onMessageReceived);
-		}
-
-		function onError(error) {
-			alert("No se ha podido conectart al servidor de websocket. Por favor, recargue la pagina para intentar nuevamente!");
-		}
-
-		function onMessageReceived(payload) {
-	 	    var message = JSON.parse(payload.body);
-	 	    alert(message.content + " Se encontraron alertas nuevas!!");
-// 		    location.reload();
-		    
-		}
-		
-		/*
-		 * TERMINA FUNCIONALIDAD DE CLIENTE WEB SOCKET
-		 */
-	
-	</script>
-
 </head>
-<body onload="connect();" ng-app="fonacotApp" ng-controller="appController" ng-init="init()" ng-strict-di>
-<!-- onload="connect();" -->
+<body ng-app="fonacotApp" ng-controller="appController" ng-init="init()" ng-strict-di>
 	<br/><br/>
 	
 	<div class="container">
@@ -99,6 +56,9 @@
 			<h6 class="pull-right">
 				Bienvenido ${pageContext.request.userPrincipal.name} | 
 				<a onclick="document.forms['logoutForm'].submit()">SALIR</a>
+				<label>MENSAJE ALERTS: {{message.alerts}}</label>
+				<label>MENSAJE VEHICLES: {{message.vehicles}}</label>
+				<label>MENSAJE GPSS: {{message.gpss}}</label>
 			</h6>
 		</c:if>
 	</div>
@@ -152,7 +112,7 @@
 				</li>					
 				<li ng-class="isTabActive(3)">
 					<a
-						ng-click="redirect('vehiculosRegistradosCeiba')"
+						ng-click="redirect('historicoAlertasBtnPanico')"
 						style="font-weight: bold; align-content: center">
 						{{tabs[3]}}
 					</a>
@@ -196,16 +156,11 @@
   	<script src="${contextPath}/resources/js/bootstrap.min.js"></script>
 <!-- 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script> -->
 	
-<!-- 	<script src="https://framework-gb.cdn.gob.mx/gobmx.js"></script> -->
 <!-- 	<script	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
 <!-- 	<script src="https://code.jquery.com/jquery-1.10.2.js"></script> -->
 	
 <%-- 	<script type="application/javascript" src="<%=request.getContextPath()%>/js/jquery.min.js"></script> --%>
 	<script type="application/javascript" src="<%=request.getContextPath()%>/js/jquery-ui-1.12.1.min.js"></script>
-<!-- 	<script	src="https://framework-gb.cdn.gob.mx/assets/scripts/jquery-ui-datepicker.js"></script> -->
-
-<!-- 	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.1/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" /> -->
-<!-- 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.1/js/fileinput.min.js"></script> -->
 
 	<script type="application/javascript" src="<%= request.getContextPath() %>/js/dirPagination.js"></script>
 
@@ -217,6 +172,7 @@
 	<script type="application/javascript" src="<%=request.getContextPath()%>/controllers/alertasBtnPanicoCtrl.js"></script>
 	<script type="application/javascript" src="<%=request.getContextPath()%>/controllers/vehiculosRegistradosCtrl.js"></script>
 	<script type="application/javascript" src="<%=request.getContextPath()%>/controllers/monitorCtrl.js"></script>
+	<script type="application/javascript" src="<%=request.getContextPath()%>/controllers/historicoAlertasBtnPanicoCtrl.js"></script>
 
 </body>
 </html>

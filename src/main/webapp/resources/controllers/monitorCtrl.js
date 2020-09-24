@@ -1,52 +1,15 @@
-app.controller("monitorCtrl", ['$scope','FuncionesService', '$location', '$rootScope', '$websocket', function($scope, FuncionesService, $location, $rootScope, $websocket) {
-	//$websocket
-	
+app.controller("monitorCtrl", 
+['$scope','FuncionesService', '$location', '$rootScope',  
+function($scope, FuncionesService, $location, $rootScope) {
 	$rootScope.numberTab = 2;
-	
+
 	$scope.listaAlertasEnviadasSemovi = [];
 	$scope.mensaje = "";
 	
 	$scope.init = function() {
+		console.log("init...");
 	}
 	
-	
-	// path to the end point is actually /app/uc/status/request
-    // unable to add end point path when connecting
-    // and don't know how to subscribe
-    
-    var ws = $websocket('ws://localhost:8080/MonitorAlertasPuebla/ws/websocket');
-
-    ws.onMessage(function(event) { 
-        console.log('message: ', event);
-    });
-
-    ws.onError(function(event) {
-        console.log("error");
-    });
-
-    ws.onClose(function(event) { 
-        console.log('connection close');
-    });
-
-    ws.onOpen(function(event) { 
-        console.log('connection open');
-    });
-
-	
-	
-	
-	$scope.enviarMensaje = function() {
-		console.log('Enviando mensaje websocket....');
-
-		// nothing happens when this call is made
-	    ws.send("message content", "/app/send/message");
-	    ws.send("/app/send/message", "message content");
-	    ws.send("message content");
-
-		console.log('Enviado.');
-
-    };
-    
 	$scope.enviarAlertaSemovi = function(idAlerta){
 		console.log("Enviando alerta: " + idAlerta);
 		FuncionesService.POST("/MonitorAlertasPuebla/enviarAlertaSemovi", idAlerta).then(

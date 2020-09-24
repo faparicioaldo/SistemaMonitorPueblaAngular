@@ -1,4 +1,4 @@
-app.controller("vehiculosRegistradosCtrl", ['$scope','utilityService','FuncionesService', '$location', '$rootScope', function($scope, utilityService, FuncionesService, $location, $rootScope) {
+app.controller("vehiculosRegistradosCtrl", ['$scope','utilityService','FuncionesService', '$location', '$rootScope', 'MonitorService', function($scope, utilityService, FuncionesService, $location, $rootScope, MonitorService) {
 	$rootScope.numberTab = 1;
 	
 	$scope.listaVehiculosRegistrados = [];
@@ -11,11 +11,14 @@ app.controller("vehiculosRegistradosCtrl", ['$scope','utilityService','Funciones
     	$scope.$parent.$broadcast('msg', datosVehiculo);
   	};
 
+	MonitorService.receive().then(null, null, function(message) {
+  	});
+  
 	$scope.init = function() {
 		console.log("init vehiculosRegistradosCtrl")
-		cargaVehiculosRegistrados();
+		cargaVehiculosRegistrados();		
 	}
-
+	
 	$scope.faltanDatos = function(datosVehiculo) {
 		
 		//console.log("datos vehiculo: " + JSON.stringify(datosVehiculo, null, '\t'));
