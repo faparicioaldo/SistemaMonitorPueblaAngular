@@ -201,6 +201,7 @@ app.service('MonitorService',['$rootScope', '$q', '$timeout', function($rootScop
 
 	var socket = { client: null, stomp: null };
     var messageIds = [];
+    var listener = $q.defer();
     
     service.RECONNECT_TIMEOUT = 30000;
     service.SOCKET_URL = "/MonitorAlertasPuebla/ws";
@@ -208,6 +209,10 @@ app.service('MonitorService',['$rootScope', '$q', '$timeout', function($rootScop
     service.VEHICLE_TOPIC = "/topic/vehicle";
     service.ALERT_TOPIC = "/topic/alert";
     service.GPS_TOPIC = "/topic/gps";
+    
+    service.receive = function() {
+      return listener.promise;
+    };
     
     var reconnect = function() {
    	  console.log('reconexion a websocket....');
@@ -226,15 +231,21 @@ app.service('MonitorService',['$rootScope', '$q', '$timeout', function($rootScop
     var startListener = function() {
       socket.stomp.subscribe(service.ALERT_TOPIC, function(data) {
     	 $rootScope.message.alerts += 1;
+       	 listener.notify("hola");
       });      
       socket.stomp.subscribe(service.VEHICLE_TOPIC, function(data) {
-      	//alert(1);
-      	//console.log("RESPONSE: " + JSON.stringify(data, null, '\t'));
-      	
+      	 //console.log("RESPONSE: " + JSON.stringify(data.body, null, '\t'));
+      	 //console.log("vehicl: " + data.body);
+      	 //console.log("Esto hay" + $rootScope.listaVehiculosRegistrados);
+		 //$rootScope.listaVehiculosRegistrados = data.body;      	 
        	 $rootScope.message.vehicles += 1;
+       	 console.log("RES: " + $rootScope.message.vehicles);
+       	 listener.notify("hola");
       });
       socket.stomp.subscribe(service.GPS_TOPIC, function(data) {
     	 $rootScope.message.gpss += 1;
+    	 listener.notify("hola");
+    	 
       });      
     };
 

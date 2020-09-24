@@ -11,8 +11,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.puebla.monitoralertas.dto.ChatMessage;
-import com.puebla.monitoralertas.dto.ChatMessage.MessageType;
 import com.puebla.monitoralertas.entity.DatosVehiculoEntity;
 import com.puebla.monitoralertas.feign.client.SemoviDelFeignClient;
 import com.puebla.monitoralertas.json.pojo.Ceiba2DevicesPojo;
@@ -133,11 +131,7 @@ public class CeibaVehiculoServiceImpl implements CeibaVehiculoService {
 
 			if(vehiculosNuevos.size() > 0) {
 				log.info("Reportando a websocket: " + vehiculosNuevos.size());
-				  ChatMessage mensaje = new ChatMessage();
-			      mensaje.setContent("HOLAA");
-			      mensaje.setType(MessageType.CHAT);
-			      mensaje.setSender("HOLAA");
-				template.convertAndSend("/topic/vehicle", mensaje);
+				template.convertAndSend("/topic/vehicle", vehiculosNuevos);
 			}
 
 		} catch (Exception e) {

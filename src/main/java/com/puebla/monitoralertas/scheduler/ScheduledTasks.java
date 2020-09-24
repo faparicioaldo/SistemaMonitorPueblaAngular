@@ -57,7 +57,7 @@ public class ScheduledTasks {
 			
 		//Consulta lista de vehiculos registrados en CEIBA2
 //		enviarAlarmasSemovi.obtenerListaVehiculosCeiba2();
-//		ceibaVehiculoService.actualizarVehiculosCeibaInMonitor();
+		//ceibaVehiculoService.actualizarVehiculosCeibaInMonitor();
 		
 //		enviarAlarmasSemovi.pruebaGPS();
 		

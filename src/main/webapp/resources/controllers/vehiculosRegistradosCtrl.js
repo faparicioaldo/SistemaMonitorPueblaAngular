@@ -1,8 +1,8 @@
-app.controller("vehiculosRegistradosCtrl", ['$scope','utilityService','FuncionesService', '$location', '$rootScope', function($scope, utilityService, FuncionesService, $location, $rootScope) {
+app.controller("vehiculosRegistradosCtrl", ['$scope','utilityService','FuncionesService', '$location', '$rootScope','MonitorService', function($scope, utilityService, FuncionesService, $location, $rootScope, MonitorService) {
 	
 	$rootScope.numberTab = 1;
 	
-	$scope.listaVehiculosRegistrados = [];
+	$rootScope.listaVehiculosRegistrados = [];
 	$scope.infoVehiculos = {};
 	$scope.infoVehiculos.total = 0;
 	$scope.infoVehiculos.totalFaltaDatos = 0;
@@ -86,9 +86,9 @@ app.controller("vehiculosRegistradosCtrl", ['$scope','utilityService','Funciones
 				//console.log("datos alertas enviadas semovi respuesta: " + JSON.stringify(respuesta, null, '\t'));
 				
                 if (respuesta) {
-                	$scope.listaVehiculosRegistrados = respuesta.listaVehiculosRegistrados;
+                	$rootScope.listaVehiculosRegistrados = respuesta.listaVehiculosRegistrados;
                 	
-                	$scope.infoVehiculos.total = $scope.listaVehiculosRegistrados.length;
+                	$scope.infoVehiculos.total = $rootScope.listaVehiculosRegistrados.length;
                 	
                 	console.log("Total vehiculos: " + $scope.infoVehiculos.total);
                 	//console.log("Total vehiculos: " + $scope.infoVehiculos.totalFaltaDatos.length);

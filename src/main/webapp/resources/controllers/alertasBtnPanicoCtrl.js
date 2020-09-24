@@ -1,6 +1,4 @@
-app.controller("alertasBtnPanicoCtrl", [
-	'$scope','FuncionesService', '$location', '$rootScope','MonitorService', 
-	function($scope, FuncionesService, $location, $rootScope,MonitorService) {
+app.controller("alertasBtnPanicoCtrl", ['$scope','FuncionesService', '$location', '$rootScope','MonitorService', function($scope, FuncionesService, $location, $rootScope, MonitorService) {
 	
 	$rootScope.numberTab = 0;
 	
@@ -11,9 +9,18 @@ app.controller("alertasBtnPanicoCtrl", [
 		getPannicButtonAlerts();
 	}
 	
-	MonitorService.receive().then(null, null, function(message) {
+	MonitorService.receive().then(
+	function(res){
+		console.log("primer funcion");
+	},
+	function(res){
+		console.log("segunda funcion");
+	}, 
+	function(message) {
+		console.log("tercera funcion");
+    	//$scope.messages.push(message);
   	});
-  	
+  
 	function getPannicButtonAlerts() {
 		console.log('Cargando alertas enviadas a semovi....');
 
