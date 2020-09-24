@@ -3,7 +3,7 @@ server:
     servlet:
         contextPath: /MonitorAlertasPuebla
         session:
-          timeout:  5m
+          timeout:  15m
 
 spring:
     datasource:

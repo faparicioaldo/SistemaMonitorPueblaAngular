@@ -1,4 +1,7 @@
-app.controller("alertasBtnPanicoCtrl", ['$scope','FuncionesService', '$location', '$rootScope', function($scope, FuncionesService, $location, $rootScope) {
+app.controller("alertasBtnPanicoCtrl", [
+	'$scope','FuncionesService', '$location', '$rootScope','MonitorService', 
+	function($scope, FuncionesService, $location, $rootScope,MonitorService) {
+	
 	$rootScope.numberTab = 0;
 	
 	$scope.listaAlertasEnviadasSemovi = [];
@@ -8,6 +11,9 @@ app.controller("alertasBtnPanicoCtrl", ['$scope','FuncionesService', '$location'
 		getPannicButtonAlerts();
 	}
 	
+	MonitorService.receive().then(null, null, function(message) {
+  	});
+  	
 	function getPannicButtonAlerts() {
 		console.log('Cargando alertas enviadas a semovi....');
 

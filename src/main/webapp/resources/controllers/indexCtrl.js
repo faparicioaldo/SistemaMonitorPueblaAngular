@@ -1,4 +1,4 @@
-app.controller("indexCtrl", ['$location','$scope','$rootScope' ,function($location,$scope,$rootScope) {
+app.controller("indexCtrl", ['$location','$scope','$rootScope',function($location,$scope,$rootScope) {
 	$rootScope.numberTab = 0;
 	$rootScope.mostrarPestaniasAnalista = true;
 	$rootScope.mostrarPestaniasCliente = false;
