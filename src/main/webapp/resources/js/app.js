@@ -60,6 +60,7 @@ app.run([
         $rootScope.message.gpss = 0;
         
 		$rootScope.datosVehiculoEditar = [];
+		$rootScope.listaVehiculosRegistrados = [];
 
 		$location.path('/alertasBtnPanico');
 			
@@ -237,10 +238,13 @@ app.service('MonitorService',['$rootScope', '$q', '$timeout', function($rootScop
       	 //console.log("RESPONSE: " + JSON.stringify(data.body, null, '\t'));
       	 //console.log("vehicl: " + data.body);
       	 //console.log("Esto hay" + $rootScope.listaVehiculosRegistrados);
-		 //$rootScope.listaVehiculosRegistrados = data.body;      	 
+      	 //$rootScope.listaVehiculosRegistrados = [];
+      	 var newVehicles = JSON.parse(data.body);
+      	 
+		 $rootScope.listaVehiculosRegistrados.unshift(newVehicles[0]);      	 
        	 $rootScope.message.vehicles += 1;
-       	 console.log("RES: " + $rootScope.message.vehicles);
-       	 listener.notify("hola");
+       	 console.log("RES: " + newVehicles[0]);
+       	 //listener.notify("hola");
       });
       socket.stomp.subscribe(service.GPS_TOPIC, function(data) {
     	 $rootScope.message.gpss += 1;

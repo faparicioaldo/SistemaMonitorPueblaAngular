@@ -102,7 +102,7 @@
 							  	</tr>
 						  	</thead>
 						  	<tbody>
-								<tr ng-class="faltanDatos(x)" dir-paginate="x in listaVehiculosRegistrados | orderBy:sortKey:reverse | filter:search | itemsPerPage:10"
+								<tr ng-class="faltanDatos(x)" dir-paginate="x in listaVehiculosRegistrados | orderBy:sortKey:reverse | filter:search | itemsPerPage:10 track by $index"
 								>
 							    	<td>{{ x.iddispositivo }}</td>
 				 					<td>{{ x.empresa}}</td> 
