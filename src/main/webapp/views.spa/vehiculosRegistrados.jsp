@@ -54,49 +54,27 @@
 				    	            	</span>
 							    	</th>
 							    	<th ng-click="sort('plate')">
-							    		<strong>PLATE</strong>
+							    		<strong>PLACA</strong>
 				    	            	<span class="glyphicon sort-icon" 
 				    	            		  ng-show="sortKey=='plate'" 
 				    	            		  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
 				    	            	</span>
 							    	</th>
 							    	<th ng-click="sort('route')">
-							    		<strong>ROUTE</strong>
+							    		<strong>RUTA</strong>
 				    	            	<span class="glyphicon sort-icon" 
 				    	            		  ng-show="sortKey=='route'" 
 				    	            		  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
 				    	            	</span>
 							    	</th>
-							    	<th ng-click="sort('imei')">
-							    		<strong>IMEI</strong>
+							    	<th ng-click="sort('eco')">
+							    		<strong>ECONOMICO</strong>
 				    	            	<span class="glyphicon sort-icon" 
 				    	            		  ng-show="sortKey=='imei'" 
 				    	            		  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
 				    	            	</span>
 							    	</th>
-							    	<th ng-click="sort('municipio')">
-							    		<strong>MUNICIPIO</strong>
-				    	            	<span class="glyphicon sort-icon" 
-				    	            		  ng-show="sortKey=='municipio'" 
-				    	            		  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
-				    	            	</span>
-							    	</th>
-							    	<th ng-click="sort('concesion')">
-							    		<strong>CONCESION</strong>
-				    	            	<span class="glyphicon sort-icon" 
-				    	            		  ng-show="sortKey=='concesion'" 
-				    	            		  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
-				    	            	</span>
-							    	</th>
-							    	
-							    	<th ng-click="sort('faltanDatos')">
-							    		<strong>FALTAN DATOS</strong>
-				    	            	<span class="glyphicon sort-icon" 
-				    	            		  ng-show="sortKey=='faltanDatos'" 
-				    	            		  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
-				    	            	</span>
-							    	</th>
-
+							    	<th></th>
 							    	<th></th>
 							    	<th></th>
 							  	</tr>
@@ -108,16 +86,15 @@
 				 					<td>{{ x.empresa}}</td> 
 							    	<td>{{ x.plate }}</td>
 				 					<td>{{ x.route}}</td> 
-							    	<td>{{ x.imei }}</td>
-							    	<td>{{ x.municipio }}</td>
-				 					<td>{{ x.concesion}}</td> 
-				 					<td>{{ faltanDatos(x) }}</td> 
-	
+							    	<td>{{ x.eco }}</td>
 							    	<td>						    
 							    		<a href="{{x.urlcamera}}" target="_blank" class="btn btn-primary">CAMARAS</a>
 							    	</td>
 							    	<td>						    
 							    		<input type="button" ng-click="editarDatosVehiculo(x)" value = "EDITAR" class="btn btn-primary"/>
+							    	</td>
+							    	<td>						    
+							    		<input type="button" ng-click="eliminarVehiculo(x.iddispositivo)" value = "ELIMINAR" class="btn btn-danger"/>
 							    	</td>
 							  	</tr>
 							</tbody>

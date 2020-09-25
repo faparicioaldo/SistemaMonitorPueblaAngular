@@ -132,6 +132,8 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 					if(alertaYaRegistrada) {
 						continue;
 					}
+
+					hayAlarmas = true;
 					
 					AlertaSemoviEntity alertaEnviada = new AlertaSemoviEntity();
 					
@@ -174,13 +176,12 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 		 *  
 		 * */
 		if(hayAlarmas) {
-			hayAlarmas = false;
 		      ChatMessage mensaje = new ChatMessage();
-		      mensaje.setContent("HOLAA");
+		      mensaje.setContent("Se encontro alertas nuevas");
 		      mensaje.setType(MessageType.CHAT);
-		      mensaje.setSender("HOLAA");
+		      mensaje.setSender("Alertas");
 
-		      template.convertAndSend("/topic/public", mensaje);
+		      template.convertAndSend("/topic/alert", mensaje);
 		}	
 	}
 	

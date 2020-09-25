@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.puebla.monitoralertas.dto.SemoviDelRequestDTO;
 import com.puebla.monitoralertas.entity.DatosVehiculoEntity;
+import com.puebla.monitoralertas.feign.client.SemoviDelFeignClient;
 import com.puebla.monitoralertas.repository.DatosVehiculoRepository;
 import com.puebla.monitoralertas.service.DatosVehiculoService;
 
@@ -16,6 +18,9 @@ public class DatosVehiculoServiceImpl implements DatosVehiculoService {
 	@Autowired
 	private DatosVehiculoRepository datosVehiculoRepository;
 
+	@Autowired
+	private SemoviDelFeignClient semoviDelFeignClient; 
+
 	@Override
 	public DatosVehiculoEntity obtenerDatosVehiculo(String idDispositivo) {
 		return datosVehiculoRepository.findById(idDispositivo).get();
@@ -23,12 +28,20 @@ public class DatosVehiculoServiceImpl implements DatosVehiculoService {
 
 	@Override
 	public List<DatosVehiculoEntity> obtenerDatosVehiculos() {
-		return datosVehiculoRepository.findAll(Sort.by(Sort.Direction.ASC, "empresa"));
+		return datosVehiculoRepository.findAll(Sort.by("empresa").ascending().and(Sort.by("fechacaptura").descending()));
 	}
 
 	@Override
 	public void guardaDatosVehiculo(DatosVehiculoEntity datosVehiculo) {		
 		datosVehiculoRepository.save(datosVehiculo);
+	}
+	
+	@Override
+	public void eliminarVehiculo(String iddispositivo) {
+		String semoviReponse = semoviDelFeignClient.del(new SemoviDelRequestDTO(iddispositivo));
+		
+		//TODO Si el vehiculo fue eliminado correctamente de semovi eliminarlo de la base de lo contrario NO
+		datosVehiculoRepository.deleteById(iddispositivo);
 	}
 
 }

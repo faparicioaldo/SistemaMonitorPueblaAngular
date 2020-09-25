@@ -24,10 +24,7 @@
                     <div class="alert alert-info" style="text-align:left;">
                         <strong>¡Sugerencia!</strong>
                         <ul >
-                            <li>Si desea realizar la búsqueda por Nombre del Centro de trabajo deberá capturar el Estado y/o Delegación/Municipio.</li>
-                            <li>Si desea realizar la búsqueda por Número del Centro de Trabajo s&oacute;lo debe capturar este campo.</li>
-                            <li>Si desea realizar la búsqueda por Número Patronal de la Empresa solo debe capturar este campo.</li>
-                            <li>Dar click sobre el Centro de  Trabajo para seleccionar.</li>
+                            <li>Debe ingresar todos los datos marcados con asterisco.</li>
                         </ul>                       
                     </div>
                     
@@ -95,7 +92,7 @@
                         </div>                        
                         <div  class="form-group col-sm-12">
                             <div  class="form-group col-sm-6" ng-class="{'has-error':datosVehiculoForm.vin.$invalid && datosVehiculoForm.vin.$dirty}">                                
-                                <label class="control-label">VIN (*):</label>                               
+                                <label class="control-label">SERIE VEHICULAR (*):</label>                               
                                 <input class="form-control " 
                                 	   ng-model="datosVehiculoSeleccionado.vin"
                                        placeholder="Introduzca el vin."
@@ -109,7 +106,7 @@
                                 <small class="form-text form-text-error" ng-if="datosVehiculoForm.vin.$invalid && datosVehiculoForm.vin.$dirty">El campo vin es requerido.</small>                              
                             </div>
                             <div class="col-sm-6" ng-class="{'has-error':datosVehiculoForm.engine.$invalid && datosVehiculoForm.engine.$dirty}">
-                               <label class="control-label">ENGINE (*):</label>
+                               <label class="control-label">SERIE DEL MOTOR (*):</label>
                                <input class="form-control " 
                                 	  ng-model="datosVehiculoSeleccionado.engine"
                                       placeholder="Introduzca el engine."
@@ -125,7 +122,7 @@
                         </div>                        
                         <div  class="form-group col-sm-12">
                             <div  class="form-group col-sm-6" ng-class="{'has-error':datosVehiculoForm.year.$invalid && datosVehiculoForm.year.$dirty}">
-                                <label class="control-label">YEAR (*):</label>                               
+                                <label class="control-label">AÑO (*):</label>                               
                                 <input class="form-control " 
                                 	   ng-model="datosVehiculoSeleccionado.year"
                                        placeholder="Introduzca el año del vehiculo"
@@ -169,7 +166,7 @@
                                 <small class="form-text form-text-error" ng-if="datosVehiculoForm.route.$invalid && datosVehiculoForm.route.$dirty">El campo route es requerido.</small>                              
                             </div>
                             <div class="col-sm-6" ng-class="{'has-error':datosVehiculoForm.rs.$invalid && datosVehiculoForm.rs.$dirty}">
-                               <label class="control-label">RS (*):</label>
+                               <label class="control-label">RAZON SOCIAL (*):</label>
                                <input class="form-control " 
                                 	  ng-model="datosVehiculoSeleccionado.rs"
                                       placeholder="Introduzca el rs."
@@ -199,7 +196,7 @@
                                 <small class="form-text form-text-error" ng-if="datosVehiculoForm.eco.$invalid && datosVehiculoForm.eco.$dirty">El campo economico es requerido.</small>                              
                             </div>
                             <div class="col-sm-6" ng-class="{'has-error':datosVehiculoForm.branch.$invalid && datosVehiculoForm.branch.$dirty}">
-                               <label class="control-label">BRANCH (*):</label>
+                               <label class="control-label">MARCA (*):</label>
                                <input class="form-control " 
                                 	  ng-model="datosVehiculoSeleccionado.branch"
                                       placeholder="Introduzca el branch."
@@ -216,7 +213,7 @@
                         </div>                        
                         <div  class="form-group col-sm-12">
                             <div  class="form-group col-sm-6" ng-class="{'has-error':datosVehiculoForm.subbranch.$invalid && datosVehiculoForm.subbranch.$dirty}">                                
-                                <label class="control-label">SUBBRANCH (*):</label>                               
+                                <label class="control-label">SUBMARCA (*):</label>                               
                                 <input class="form-control " 
                                 	   ng-model="datosVehiculoSeleccionado.subbranch"
                                        placeholder="Introduzca el subbranch."

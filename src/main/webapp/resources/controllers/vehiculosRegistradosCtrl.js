@@ -14,6 +14,9 @@ app.controller("vehiculosRegistradosCtrl", ['$scope','utilityService','Funciones
 
 	$scope.init = function() {
 		console.log("init vehiculosRegistradosCtrl")
+		
+		$rootScope.listaVehiculosRegistrados.forEach(vehicle => $scope.infoVehiculos.totalFaltaDatos+=1);
+		
 		cargaVehiculosRegistrados();		
 	}
 	
@@ -78,6 +81,23 @@ app.controller("vehiculosRegistradosCtrl", ['$scope','utilityService','Funciones
 		vm.sendEvent(datosVehiculo);
 	}
 		
+	$scope.eliminarVehiculo = function(iddispositivo) {
+		console.log("funcion eliminarVehiculo")
+		
+		//mostrarModalEditarVehiculo();
+		
+		//vm.sendEvent(datosVehiculo);
+		
+		FuncionesService.POST("/MonitorAlertasPuebla/eliminarVehiculo").then(
+            function(respuesta) {
+				
+                if (respuesta) {
+                	//$rootScope.listaVehiculosRegistrados = respuesta.listaVehiculosRegistrados;
+                }
+            }
+        );
+	}
+			
 	function cargaVehiculosRegistrados() {
 		console.log('Cargando vehiculos registrados....');
 
@@ -96,46 +116,4 @@ app.controller("vehiculosRegistradosCtrl", ['$scope','utilityService','Funciones
             }
         );
     };
-    
-	/*
-	$scope.enviarAlarmaPOST = function(idAlarma, deviceid){
-		var formData = {
-	        idAlarma : idAlarma,
-	        deviceid : deviceid
-	    }
-	    alert("Enviando alarma....");
-	    $.ajax({
-		    type : "POST",
-		    contentType : "application/json",
-		    url : "/enviarAlarma",
-		    data : JSON.stringify(formData),
-		    dataType : 'json',
-		    success : function(result) {
-		    	if(result.idAlarma == -1 )
-			        alert('Atencion: No ha capturado datos del vehiculo, presione la opcion Ir a Datos del Vehiculo.');
-		    	else
-		    		alert('Alarma ' + result.idAlarma + ' enviada. RESPUESTA: ' + result.deviceid);
-	    		location.reload();
-		    }
-	  	});
-	}
-	$scope.descartarAlarmaPOST = function(idAlarma, deviceid){
-		var formData = {
-		        idAlarma : idAlarma, 
-		        deviceid : deviceid
-	    }
-		      
-	    $.ajax({
-		    type : "POST",
-		    contentType : "application/json",
-		    url : "/descartarAlarma",
-		    data : JSON.stringify(formData),
-		    dataType : 'json',
-		    success : function(result) {
-		        alert('Alarma ' + result.idAlarma + ' descartada.');
-		    }
-	  	});
-	}
-	*/
-	
 }]);

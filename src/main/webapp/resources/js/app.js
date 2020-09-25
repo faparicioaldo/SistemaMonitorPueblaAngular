@@ -60,7 +60,9 @@ app.run([
         $rootScope.message.gpss = 0;
         
 		$rootScope.datosVehiculoEditar = [];
+
 		$rootScope.listaVehiculosRegistrados = [];
+		$rootScope.listaAlertasEnviadasSemovi = [];
 
 		$location.path('/alertasBtnPanico');
 			
@@ -196,7 +198,7 @@ function($location, FuncionesService, $rootScope) {
 }]);
 	
 //https://dimitr.im/spring-angular-sockjs	
-app.service('MonitorService',['$rootScope', '$q', '$timeout', function($rootScope, $q, $timeout) {
+app.service('MonitorService',['$rootScope', '$q', '$timeout', 'FuncionesService', function($rootScope, $q, $timeout, FuncionesService) {
 
 	var service = {}; 
 
@@ -232,6 +234,18 @@ app.service('MonitorService',['$rootScope', '$q', '$timeout', function($rootScop
     var startListener = function() {
       socket.stomp.subscribe(service.ALERT_TOPIC, function(data) {
     	 $rootScope.message.alerts += 1;
+    	 
+    	 FuncionesService.POST("/MonitorAlertasPuebla/getPannicButtonAlerts").then(
+            function(respuesta) {
+				//console.log("datos alertas enviadas semovi respuesta: " + JSON.stringify(respuesta, null, '\t'));
+				
+                if (respuesta) {
+                	$rootScope.listaAlertasEnviadasSemovi = [];
+                	$rootScope.listaAlertasEnviadasSemovi = respuesta.listaAlertasEnviadasSemovi;                	
+                }
+            }
+	     );
+    	 
        	 listener.notify("hola");
       });      
       socket.stomp.subscribe(service.VEHICLE_TOPIC, function(data) {
