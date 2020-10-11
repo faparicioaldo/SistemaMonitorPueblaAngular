@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class DatosAlertaEnviadasDTO {
+public class DatosAlertaEnviadasDTO implements IDatosAlertaEnviadasDTO{
 	
 	private String idAlerta;
 	private String ceibaAlarmid;
@@ -18,4 +18,5 @@ public class DatosAlertaEnviadasDTO {
 	private String route;
 	private String semoviMensaje;
 	private String ceibaType;
+	private String urlCamera;
 }

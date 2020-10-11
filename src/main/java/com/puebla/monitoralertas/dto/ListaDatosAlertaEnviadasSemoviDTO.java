@@ -9,5 +9,5 @@ import lombok.Setter;
 @Setter
 public class ListaDatosAlertaEnviadasSemoviDTO extends RespuestaJSON{
 	
-	private List<DatosAlertaEnviadasDTO> listaAlertasEnviadasSemovi;
+	private List<IDatosAlertaEnviadasDTO> listaAlertasEnviadasSemovi;
 }

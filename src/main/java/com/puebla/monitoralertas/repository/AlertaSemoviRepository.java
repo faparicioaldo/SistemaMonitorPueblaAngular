@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.puebla.monitoralertas.dto.IDatosAlertaEnviadasDTO;
 import com.puebla.monitoralertas.entity.AlertaSemoviEntity;
 
 @Repository
@@ -16,16 +17,16 @@ public interface AlertaSemoviRepository extends JpaRepository<AlertaSemoviEntity
 
 	@Query(value=
 			"select " 
-				+ "  a.id_alerta "
-				+ ", a.ceiba_alarmid "
-				+ ", v.ID_DISPOSITIVO "
-			    + ", v.plate "
-			    + ", v.eco "
-			    + ", a.ceiba_gpstime "
-			    + ", a.semovi_estatus "
-			    + ", v.EMPRESA "
-			    + ", v.route "
-			    + ", a.semovi_mensaje "
+				+ "  a.id_alerta idAlerta"
+				+ ", a.ceiba_alarmid ceibaAlarmid"
+				+ ", v.ID_DISPOSITIVO idDispositivo"
+			    + ", v.plate plate"
+			    + ", v.eco eco"
+			    + ", a.ceiba_gpstime ceibaGpsTime"
+			    + ", a.semovi_estatus semoviEstatus"
+			    + ", v.EMPRESA empresa"
+			    + ", v.route route"
+			    + ", a.semovi_mensaje semoviMensaje"
 			    + ", CASE a.ceiba_type "
 			        + " WHEN 5 THEN \'SENSOR 1\' "
 					+ " WHEN 6 THEN \'SENSOR 2\' "
@@ -37,7 +38,8 @@ public interface AlertaSemoviRepository extends JpaRepository<AlertaSemoviEntity
 					+ " WHEN 12 THEN \'SENSOR 8\' "
 					+ " WHEN 13 THEN \'Panic Alert\' "
 			        + " ELSE a.ceiba_type "
-		        + " end ceiba_type "
+		        + " end ceibaType "
+			    + ", v.url_camera urlCamera "
 		    + "from "
 				+ "db_monitor.alertas_semovi a " 
 				+ "inner join "
@@ -46,7 +48,7 @@ public interface AlertaSemoviRepository extends JpaRepository<AlertaSemoviEntity
 				+ "a.id_dispositivo = v.id_dispositivo "
 			+ " order by a.ceiba_gpstime desc"			
 			, nativeQuery=true)
-	public List<Object[]> consultaAlertasEnviadasSemovi();
+	public List<IDatosAlertaEnviadasDTO> consultaAlertasEnviadasSemovi();
 	
 	
 	@Query(value=

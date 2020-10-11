@@ -114,6 +114,7 @@
 							    	
 							    	<th></th>
 							    	<th></th>
+							    	<th></th>
 							  	</tr>
 						  	</thead>
 						  	<tbody>
@@ -130,16 +131,15 @@
 				 					<td>{{ x.empresa}}</td> 
 				 					<td>{{ x.route}}</td> 
 				 					<td>{{ x.ceibaType}}</td>				 
-	
-							    	<td>
-							    
-							    	<input type="button" ng-if="x.semoviMensaje != 'DESCARTADA' && x.semoviMensaje != 'OK'" ng-click="enviarAlertaSemovi(x.idAlerta)" value = "ENVIAR" class="btn btn-info"/>
-							
+
+							    	<td>						    
+							    		<a href="{{x.urlCamera}}" target="_blank" class="btn btn-primary">CAMARAS</a>
 							    	</td>
 							    	<td>
-							    
-							    	<input type="button" ng-if="x.semoviMensaje != 'DESCARTADA' && x.semoviMensaje != 'OK'" ng-click="descartarAlertaCeiba(x.idAlerta)" value = "DESCARTAR" class="btn btn-info"/>
-							
+							    		<input type="button" ng-if="x.semoviMensaje != 'DESCARTADA' && x.semoviMensaje != 'OK'" ng-click="enviarAlertaSemovi(x.idAlerta)" value = "ENVIAR" class="btn btn-info"/>
+							    	</td>
+							    	<td>
+							    		<input type="button" ng-if="x.semoviMensaje != 'DESCARTADA' && x.semoviMensaje != 'OK'" ng-click="descartarAlertaCeiba(x.idAlerta)" value = "DESCARTAR" class="btn btn-info"/>
 							    	</td>
 							  	</tr>
 							</tbody>
