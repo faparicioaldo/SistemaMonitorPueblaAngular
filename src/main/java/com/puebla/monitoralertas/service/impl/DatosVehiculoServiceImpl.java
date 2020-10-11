@@ -7,8 +7,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.puebla.monitoralertas.dto.SemoviDelRequestDTO;
+import com.puebla.monitoralertas.dto.SemoviLoadRequestDTO;
 import com.puebla.monitoralertas.entity.DatosVehiculoEntity;
 import com.puebla.monitoralertas.feign.client.SemoviDelFeignClient;
+import com.puebla.monitoralertas.feign.client.SemoviLoadFeignClient;
 import com.puebla.monitoralertas.repository.DatosVehiculoRepository;
 import com.puebla.monitoralertas.service.DatosVehiculoService;
 
@@ -21,6 +23,9 @@ public class DatosVehiculoServiceImpl implements DatosVehiculoService {
 	@Autowired
 	private SemoviDelFeignClient semoviDelFeignClient; 
 
+	@Autowired
+	private SemoviLoadFeignClient semoviLoadFeignClient;
+
 	@Override
 	public DatosVehiculoEntity obtenerDatosVehiculo(String idDispositivo) {
 		return datosVehiculoRepository.findById(idDispositivo).get();
@@ -32,7 +37,8 @@ public class DatosVehiculoServiceImpl implements DatosVehiculoService {
 	}
 
 	@Override
-	public void guardaDatosVehiculo(DatosVehiculoEntity datosVehiculo) {		
+	public void guardaDatosVehiculo(DatosVehiculoEntity datosVehiculo) {
+		String semoviReponse = semoviLoadFeignClient.load(new SemoviLoadRequestDTO());
 		datosVehiculoRepository.save(datosVehiculo);
 	}
 	
