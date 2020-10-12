@@ -22,6 +22,8 @@ import com.puebla.monitoralertas.dto.ChatMessage.MessageType;
 import com.puebla.monitoralertas.dto.GpsCoordinatesDTO;
 import com.puebla.monitoralertas.dto.SemoviResponseDTO;
 import com.puebla.monitoralertas.dto.SemoviSendRequestDTO;
+import com.puebla.monitoralertas.dto.SendGPSToSemoviErrorDTO;
+import com.puebla.monitoralertas.dto.SendGPSToSemoviErrorResponseDTO;
 import com.puebla.monitoralertas.entity.AlertaSemoviEntity;
 import com.puebla.monitoralertas.feign.client.SemoviSendFeignClient;
 import com.puebla.monitoralertas.json.pojo.Ceiba2DeviceAlarmResponseDTO;
@@ -41,6 +43,8 @@ import lombok.extern.log4j.Log4j2;
 @Service
 @Log4j2
 public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoService {
+
+	private static final String IGNICION_NO_SE_APLICA_O_SE_DESCONOCE = "3";
 
 	@Autowired
 	private GlobalSession session;
@@ -248,7 +252,6 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 	 * Envia gps de cada dispositivo registrado en ceiba que cumplan las siguientes caracteristicas:
 	 * 
 	 * <ul>
-	 * 	<li>El dispositivo en ceiba no esta en el grupo SIN ASIGNAR</li>
 	 * 	<li>El operador ha registrado el total de datos requeridos en la base de datos</li>
 	 * 	<li>Ceiba esta regresando datos de GPS (en ocaciones esto falla por red en el dispositivo, cobertura, etc.)</li>
 	 * 	<li>Las coordenadas de gps del dispositivo son diferentes al envio anterior</li>
@@ -264,6 +267,10 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 		Set<String> gpsNoCambiaron = new HashSet<>();
 		Map<String,Set<String>> mapGpsStatus = new HashMap<>();
 		List<String> deviceWithoutGpsInCeiba = new ArrayList<>(); 
+		List<SendGPSToSemoviErrorDTO> errorsToSendGps = new ArrayList<>();
+		SendGPSToSemoviErrorResponseDTO response = new SendGPSToSemoviErrorResponseDTO(); 
+		int gpssEnviadosOK = 0;
+		int gpssEnviadosNOK = 0;
 		
 		try {
 				/*
@@ -277,14 +284,14 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 				List<String> vehiculosListos = datosVehiculoRepository.consultaListaVehiculosCompletosByStatus("DATOS_COMPLETOS");
 
 				log.info("Vehiculos en condiciones registrados en base datos: " + vehiculosListos.size());
-
-				for(String vehiculo : vehiculosListos) {
-					log.info("Vehiculos en condiciones: " + vehiculo);
-				}
 				
 				if (vehiculosListos == null || vehiculosListos.size() <= 0) {
 					log.warn("No se encontraron vehiculos en la base que cumplan las condiciones necesarias para enviar a semovi");
 					throw new Exception("No se encontraron vehiculos en la base que cumplan las condiciones necesarias para enviar a semovi"); 
+				}
+
+				for(String vehiculo : vehiculosListos) {
+					log.info("Vehiculos en condiciones: " + vehiculo);
 				}
 
 				Ceiba2DevicesGpsLastResponsePojo gpss = apiCeiba2.getGPSVehicle(key, vehiculosListos);
@@ -315,13 +322,13 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 
 				for(Ceiba2DeviceGpsLastPojo gps : gpss.getData()) {
 					SemoviSendRequestDTO datosGps = new SemoviSendRequestDTO();
-					GpsCoordinatesDTO newCoordinates = null;
+					GpsCoordinatesDTO newCoordinatesAndDate = null;
 					
 					if(!session.getMapLastGps().containsKey(gps.getTerid())) {
 						//crea
 						gpsNuevos.add(gps.getTerid());
-						newCoordinates = new GpsCoordinatesDTO(gps.getGpslat(), gps.getGpslng());
-						session.getMapLastGps().put(gps.getTerid(), newCoordinates);
+						newCoordinatesAndDate = new GpsCoordinatesDTO(gps.getGpslat(), gps.getGpslng(), gps.getGpstime());
+						session.getMapLastGps().put(gps.getTerid(), newCoordinatesAndDate);
 					}else if(session.getMapLastGps().get(gps.getTerid()).getLatitude().equals(gps.getGpslat()) &&
 							session.getMapLastGps().get(gps.getTerid()).getLongitude().equals(gps.getGpslng())) {
 						//ignora
@@ -330,8 +337,8 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 					}else{
 						//actualiza
 						gpsCambiaron.add(gps.getTerid());
-						newCoordinates = new GpsCoordinatesDTO(gps.getGpslat(), gps.getGpslng());
-						session.getMapLastGps().replace(gps.getTerid(), newCoordinates);							
+						newCoordinatesAndDate = new GpsCoordinatesDTO(gps.getGpslat(), gps.getGpslng(), gps.getGpstime());
+						session.getMapLastGps().replace(gps.getTerid(), newCoordinatesAndDate);							
 					}										
 															
 					datosGps.setId(gps.getTerid());
@@ -341,19 +348,34 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 					datosGps.setSpeed(gps.getSpeed());
 					datosGps.setCourse(gps.getDirection());
 					datosGps.setDate(gps.getGpstime());
-					datosGps.setIgnition(gps.getState());//buscaSiEstaOnline(onlineVehicles, datosTerid.getIdDispositivo())?"1":"2");/*1-Encencido; 2-Apagado; 3-No Aplica(Se Desconoce)*/
+//					datosGps.setIgnition(gps.getState());
+					datosGps.setIgnition(IGNICION_NO_SE_APLICA_O_SE_DESCONOCE);//buscaSiEstaOnline(onlineVehicles, datosTerid.getIdDispositivo())?"1":"2");/*1-Encencido; 2-Apagado; 3-No Aplica(Se Desconoce)*/
 					datosGps.setPannicbutton("0");//GPS
 					
 					log.info("ENVIANDO GPS A SEMOVI: " + gps.getTerid());
 					String responseSemovi = semoviSendFeignClient.send(datosGps);
-					SemoviResponseDTO convertido = objectMapper.readValue(responseSemovi, SemoviResponseDTO.class);
+					SemoviResponseDTO responseSemoviDTO = objectMapper.readValue(responseSemovi, SemoviResponseDTO.class);
 					
-					log.info("RESPUESTA DE SEMOVI AL ENVIAR GPS: " + convertido.getMsg());
+					if(responseSemoviDTO.getStatus()) {
+						gpssEnviadosOK+=1;
+					} else {
+						gpssEnviadosNOK+=1;
+						errorsToSendGps.add(
+								new SendGPSToSemoviErrorDTO(
+									gps.getTerid(),
+									"Error Respuesta Semovi",
+									responseSemoviDTO.getMsg(),
+									session.getMapLastGps().get(gps.getTerid()).getLastGpsTime()
+								)
+						);
+					}
+					
+					log.info("RESPUESTA DE SEMOVI AL ENVIAR GPS: STATUS -> " +responseSemoviDTO.getStatus() + " / MSG-> " + responseSemoviDTO.getMsg());
 
 //					if(session.isMostrarCadenasAlertas()) {
 //						log.error("Cadena de GPS: ");
-//						String jsonAlerta = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(datosGps);
-//						log.error(jsonAlerta);
+						String jsonAlerta = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(datosGps);
+						log.error(jsonAlerta);
 //					}
 				}
 				
@@ -366,6 +388,19 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 				mapGpsStatus.put("GPS_NO_CAMBIARON", gpsNoCambiaron);					
 
 				session.setMapGpsStatus(mapGpsStatus);
+				
+				errorsToSendGps.add(
+						new SendGPSToSemoviErrorDTO(
+							"terid",
+							"Error Respuesta Semovi",
+							"test",
+							"test"
+						)
+				);
+				response.setErrors(errorsToSendGps);
+				response.setNumEnviadosOK(gpssEnviadosOK);
+				response.setNumEnviadosNOK(gpssEnviadosNOK);
+			    template.convertAndSend("/topic/gps", response);
 				
 				log.info("FIN: ENVIO DE GPS's A SEMOVI");			
 		} catch (Exception e) {

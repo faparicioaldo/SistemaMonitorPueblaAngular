@@ -2,10 +2,14 @@ package com.puebla.monitoralertas.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicUpdate;
@@ -47,4 +51,8 @@ public class DatosVehiculoEntity implements Serializable {
 	private String urlcamera;
 	private String estatus;
 
+//	@OneToMany( targetEntity=AlertaSemoviEntity.class, fetch = FetchType.EAGER,
+//            cascade = CascadeType.ALL)
+//	private List<AlertaSemoviEntity> alertas;
+	
 }

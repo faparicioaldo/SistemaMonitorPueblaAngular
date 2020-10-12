@@ -211,10 +211,10 @@
 <!-- 	</table> -->
     
 <!--     <script type="application/javascript"> -->
-//         var player = videojs('my-player1');
-//         var player = videojs('my-player2');
-//         var player = videojs('my-player3');
-//         var player = videojs('my-player4');
+<!-- //         var player = videojs('my-player1'); -->
+<!-- //         var player = videojs('my-player2'); -->
+<!-- //         var player = videojs('my-player3'); -->
+<!-- //         var player = videojs('my-player4'); -->
 <!--     </script> -->
 
 </body>

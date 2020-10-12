@@ -26,15 +26,14 @@ public class DatosVehiculoRepositoryTest {
 	@Test
 	@Ignore
 	public void getAllDatosVehiculoTest() {
-
 		List<DatosVehiculoEntity> vehiculos = datosVehiculoRepository.findAll();
 		assertNotNull(vehiculos);			
-		
 	}
 
 	@Test
 	@Transactional
 	@Rollback(true)
+	@Ignore
 	public void insertTest() {
 
 		String idDispositivo = "TEST_DISP_1";
@@ -50,7 +49,13 @@ public class DatosVehiculoRepositoryTest {
 		}
 		DatosVehiculoEntity result = datosVehiculoRepository.findById(idDispositivo).get();
 		assertEquals(idDispositivo, result.getIddispositivo());
-		
 	}
+	
+//	@Test
+//	public void vehicleAlertsRelationShipOneToMany() {
+//		DatosVehiculoEntity vehiculos = datosVehiculoRepository.findById("007C008648").get();
+//		vehiculos.getAlertas().get(0).getCeibaalarmid();
+//		assertNotNull(vehiculos);
+//	}
 
 }

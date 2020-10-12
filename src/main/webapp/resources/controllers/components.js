@@ -4,6 +4,11 @@ app.component("modalEditarVehiculo", {
     templateUrl: "/MonitorAlertasPuebla/components/modalEditarVehiculo.jsp",
     controller: ['$scope','$rootScope','utilityService','FuncionesService', function($scope,$rootScope,utilityService,FuncionesService) {
     	$scope.datosVehiculoSeleccionado = {};
+		$scope.municipios = [];
+		
+		$scope.init = function() {
+    		$scope.municipios = utilityService.getCatalogoMunicipios();
+    	};
 		
 		var vm = this;
 	  	vm.data = '';

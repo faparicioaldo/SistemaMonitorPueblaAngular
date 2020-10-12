@@ -11,5 +11,6 @@ public class GpsCoordinatesDTO {
 	
 	private String latitude;
 	private String longitude;	
+	private String lastGpsTime;
 
 }

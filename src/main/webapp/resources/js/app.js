@@ -63,9 +63,24 @@ app.run([
 
 		$rootScope.listaVehiculosRegistrados = [];
 		$rootScope.listaAlertasEnviadasSemovi = [];
-
+		$rootScope.sendGPSToSemoviErrors = [];
+		$rootScope.municipios = [];
+		
+		$rootScope.infoGpss = {};
+		$rootScope.infoGpss.totalEnviadosOK = 0;
+		$rootScope.infoGpss.totalEnviadosNOK = 0;
+		
+		FuncionesService.POST("/MonitorAlertasPuebla/getMunicipios").then(
+            function(respuesta) {
+                if (respuesta) {
+                	$rootScope.municipios = respuesta.municipios;
+					console.log("municipios: " + JSON.stringify(respuesta.municipios, null, '\t'));
+                }
+            }
+        );
+		
 		$location.path('/alertasBtnPanico');
-			
+		
 		$rootScope.tabs = [ 
 				"Alertas Panico",
 				"Vehiculos Registrados",
@@ -259,6 +274,18 @@ app.service('MonitorService',['$rootScope', '$q', '$timeout', 'FuncionesService'
       });
       socket.stomp.subscribe(service.GPS_TOPIC, function(data) {
     	 $rootScope.message.gpss += 1;
+    	 var dataResponse = JSON.parse(data.body);
+    	 var errors = dataResponse.errors;
+      	 console.log("ERRORES AL ENVIAR GPS: " + JSON.stringify(errors, null, '\t'));
+
+		 //$rootScope.sendGPSToSemoviErrors = [];
+    	 //$rootScope.sendGPSToSemoviErrors = errors;                	
+    	 $rootScope.sendGPSToSemoviErrors.unshift(...errors);                	
+
+		 $rootScope.infoGpss.totalEnviadosOK = dataResponse.numEnviadosOK;
+		 $rootScope.infoGpss.totalEnviadosNOK = dataResponse.numEnviadosNOK;
+		 
+
     	 listener.notify("hola");
     	 
       });      
@@ -440,6 +467,9 @@ app.factory('utilityService', ['$http','$q','$rootScope', function($http, $q, $r
 				
 				$("#mensaje").modal('toggle');
 
+			},
+			getCatalogoMunicipios: function(){
+				return $rootScope.municipios;
 			}
 		};
 }]);

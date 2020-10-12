@@ -1,5 +1,6 @@
 package com.puebla.monitoralertas.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -7,10 +8,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,8 +20,10 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name="alertas_semovi", schema="db_monitor")
-public class AlertaSemoviEntity {
+public class AlertaSemoviEntity implements Serializable {
 	
+	private static final long serialVersionUID = 2992403909568978800L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id_alerta")
@@ -53,6 +57,10 @@ public class AlertaSemoviEntity {
 	private String ceibacmdtype;
 	@Column(name="ceiba_alarmid")
 	private String ceibaalarmid;
+	
+//	@ManyToOne
+//    @JoinColumn(name = "iddispositivo", nullable = false)
+//	private DatosVehiculoEntity vehicle;
 	
 	@PrePersist
 	public void prePersist() {

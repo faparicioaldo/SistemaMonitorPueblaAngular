@@ -15,6 +15,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.puebla.monitoralertas.dto.IDatosAlertaEnviadasDTO;
 import com.puebla.monitoralertas.entity.AlertaSemoviEntity;
 
 import lombok.extern.log4j.Log4j2;
@@ -50,14 +51,14 @@ public class AlertaSemoviRepositoryTest {
 	public void consultaAlertasEnviadasSemoviTest() {
 		
 		try {
-			List<Object[]> alertasEnviadas = alertaSemoviRepository.consultaAlertasEnviadasSemovi();
+			List<IDatosAlertaEnviadasDTO> alertasEnviadas = alertaSemoviRepository.consultaAlertasEnviadasSemovi();
 			
 			assertNotNull(alertasEnviadas);
-			System.out.println("ALERTA ENVIADA: "+alertasEnviadas.get(0)[0]);
-			System.out.println("ALERTA ENVIADA: "+alertasEnviadas.get(0)[1]);
-			System.out.println("ALERTA ENVIADA: "+alertasEnviadas.get(0)[2]);
-			System.out.println("ALERTA ENVIADA: "+alertasEnviadas.get(0)[3]);
-			System.out.println("ALERTA ENVIADA: "+alertasEnviadas.get(0)[4]);
+			System.out.println("ALERTA ENVIADA: "+alertasEnviadas.get(0).getCeibaAlarmid());
+			System.out.println("ALERTA ENVIADA: "+alertasEnviadas.get(0).getCeibaGpsTime());
+			System.out.println("ALERTA ENVIADA: "+alertasEnviadas.get(0).getCeibaType());
+			System.out.println("ALERTA ENVIADA: "+alertasEnviadas.get(0).getEco());
+			System.out.println("ALERTA ENVIADA: "+alertasEnviadas.get(0).getEmpresa());
 		}catch(Exception e) {
 			log.error("Ocuarrio un probklema: ", e);
 		}
@@ -65,7 +66,7 @@ public class AlertaSemoviRepositoryTest {
 	}
 
 	@Test
-//	@Ignore
+	@Ignore
 	@Rollback(false)
 	public void updateAlarmaEstatusByAlarmaidTest() {
 		
@@ -85,4 +86,11 @@ public class AlertaSemoviRepositoryTest {
 
 	}
 
+//	@Test
+//	public void AlertVehicleRelationShipOneToMany() {
+//		Integer idAlert = 1;
+//		AlertaSemoviEntity alert = alertaSemoviRepository.findById(idAlert).get();
+//		alert.getVehicle();
+//		assertNotNull(alert);
+//	}
 }

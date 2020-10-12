@@ -15,8 +15,8 @@
 					<div>	
 						<div class="row">
 							<div class="col">
-								<span class="pull-right">Total Vehiculos: {{infoVehiculos.total}}</span><br/>
-								<span class="pull-right">Total Vehiculos Falta Datos: {{infoVehiculos.totalFaltaDatos}}</span>
+								<span class="pull-right">Total GPS Enviados: {{infoGpss.totalEnviadosOK}}</span><br/>
+								<span class="pull-right">Total GPS con Error: {{infoGpss.totalEnviadosNOK}}</span>
 							</div>
 						</div>
 					</div>
@@ -39,86 +39,35 @@
 						<table class="table table-striped table-hover ">
 							<thead>
 							  	<tr>
-							    	<th ng-click="sort('iddispositivo')">
+							    	<th ng-click="sort('deviceId')">
 							    		<strong>#DISPOSITIVO</strong>
 				    	            	<span class="glyphicon sort-icon" 
-				    	            		  ng-show="sortKey=='iddispositivo'" 
+				    	            		  ng-show="sortKey=='deviceId'" 
 				    	            		  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
 				    	            	</span>
 							    	</th>
-							    	<th ng-click="sort('empresa')">
-							    		<strong>EMPRESA</strong>
+							    	<th ng-click="sort('errorMessage')">
+							    		<strong>ERROR</strong>
 				    	            	<span class="glyphicon sort-icon" 
-				    	            		  ng-show="sortKey=='empresa'" 
+				    	            		  ng-show="sortKey=='errorMessage'" 
 				    	            		  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
 				    	            	</span>
 							    	</th>
-							    	<th ng-click="sort('plate')">
-							    		<strong>PLATE</strong>
+							    	<th ng-click="sort('lastGps')">
+							    		<strong>ULTIMO GPS</strong>
 				    	            	<span class="glyphicon sort-icon" 
-				    	            		  ng-show="sortKey=='plate'" 
+				    	            		  ng-show="sortKey=='lastGps'" 
 				    	            		  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
 				    	            	</span>
 							    	</th>
-							    	<th ng-click="sort('route')">
-							    		<strong>ROUTE</strong>
-				    	            	<span class="glyphicon sort-icon" 
-				    	            		  ng-show="sortKey=='route'" 
-				    	            		  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
-				    	            	</span>
-							    	</th>
-							    	<th ng-click="sort('imei')">
-							    		<strong>IMEI</strong>
-				    	            	<span class="glyphicon sort-icon" 
-				    	            		  ng-show="sortKey=='imei'" 
-				    	            		  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
-				    	            	</span>
-							    	</th>
-							    	<th ng-click="sort('municipio')">
-							    		<strong>MUNICIPIO</strong>
-				    	            	<span class="glyphicon sort-icon" 
-				    	            		  ng-show="sortKey=='municipio'" 
-				    	            		  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
-				    	            	</span>
-							    	</th>
-							    	<th ng-click="sort('concesion')">
-							    		<strong>CONCESION</strong>
-				    	            	<span class="glyphicon sort-icon" 
-				    	            		  ng-show="sortKey=='concesion'" 
-				    	            		  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
-				    	            	</span>
-							    	</th>
-							    	
-							    	<th ng-click="sort('faltanDatos')">
-							    		<strong>FALTAN DATOS</strong>
-				    	            	<span class="glyphicon sort-icon" 
-				    	            		  ng-show="sortKey=='faltanDatos'" 
-				    	            		  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
-				    	            	</span>
-							    	</th>
-
-							    	<th></th>
-							    	<th></th>
 							  	</tr>
 						  	</thead>
 						  	<tbody>
-								<tr ng-class="faltanDatos(x)" dir-paginate="x in listaVehiculosRegistrados | orderBy:sortKey:reverse | filter:search | itemsPerPage:10"
+								<tr dir-paginate="x in sendGPSToSemoviErrors | orderBy:sortKey:reverse | filter:search | itemsPerPage:10 track by $index"
 								>
-							    	<td>{{ x.iddispositivo }}</td>
-				 					<td>{{ x.empresa}}</td> 
-							    	<td>{{ x.plate }}</td>
-				 					<td>{{ x.route}}</td> 
-							    	<td>{{ x.imei }}</td>
-							    	<td>{{ x.municipio }}</td>
-				 					<td>{{ x.concesion}}</td> 
-				 					<td>{{ faltanDatos(x) }}</td> 
-	
-							    	<td>						    
-							    		<a href="{{x.urlcamera}}" target="_blank" class="btn btn-primary">CAMARAS</a>
-							    	</td>
-							    	<td>						    
-							    		<input type="button" ng-click="editarDatosVehiculo(x)" value = "EDITAR" class="btn btn-primary"/>
-							    	</td>
+							    	<td>{{ x.deviceId }}</td>
+				 					<td>{{ x.errorMessage }}</td> 
+							    	<td>{{ x.lastGps }}</td>
 							  	</tr>
 							</tbody>
 						</table>
@@ -128,10 +77,6 @@
 				        direction-links="true"
 				        boundary-links="true" >
 				    </dir-pagination-controls>
-
-					<input type="text" ng-model="mensaje"/>
-					<button ng-click="enviarMensaje()">Enviar mensaje socket</button>
-					
                 </div>      
             </div>            
         </div> 
