@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.puebla.monitoralertas.common.FechasCommon;
 import com.puebla.monitoralertas.config.GlobalSession;
+import com.puebla.monitoralertas.constant.Constants;
 import com.puebla.monitoralertas.dto.ChatMessage;
 import com.puebla.monitoralertas.dto.ChatMessage.MessageType;
 import com.puebla.monitoralertas.dto.GpsCoordinatesDTO;
@@ -25,6 +27,7 @@ import com.puebla.monitoralertas.dto.SemoviSendRequestDTO;
 import com.puebla.monitoralertas.dto.SendGPSToSemoviErrorDTO;
 import com.puebla.monitoralertas.dto.SendGPSToSemoviErrorResponseDTO;
 import com.puebla.monitoralertas.entity.AlertaSemoviEntity;
+import com.puebla.monitoralertas.entity.DatosVehiculoEntity;
 import com.puebla.monitoralertas.feign.client.SemoviSendFeignClient;
 import com.puebla.monitoralertas.json.pojo.Ceiba2DeviceAlarmResponseDTO;
 import com.puebla.monitoralertas.json.pojo.Ceiba2DeviceGpsLastPojo;
@@ -80,7 +83,8 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 		
 		boolean hayAlarmas = false;
 		String key;
-
+		Set<String> alertasEncontradas = null;
+		
 		try {
 		
 			/*
@@ -120,9 +124,17 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 				//consulta id de alertas previamente registradas en la base de datos
 				List<String> alertasRegistradasBase = alertaSemoviRepository.consultaListaIdAlertasCeiba();
 				
+				alertasEncontradas = new HashSet<String>();//guarda los ceibaId de la consulta de alertas actual 
+				
 				//Procesa alertas obtenidas de ceiba
 				for(Ceiba2DeviceAlarmResponseDTO alerta : alertas.getData() ) {
 					Boolean alertaYaRegistrada = false;
+					
+					//Si viene repetido en esta peticion se ignora
+					if(alertasEncontradas.contains(alerta.getAlarmid())) {
+						continue;
+					}
+					alertasEncontradas.add(alerta.getAlarmid());
 					
 					//Busca si alerta ha sido registrada previamente
 					for(String alertaRegistrada : alertasRegistradasBase) {
@@ -138,6 +150,9 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 					}
 
 					hayAlarmas = true;
+					
+					//Se utiliza para resaltar alertas no vistas en el front
+					session.getAlertasNoVistas().add(alerta.getAlarmid());
 					
 					AlertaSemoviEntity alertaEnviada = new AlertaSemoviEntity();
 					
@@ -195,17 +210,36 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 		log.info("ENVIANDO ALERTA " + "" + " A SEMOVI... ");
 		log.info("RESPUESTA SEMOVI: " + "");
 		log.info("-------------------------------");
-
+		
+		
 		SemoviSendRequestDTO datosAlertaSemovi = new SemoviSendRequestDTO();
 		SemoviResponseDTO semoviResponse = new SemoviResponseDTO(); 
+		semoviResponse.setStatus(false);
 		
 		Optional<AlertaSemoviEntity> alertaDB = alertaSemoviRepository.findById(idAlerta);
 		
 		if(!alertaDB.isPresent()) {
 			log.warn("Alerta no existe en la base de datos: " + idAlerta);
+			semoviResponse.setMsg("Alerta no existe en base");
+			return semoviResponse;
 		}
-		AlertaSemoviEntity alertaEncontradaBase = alertaDB.get();
 		
+		AlertaSemoviEntity alertaEncontradaBase = alertaDB.get();
+
+		Optional<DatosVehiculoEntity> device = datosVehiculoRepository.findById(alertaEncontradaBase.getIddispositivo());
+		
+		if(!device.isPresent()) {
+			log.warn("Vehiculo no existe en la base de datos por lo que no se puede enviar alerta: " + idAlerta + " | vehice: " + alertaEncontradaBase.getIddispositivo());
+			semoviResponse.setMsg("Vehiculo no existe en la base de datos por lo que no se puede enviar alerta");
+			return semoviResponse;
+		}
+
+		if(device.get().getEstatus().equals(Constants.ESTATUS_VEHICULO_ELIMINADO)) {
+			log.warn("Vehiculo estatus eliminado por lo que no se puede enviar alerta: " + idAlerta + " | vehice: " + alertaEncontradaBase.getIddispositivo());
+			semoviResponse.setMsg("Vehiculo estatus eliminado por lo que no se puede enviar alerta");
+			return semoviResponse;
+		}
+
 		datosAlertaSemovi.setId(alertaEncontradaBase.getIddispositivo());
 		datosAlertaSemovi.setLongitude(alertaEncontradaBase.getLongitud());
 		datosAlertaSemovi.setLatitude(alertaEncontradaBase.getLatitud());
@@ -213,7 +247,7 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 		datosAlertaSemovi.setSpeed(alertaEncontradaBase.getSpeed());
 		datosAlertaSemovi.setCourse(alertaEncontradaBase.getCourse());
 		datosAlertaSemovi.setDate(fechasCommon.dateToString(alertaEncontradaBase.getCeibagpstime()));
-		datosAlertaSemovi.setIgnition(alertaEncontradaBase.getIgnition());
+		datosAlertaSemovi.setIgnition(IGNICION_NO_SE_APLICA_O_SE_DESCONOCE);
 		datosAlertaSemovi.setPannicbutton(alertaEncontradaBase.getPanicbutton());//BOTON DE PANICO			
 		
 		try {
@@ -267,8 +301,12 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 		Set<String> gpsNoCambiaron = new HashSet<>();
 		Map<String,Set<String>> mapGpsStatus = new HashMap<>();
 		List<String> deviceWithoutGpsInCeiba = new ArrayList<>(); 
-		List<SendGPSToSemoviErrorDTO> errorsToSendGps = new ArrayList<>();
-		SendGPSToSemoviErrorResponseDTO response = new SendGPSToSemoviErrorResponseDTO(); 
+		List<String> gpsFoundInCeibaList = new ArrayList<>();
+//		Set<SendGPSToSemoviErrorDTO> errorsToSendGps = new HashSet<>();
+//		Set<String> teridsErrorsList = new HashSet<>();
+		
+//		SendGPSToSemoviErrorResponseDTO response = new SendGPSToSemoviErrorResponseDTO();
+		
 		int gpssEnviadosOK = 0;
 		int gpssEnviadosNOK = 0;
 		
@@ -281,46 +319,42 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 			
 				log.info("INICIO: ENVIO DE GPS's A SEMOVI");
 
-				List<String> vehiculosListos = datosVehiculoRepository.consultaListaVehiculosCompletosByStatus("DATOS_COMPLETOS");
+				List<String> readyVehiclesLocalDB = datosVehiculoRepository.consultaListaVehiculosCompletosByStatus("DATOS_COMPLETOS");
 
-				log.info("Vehiculos en condiciones registrados en base datos: " + vehiculosListos.size());
+				log.info("Vehiculos en condiciones registrados en base datos: " + readyVehiclesLocalDB.size());
 				
-				if (vehiculosListos == null || vehiculosListos.size() <= 0) {
+				if (readyVehiclesLocalDB == null || readyVehiclesLocalDB.size() <= 0) {
 					log.warn("No se encontraron vehiculos en la base que cumplan las condiciones necesarias para enviar a semovi");
 					throw new Exception("No se encontraron vehiculos en la base que cumplan las condiciones necesarias para enviar a semovi"); 
 				}
 
-				for(String vehiculo : vehiculosListos) {
-					log.info("Vehiculos en condiciones: " + vehiculo);
-				}
+				Ceiba2DevicesGpsLastResponsePojo ceibaGpss = apiCeiba2.getGPSVehicle(key, readyVehiclesLocalDB);
 
-				Ceiba2DevicesGpsLastResponsePojo gpss = apiCeiba2.getGPSVehicle(key, vehiculosListos);
-
-				if(gpss == null || gpss.getErrorcode() == null || gpss.getData() == null ) {
+				if(ceibaGpss == null || ceibaGpss.getErrorcode() == null || ceibaGpss.getData() == null ) {
 					log.warn("Ocurrio un problema al obtener gps's de ceiba");
 				}
 				
-				if (!gpss.getErrorcode().equals("200")) {
-					log.warn("Ocurrio un problema al obtener gps's de ceiba, respuesta ceiba: " + gpss.getErrorcode());
-					throw new Exception("Ocurrio un problema al obtener gps's de ceiba, respuesta ceiba: " + gpss.getErrorcode()); 
+				if (!ceibaGpss.getErrorcode().equals("200")) {
+					log.warn("Ocurrio un problema al obtener gps's de ceiba, respuesta ceiba: " + ceibaGpss.getErrorcode());
+					throw new Exception("Ocurrio un problema al obtener gps's de ceiba, respuesta ceiba: " + ceibaGpss.getErrorcode()); 
 				}
 				
-				if (gpss.getData().size() <=0) {
-					log.warn("No hay gps que enviar: " + gpss.getData().size());
-					throw new Exception("No hay gps que enviar" + gpss.getData().size()); 
+				if (ceibaGpss.getData().size() <=0) {
+					log.warn("No hay gps que enviar: " + ceibaGpss.getData().size());
+					throw new Exception("No hay gps que enviar" + ceibaGpss.getData().size()); 
 				}
-
-				log.info("Dispositivos no se encontro gps en ceiba: " + gpss.getData().size());
-				for(Ceiba2DeviceGpsLastPojo gps : gpss.getData()) {
-					if(vehiculosListos.contains(gps.getTerid())) {
-						log.info(gps.getTerid());
-						deviceWithoutGpsInCeiba.add(gps.getTerid());
+				
+				for(Ceiba2DeviceGpsLastPojo ceibaGps : ceibaGpss.getData()) {
+					gpsFoundInCeibaList.add(ceibaGps.getTerid());
+				}
+				
+				for(String vehicleInDB : readyVehiclesLocalDB) {
+					if(!gpsFoundInCeibaList.contains(vehicleInDB)) {
+						deviceWithoutGpsInCeiba.add(vehicleInDB);
 					}
 				}
 
-				log.info("VEHICULOS CON DATOS DE GPS CORRECTAMENTE: " + gpss.getData().size());
-
-				for(Ceiba2DeviceGpsLastPojo gps : gpss.getData()) {
+				for(Ceiba2DeviceGpsLastPojo gps : ceibaGpss.getData()) {
 					SemoviSendRequestDTO datosGps = new SemoviSendRequestDTO();
 					GpsCoordinatesDTO newCoordinatesAndDate = null;
 					
@@ -352,55 +386,99 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 					datosGps.setIgnition(IGNICION_NO_SE_APLICA_O_SE_DESCONOCE);//buscaSiEstaOnline(onlineVehicles, datosTerid.getIdDispositivo())?"1":"2");/*1-Encencido; 2-Apagado; 3-No Aplica(Se Desconoce)*/
 					datosGps.setPannicbutton("0");//GPS
 					
-					log.info("ENVIANDO GPS A SEMOVI: " + gps.getTerid());
+//					log.info("ENVIANDO GPS A SEMOVI: " + gps.getTerid());
 					String responseSemovi = semoviSendFeignClient.send(datosGps);
 					SemoviResponseDTO responseSemoviDTO = objectMapper.readValue(responseSemovi, SemoviResponseDTO.class);
 					
 					if(responseSemoviDTO.getStatus()) {
 						gpssEnviadosOK+=1;
+						
+						if(session.getErrorsGps().getErrors().containsKey(gps.getTerid())) {
+							session.getErrorsGps().getErrors().remove(gps.getTerid());
+						}
+						
 					} else {
 						gpssEnviadosNOK+=1;
-						errorsToSendGps.add(
+						
+						//Si el mensaje de error es el diferente se actualiza 
+						if(session.getErrorsGps().getErrors().containsKey(gps.getTerid())) {
+							if(!session.getErrorsGps().getErrors().get(gps.getTerid()).getErrorMessage().equals(responseSemoviDTO.getMsg())) {
+								session.getErrorsGps().getErrors().get(gps.getTerid()).setErrorMessage(responseSemoviDTO.getMsg());
+							}
+							continue;
+						}
+						
+						//Si es un error nuevo se agrega
+						session.getErrorsGps().getErrors().put(gps.getTerid(), 
 								new SendGPSToSemoviErrorDTO(
-									gps.getTerid(),
-									"Error Respuesta Semovi",
-									responseSemoviDTO.getMsg(),
-									session.getMapLastGps().get(gps.getTerid()).getLastGpsTime()
-								)
-						);
+								gps.getTerid(),
+								"Error Respuesta Semovi",
+								responseSemoviDTO.getMsg(),
+								session.getMapLastGps().get(gps.getTerid()).getLastGpsTime()
+						));
 					}
 					
-					log.info("RESPUESTA DE SEMOVI AL ENVIAR GPS: STATUS -> " +responseSemoviDTO.getStatus() + " / MSG-> " + responseSemoviDTO.getMsg());
+//					log.info("RESPUESTA DE SEMOVI AL ENVIAR GPS: STATUS -> " +responseSemoviDTO.getStatus() + " / MSG-> " + responseSemoviDTO.getMsg());
 
 //					if(session.isMostrarCadenasAlertas()) {
 //						log.error("Cadena de GPS: ");
-						String jsonAlerta = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(datosGps);
-						log.error(jsonAlerta);
+//						String jsonAlerta = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(datosGps);
+//						log.error(jsonAlerta);
 //					}
 				}
 				
-				log.info("GPS_NUEVOS: " + gpsNuevos);
-				log.info("GPS_CAMBIARON: " + gpsCambiaron);
-				log.info("GPS_NO_CAMBIARON: " + gpsNoCambiaron);
+				log.info("-------------------------------------------------------------------- ");
+				log.info("RESUMEN GPS:");
+				log.info("-------------------------------------------------------------------- ");
+				log.info("Dispositivos se encontro gps en ceiba: " + ceibaGpss.getData().size());
+				log.info("Vehiculos no encontrados en CEIBA: " + deviceWithoutGpsInCeiba.size());
+				log.info("Vehiculos con estatus DATOS_COMPLETOS: " + readyVehiclesLocalDB.size());
+
+				log.info("-------------------------------------------------------------------- ");
+				log.info("RESUMEN GPS ESTATUS:");
+				log.info("-------------------------------------------------------------------- ");
+				log.info("GPS_NUEVOS: " + gpsNuevos.size());
+				log.info("GPS_CAMBIARON: " + gpsCambiaron.size());
+				log.info("GPS_NO_CAMBIARON: " + gpsNoCambiaron.size());
+				log.info("TOTAL: " + (gpsNuevos.size() + gpsCambiaron.size() + gpsNoCambiaron.size()));
 				
 				mapGpsStatus.put("GPS_NUEVOS", gpsNuevos);
 				mapGpsStatus.put("GPS_CAMBIARON", gpsCambiaron);
-				mapGpsStatus.put("GPS_NO_CAMBIARON", gpsNoCambiaron);					
+				mapGpsStatus.put("GPS_NO_CAMBIARON", gpsNoCambiaron);
 
 				session.setMapGpsStatus(mapGpsStatus);
 				
-				errorsToSendGps.add(
-						new SendGPSToSemoviErrorDTO(
-							"terid",
-							"Error Respuesta Semovi",
-							"test",
-							"test"
-						)
-				);
-				response.setErrors(errorsToSendGps);
-				response.setNumEnviadosOK(gpssEnviadosOK);
-				response.setNumEnviadosNOK(gpssEnviadosNOK);
-			    template.convertAndSend("/topic/gps", response);
+//				errorsToSendGps.add(
+//						new SendGPSToSemoviErrorDTO(
+//							"terid",
+//							"Error Respuesta Semovi",
+//							"test",
+//							"test"
+//						)
+//				);
+				
+				log.info("-------------------------------------------------------------------- ");
+				log.info("RESUMEN GPS ERRORES:");
+				log.info("-------------------------------------------------------------------- ");
+				log.info("GPS send OK: " + gpssEnviadosOK);
+				log.info("GPS send NOK: " + gpssEnviadosNOK);
+				log.info("TOTAL: " + (gpssEnviadosOK + gpssEnviadosNOK));
+				
+				
+				log.info("-------------------------------------------------------------------- ");
+				log.info("RESUMEN GPS ERRORES TO SHOW IN FRONT:");
+				log.info("-------------------------------------------------------------------- ");
+				log.info("ERRORS OBJECTS: " + session.getErrorsGps().getErrors().size());
+				
+//				session.getErrorsGps().setErrors(errorsToSendGps);
+				session.getErrorsGps().setNumEnviadosOK(gpssEnviadosOK);
+				session.getErrorsGps().setNumEnviadosNOK(gpssEnviadosNOK);
+				
+				
+				List<SendGPSToSemoviErrorDTO> errorsList = session.getErrorsGps().getErrors().values().stream().collect(Collectors.toList());
+				session.getErrorsGps().setErrorsList(errorsList);
+				
+			    template.convertAndSend("/topic/gps", session.getErrorsGps());
 				
 				log.info("FIN: ENVIO DE GPS's A SEMOVI");			
 		} catch (Exception e) {

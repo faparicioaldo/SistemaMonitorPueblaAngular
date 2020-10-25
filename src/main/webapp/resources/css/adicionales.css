@@ -3,6 +3,8 @@ src:url(https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/fonts/glyphicons-halflin
 
 .glyphicon{position:relative;top:1px;display:inline-block;font-family:'Glyphicons Halflings';font-style:normal;font-weight:400;line-height:1;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 
+body { background-color: #FF0000; }
+ 
 .modal-lg{
 	width: 90%;
 }
@@ -77,4 +79,37 @@ loading .modal-dialog {
 }
 .ns_.form-horizontal{    
     margin-top: 50px;
+}
+
+/* ESTILO ALERTAS NO VISTAS */
+@-webkit-keyframes estiloNoVisto {
+  from { background-color: red; }
+  to { background-color: inherit; }
+}
+@-moz-keyframes estiloNoVisto {
+  from { background-color: red; }
+  to { background-color: inherit; }
+}
+@-o-keyframes estiloNoVisto {
+  from { background-color: red; }
+  to { background-color: inherit; }
+}
+@keyframes estiloNoVisto {
+  from { background-color: red; }
+  to { background-color: inherit; }
+}
+
+tr {
+    padding: 2em;
+}
+
+.estiloNoVisto {
+  -webkit-animation: estiloNoVisto 2s infinite; /* Safari 4+ */
+  -moz-animation:    estiloNoVisto 2s infinite; /* Fx 5+ */
+  -o-animation:      estiloNoVisto 2s infinite; /* Opera 12+ */
+  animation:         estiloNoVisto 2s infinite; /* IE 10+ */
+}
+
+.estiloNoVistoRows {
+	background-color:red !important;
 }

@@ -31,7 +31,7 @@ public class ClienteSemoviPueblaTest {
 	public void testOK() {
 		SemoviRequestDTO datos = new SemoviRequestDTO();
 
-		datos.setImei("511760273476623");
+//		datos.setImei("511760273476623");
 		datos.setLongitude("-98.123456");
 		datos.setLatitude("18.123456");
 		datos.setAddress("Prueba");

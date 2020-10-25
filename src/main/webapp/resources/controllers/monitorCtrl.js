@@ -14,7 +14,7 @@ function($scope, FuncionesService, $location, $rootScope, MonitorService) {
 		console.log("Enviando alerta: " + idAlerta);
 		FuncionesService.POST("/MonitorAlertasPuebla/enviarAlertaSemovi", idAlerta).then(
             function(respuesta) {
-				console.log("respuesta envio de alerta: " + JSON.stringify(respuesta, null, '\t'));
+				//console.log("respuesta envio de alerta: " + JSON.stringify(respuesta, null, '\t'));
 				
                 if (respuesta) {
                 }
@@ -26,7 +26,7 @@ function($scope, FuncionesService, $location, $rootScope, MonitorService) {
 		console.log("Descartando alerta: " + idAlerta);
 		FuncionesService.POST("/MonitorAlertasPuebla/descartarAlarma", idAlerta).then(
             function(respuesta) {
-				console.log("respuesta descartar alerta: " + JSON.stringify(respuesta, null, '\t'));
+				//console.log("respuesta descartar alerta: " + JSON.stringify(respuesta, null, '\t'));
 				
                 if (respuesta) {
                 }

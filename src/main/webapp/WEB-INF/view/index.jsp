@@ -7,7 +7,7 @@
 <!-- index.jsp -->
 <html>
 <head>
-	<title>Portal de Afiliaci&oacute;n de Centros de Trabajo</title>
+	<title>Sistema de Monitoreo - PUEBLA</title>
 	<link href="favicon.ico" rel="shortcut icon">
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -56,8 +56,11 @@
 			<h6 class="pull-right">
 				Bienvenido ${pageContext.request.userPrincipal.name} | 
 				<a onclick="document.forms['logoutForm'].submit()">SALIR</a>
-				<label>MENSAJE ALERTS: {{message.alerts}}</label>
-				<label>MENSAJE VEHICLES: {{message.vehicles}}</label>
+				
+				<br>
+				
+				<label>MENSAJE ALERTS: {{message.alerts}}</label>|
+				<label>MENSAJE VEHICLES: {{message.vehicles}}</label>|
 				<label>MENSAJE GPSS: {{message.gpss}}</label>
 			</h6>
 		</c:if>
@@ -90,10 +93,10 @@
 			<ul class="nav nav-tabs container cursorManita">
 
 				<li ng-class="isTabActive(0)">
-					<a
+					<a ng-class="indicaAlertasNuevas()"
 						ng-click="redirect('alertasBtnPanico')"
 						style="font-weight: bold; align-content: center">
-						{{tabs[0]}}
+						{{tabs[0]}} {{alertasNoVistasCount}}
 					</a>
 				</li>
 				<li ng-class="isTabActive(1)">
@@ -110,13 +113,13 @@
 						{{tabs[2]}}
 					</a>
 				</li>					
-				<li ng-class="isTabActive(3)">
-					<a
-						ng-click="redirect('historicoAlertasBtnPanico')"
-						style="font-weight: bold; align-content: center">
-						{{tabs[3]}}
-					</a>
-				</li>												
+<!-- 				<li ng-class="isTabActive(3)"> -->
+<!-- 					<a -->
+<!-- 						ng-click="redirect('historicoAlertasBtnPanico')" -->
+<!-- 						style="font-weight: bold; align-content: center"> -->
+<!-- 						{{tabs[3]}} -->
+<!-- 					</a> -->
+<!-- 				</li>												 -->
 			</ul>
 
 			<div class="tab-content">
@@ -126,7 +129,7 @@
 		</div>
 		<!-- container -->
 	</div>
-
+	
 	<script type="application/javascript">
 		function mostrarModalBuscadorCT() {
 			$('#modalBuscadorCT').modal('show');

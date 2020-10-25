@@ -13,8 +13,8 @@ import lombok.ToString;
 @ToString
 public class SemoviRequestDTO {
 	
-	@JsonProperty("IMEI")
-	private String imei;
+//	@JsonProperty("IMEI")
+//	private String imei;
 	@JsonProperty("Longitude")
 	private String longitude;
 	@JsonProperty("Latitude")

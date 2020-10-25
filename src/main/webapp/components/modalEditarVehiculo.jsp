@@ -61,20 +61,6 @@
                             </div>                            
                         </div>                        
                         <div  class="form-group col-sm-12">
-                            <div  class="form-group col-sm-6" ng-class="{'has-error':datosVehiculoForm.imei.$invalid && datosVehiculoForm.imei.$touched}">                                
-                                <label class="control-label">IMEI (*):</label>                               
-                                <input class="form-control " 
-                                	   ng-model="datosVehiculoSeleccionado.imei"
-                                       placeholder="Introduzca N&uacute;mero Fonacot del Centro de Trabajo."
-                                       type="text" 
-                                       name="imei" 
-                                       size="50" 
-                                       maxlength="50"
-                                       required
-			               			   oninput="this.value = this.value.toUpperCase()" 
-			               		/>
-                                <small class="form-text form-text-error" ng-if="datosVehiculoForm.imei.$invalid && datosVehiculoForm.imei.$touched">El campo imei es requerido.</small>                              
-                            </div>
                             <div class="col-sm-6" ng-class="{'has-error':datosVehiculoForm.plate.$invalid && datosVehiculoForm.plate.$touched}">
                                <label class="control-label">PLACA (*):</label>
                                <input class="form-control " 
@@ -89,8 +75,6 @@
 			              		/>
 			                    <small class="form-text form-text-error" ng-if="datosVehiculoForm.plate.$invalid && datosVehiculoForm.plate.$touched">El campo placa es requerido.</small>                              
                             </div>                            
-                        </div>                        
-                        <div  class="form-group col-sm-12">
                             <div  class="form-group col-sm-6" ng-class="{'has-error':datosVehiculoForm.vin.$invalid && datosVehiculoForm.vin.$touched}">                                
                                 <label class="control-label">SERIE VEHICULAR (*):</label>                               
                                 <input class="form-control " 
@@ -105,6 +89,8 @@
 			               		/>
                                 <small class="form-text form-text-error" ng-if="datosVehiculoForm.vin.$invalid && datosVehiculoForm.vin.$touched">El campo vin es requerido.</small>                              
                             </div>
+                        </div>                        
+                        <div  class="form-group col-sm-12">
                             <div class="col-sm-6" ng-class="{'has-error':datosVehiculoForm.engine.$invalid && datosVehiculoForm.engine.$touched}">
                                <label class="control-label">SERIE DEL MOTOR (*):</label>
                                <input class="form-control " 
@@ -119,8 +105,6 @@
 			              		/>
 			                  	<small class="form-text form-text-error" ng-if="datosVehiculoForm.engine.$invalid && datosVehiculoForm.engine.$touched">El campo engine es requerido.</small>                              
                             </div>                            
-                        </div>                        
-                        <div  class="form-group col-sm-12">
                             <div  class="form-group col-sm-6" ng-class="{'has-error':datosVehiculoForm.year.$invalid && datosVehiculoForm.year.$touched}">
                                 <label class="control-label">AÑO (*):</label>                               
                                 <input class="form-control " 
@@ -135,6 +119,8 @@
 			               		/>
                                 <small class="form-text form-text-error" ng-if="datosVehiculoForm.year.$invalid && datosVehiculoForm.year.$touched">El campo year es requerido.</small>                              
                             </div>
+                        </div>                        
+                        <div  class="form-group col-sm-12">
                             <div class="col-sm-6" ng-class="{'has-error':datosVehiculoForm.color.$invalid && datosVehiculoForm.color.$touched}">
                                <label class="control-label">COLOR (*):</label>
                                <input class="form-control " 
@@ -149,8 +135,6 @@
 			              		/>
 			                    <small class="form-text form-text-error" ng-if="datosVehiculoForm.color.$invalid && datosVehiculoForm.color.$touched">El campo color es requerido.</small>                              
                             </div>                            
-                        </div>                        
-                        <div  class="form-group col-sm-12">
                             <div  class="form-group col-sm-6" ng-class="{'has-error':datosVehiculoForm.route.$invalid && datosVehiculoForm.route.$touched}">                                
                                 <label class="control-label">RUTA (*):</label>                               
                                 <input class="form-control " 
@@ -165,6 +149,8 @@
 				               	/>
                                 <small class="form-text form-text-error" ng-if="datosVehiculoForm.route.$invalid && datosVehiculoForm.route.$touched">El campo route es requerido.</small>                              
                             </div>
+                        </div>                        
+                        <div  class="form-group col-sm-12">
                             <div class="col-sm-6" ng-class="{'has-error':datosVehiculoForm.rs.$invalid && datosVehiculoForm.rs.$touched}">
                                <label class="control-label">RAZON SOCIAL (*):</label>
                                <input class="form-control " 
@@ -180,7 +166,6 @@
 								<small class="form-text form-text-error" ng-if="datosVehiculoForm.rs.$invalid && datosVehiculoForm.rs.$touched">El campo rs es requerido.</small>                              
 			              
                             </div>                            
-                        </div>                        <div  class="form-group col-sm-12">
                             <div  class="form-group col-sm-6" ng-class="{'has-error':datosVehiculoForm.eco.$invalid && datosVehiculoForm.eco.$touched}">                                
                                 <label class="control-label">ECONOMICO (*):</label>                               
                                 <input class="form-control " 
@@ -195,6 +180,8 @@
 			               		/>
                                 <small class="form-text form-text-error" ng-if="datosVehiculoForm.eco.$invalid && datosVehiculoForm.eco.$touched">El campo economico es requerido.</small>                              
                             </div>
+                        </div>                        
+                        <div  class="form-group col-sm-12">
                             <div class="col-sm-6" ng-class="{'has-error':datosVehiculoForm.branch.$invalid && datosVehiculoForm.branch.$touched}">
                                <label class="control-label">MARCA (*):</label>
                                <input class="form-control " 
@@ -210,8 +197,6 @@
 			                    <small class="form-text form-text-error" ng-if="datosVehiculoForm.branch.$invalid && datosVehiculoForm.branch.$touched">El campo branch es requerido.</small>                              
 			              
                             </div>                            
-                        </div>                        
-                        <div  class="form-group col-sm-12">
                             <div  class="form-group col-sm-6" ng-class="{'has-error':datosVehiculoForm.subbranch.$invalid && datosVehiculoForm.subbranch.$touched}">                                
                                 <label class="control-label">SUBMARCA (*):</label>                               
                                 <input class="form-control " 
@@ -226,6 +211,8 @@
 								/>
                                 <small class="form-text form-text-error" ng-if="datosVehiculoForm.subbranch.$invalid && datosVehiculoForm.subbranch.$touched">El campo subbranch es requerido.</small>                              
                             </div>
+                        </div>                        
+                        <div  class="form-group col-sm-12">
                             <div class="col-sm-6" ng-class="{'has-error':datosVehiculoForm.municipio.$invalid && datosVehiculoForm.municipio.$touched}">
                                <label class="control-label">MUNICIPIO (*):</label>
 <!--                                <input class="form-control "  -->
@@ -249,7 +236,6 @@
                                 <small class="form-text form-text-error" ng-if="datosVehiculoForm.municipio.$invalid && datosVehiculoForm.municipio.$touched">El campo municipio es requerido.</small>                              
 			              
                             </div>                            
-                        </div>                        <div  class="form-group col-sm-12">
                             <div  class="form-group col-sm-6" ng-class="{'has-error':datosVehiculoForm.concesion.$invalid && datosVehiculoForm.concesion.$touched}">                                
                                 <label class="control-label">CONCESION (*):</label>                               
                                 <input class="form-control " 
@@ -264,6 +250,8 @@
 			               		/>
                                 <small class="form-text form-text-error" ng-if="datosVehiculoForm.concesion.$invalid && datosVehiculoForm.concesion.$touched">El campo concesion es requerido.</small>                              
                             </div>
+                        </div>                        
+                        <div  class="form-group col-sm-12">
                             <div class="col-sm-6" ng-class="{'has-error':datosVehiculoForm.urlcamera.$invalid && datosVehiculoForm.urlcamera.$touched}">
                                <label class="control-label">URL CAMARAS (*):</label>
                                <input class="form-control " 
@@ -387,18 +375,6 @@
                     </form>                    
                 </div>
             </div>
-
-
-
-
-
-
-
-
-
-
-
-
 
 				<hr>
 				<hr>

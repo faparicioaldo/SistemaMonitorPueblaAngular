@@ -25,6 +25,8 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class CeibaVehiculoServiceImpl implements CeibaVehiculoService {
 
+	private static final String SIN_ASIGNAR_IN_CEIBA = "4";
+
 	@Autowired
 	private DatosVehiculoRepository datosVehiculoRepository;
 
@@ -65,6 +67,10 @@ public class CeibaVehiculoServiceImpl implements CeibaVehiculoService {
 			// Actualiza vehiculos en tabla datos_vehiculo
 			for (DataDevicePojo vehiculoCeiba : vehicles.getData()) {
 				
+				//Ignora los vehiculos sin asignar en ceiba
+				if(vehiculoCeiba.getGroupid().equals(SIN_ASIGNAR_IN_CEIBA))
+					continue;
+					
 				String idDispositivoCeiba = vehiculoCeiba.getDeviceid();					
 				Optional<DatosVehiculoEntity> vehiculoEncontrado = datosVehiculoRepository.findById(idDispositivoCeiba);
 

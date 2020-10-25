@@ -8,6 +8,6 @@ public interface DatosVehiculoService {
 
 	public DatosVehiculoEntity obtenerDatosVehiculo(String idDispositivo);
 	public List<DatosVehiculoEntity> obtenerDatosVehiculos();
-	public void guardaDatosVehiculo(DatosVehiculoEntity datosVehiculo);
+	public String guardaDatosVehiculo(DatosVehiculoEntity datosVehiculo);
 	public void eliminarVehiculo(String iddispositivo);
 }

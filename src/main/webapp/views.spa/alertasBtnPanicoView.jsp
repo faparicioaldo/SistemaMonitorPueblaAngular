@@ -118,8 +118,9 @@
 							  	</tr>
 						  	</thead>
 						  	<tbody>
-								<tr 
+								<tr ng-class="marcarComoNoVisto(x.ceibaAlarmid)"
 									dir-paginate="x in listaAlertasEnviadasSemovi | orderBy:sortKey:reverse | filter:search | itemsPerPage:10"
+									ng-click="markAlertAsSeen(x.ceibaAlarmid)"
 								>
 							    	<td>{{ x.idAlerta }}</td>
 	<!-- 						    	<td>{{ x.ceibaAlarmid }}</td> -->

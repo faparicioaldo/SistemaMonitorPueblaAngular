@@ -36,8 +36,10 @@ public class VehicleController {
 	@PostMapping("/guardarDatosVehiculo")
 	public @ResponseBody RespuestaJSON guardarDatosVehiculo(@RequestBody DatosVehiculoEntity datosVehiculo) {
 		datosVehiculo.setEstatus("DATOS_COMPLETOS");
-		datosVehiculoService.guardaDatosVehiculo(datosVehiculo);
-		return new RespuestaJSON();
+		String estatusMsg = datosVehiculoService.guardaDatosVehiculo(datosVehiculo);
+		RespuestaJSON response = new RespuestaJSON();
+		response.setDescripcionCode(estatusMsg);
+		return response;
 	}
 	
 	@PostMapping("/eliminarVehiculo")

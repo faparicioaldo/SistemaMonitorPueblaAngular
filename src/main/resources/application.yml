@@ -54,5 +54,5 @@ semovi:
 
 monitor:
   video:
-    url:  http://localhost:8084/MonitorAlertasPuebla/video/
+    url:  http://3.14.24.174:8084/MonitorAlertasPuebla/video/
     

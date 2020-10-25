@@ -70,11 +70,14 @@ app.run([
 		$rootScope.infoGpss.totalEnviadosOK = 0;
 		$rootScope.infoGpss.totalEnviadosNOK = 0;
 		
+		$rootScope.alertasNoVistas = [];
+		$rootScope.alertasNoVistasCount = 0;		
+		
 		FuncionesService.POST("/MonitorAlertasPuebla/getMunicipios").then(
             function(respuesta) {
                 if (respuesta) {
                 	$rootScope.municipios = respuesta.municipios;
-					console.log("municipios: " + JSON.stringify(respuesta.municipios, null, '\t'));
+					//console.log("municipios: " + JSON.stringify(respuesta.municipios, null, '\t'));
                 }
             }
         );
@@ -265,7 +268,7 @@ app.service('MonitorService',['$rootScope', '$q', '$timeout', 'FuncionesService'
       });      
       socket.stomp.subscribe(service.VEHICLE_TOPIC, function(data) {
       	 var newVehicles = JSON.parse(data.body);
-      	 console.log("NUEVOS VEHICULOS ENCONTRADOS: " + JSON.stringify(newVehicles, null, '\t'));
+      	 //console.log("NUEVOS VEHICULOS ENCONTRADOS: " + JSON.stringify(newVehicles, null, '\t'));
       	 
 		 $rootScope.listaVehiculosRegistrados.unshift(...newVehicles);
 		 
@@ -275,19 +278,17 @@ app.service('MonitorService',['$rootScope', '$q', '$timeout', 'FuncionesService'
       socket.stomp.subscribe(service.GPS_TOPIC, function(data) {
     	 $rootScope.message.gpss += 1;
     	 var dataResponse = JSON.parse(data.body);
-    	 var errors = dataResponse.errors;
+    	 var errors = dataResponse.errorsList;
       	 console.log("ERRORES AL ENVIAR GPS: " + JSON.stringify(errors, null, '\t'));
 
-		 //$rootScope.sendGPSToSemoviErrors = [];
-    	 //$rootScope.sendGPSToSemoviErrors = errors;                	
-    	 $rootScope.sendGPSToSemoviErrors.unshift(...errors);                	
+		 $rootScope.sendGPSToSemoviErrors = [];
+    	 $rootScope.sendGPSToSemoviErrors = errors;
+    	 //$rootScope.sendGPSToSemoviErrors.unshift(...errors);
 
 		 $rootScope.infoGpss.totalEnviadosOK = dataResponse.numEnviadosOK;
 		 $rootScope.infoGpss.totalEnviadosNOK = dataResponse.numEnviadosNOK;
 		 
-
-    	 listener.notify("hola");
-    	 
+    	 listener.notify("hola");	 
       });      
     };
 

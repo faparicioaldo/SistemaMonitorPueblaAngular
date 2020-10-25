@@ -46,20 +46,15 @@ public class ScheduledTasks {
 //		log.info("INICIO: scheduler");
 //		log.info("------------------------------------------------------------------");
 		
-		  ChatMessage mensaje = new ChatMessage();
-	      mensaje.setContent("HOLAA");
-	      mensaje.setType(MessageType.CHAT);
-	      mensaje.setSender("HOLAA");
-
 //	      template.convertAndSend("/topic/vehicle", mensaje);
 //	      template.convertAndSend("/topic/alert", mensaje);
 //	      template.convertAndSend("/topic/gps", mensaje);
 			
 		//Consulta lista de vehiculos registrados en CEIBA2
-//		ceibaVehiculoService.actualizarVehiculosCeibaInMonitor();
+		ceibaVehiculoService.actualizarVehiculosCeibaInMonitor();
 		
 //		enviarAlarmasSemovi.pruebaGPS();
-//		enviarAlarmasSemovi.actualizarConAlertasCeiba();
+		enviarAlarmasSemovi.actualizarConAlertasCeiba();
 		
 		//Cuando se cumplan N (CiclosContadorGPS definidos por variable ciclosContadorGPS en GlobalSession) 
 		//se realiza en envio de mensajes (GPS) de todos los vehiculos en CEIBA2 y en Monitor de Alarmas a SEMOVI 

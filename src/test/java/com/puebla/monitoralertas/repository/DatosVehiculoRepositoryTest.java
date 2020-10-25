@@ -14,6 +14,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.puebla.monitoralertas.constant.Constants;
 import com.puebla.monitoralertas.entity.DatosVehiculoEntity;
 
 @RunWith(SpringRunner.class)
@@ -22,6 +23,12 @@ public class DatosVehiculoRepositoryTest {
 
 	@Autowired
 	private DatosVehiculoRepository datosVehiculoRepository;
+
+	@Test
+	public void findByEstatusIsNotTest() {
+		List<DatosVehiculoEntity> vehiculos = datosVehiculoRepository.findByEstatusIsNotOrderByEmpresaAscFechacapturaDesc(Constants.ESTATUS_VEHICULO_ELIMINADO);
+		assertNotNull(vehiculos);
+	}
 	
 	@Test
 	@Ignore

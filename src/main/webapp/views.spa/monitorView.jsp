@@ -20,6 +20,12 @@
 							</div>
 						</div>
 					</div>
+                 
+                 
+                 	<div class="alert alert-info" style="text-align: left !important;">
+	    				<strong>¡Importante!</strong> Los mensajes de error desaparecen cuando el proximo envio de GPS (cuando el vehiculo cambia de ubicacion) resulta exitoso.
+					</div>
+                 
                                    
                     <!--TABLA-->
                     <div class="container">

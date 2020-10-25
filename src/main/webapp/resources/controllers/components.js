@@ -15,6 +15,9 @@ app.component("modalEditarVehiculo", {
 	  	$scope.$on('msg', function(evt, msg){
 	    	vm.data = msg;
 	    	$scope.datosVehiculoSeleccionado = vm.data;
+	    	
+	    	//Este es un parche se debe manejar el tipo de dato municipio como numero en la base
+	    	$scope.datosVehiculoSeleccionado.municipio = parseInt($scope.datosVehiculoSeleccionado.municipio,10);
 	    	//alert(JSON.stringify($scope.datosVehiculoSeleccionado, null, '\t'));
 	  	});
 		
@@ -32,8 +35,8 @@ app.component("modalEditarVehiculo", {
 	            function(respuesta) {
 					//console.log("Municipios: " + JSON.stringify(respuesta));
 	                if (respuesta) {
-	                	utilityService.mostrarMensaje("Guardado Correcto..");
-	                }
+                		utilityService.mostrarMensaje(respuesta.descripcionCode);
+                	}
 	            }
 		    );
     	};

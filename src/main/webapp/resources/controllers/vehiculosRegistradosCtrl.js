@@ -6,6 +6,7 @@ app.controller("vehiculosRegistradosCtrl", ['$scope','utilityService','Funciones
 	$scope.infoVehiculos = {};
 	$scope.infoVehiculos.total = 0;
 	$scope.infoVehiculos.totalFaltaDatos = 0;
+	$scope.infoVehiculos.totalDatosCompletos = 0;
 	
 	var vm = this;
   	vm.sendEvent = function(datosVehiculo) {
@@ -15,10 +16,24 @@ app.controller("vehiculosRegistradosCtrl", ['$scope','utilityService','Funciones
 	$scope.init = function() {
 		console.log("init vehiculosRegistradosCtrl")
 		
-		$rootScope.listaVehiculosRegistrados.forEach(vehicle => $scope.infoVehiculos.totalFaltaDatos+=1);
+//		$rootScope.listaVehiculosRegistrados.forEach(vehicle => $scope.infoVehiculos.totalFaltaDatos+=1);
 		
 		cargaVehiculosRegistrados();		
 	}
+	
+	
+	$scope.guardarDatosVehiculo = function(datosVehiculo) {
+		console.log("guardando datos vehiculo...");
+		
+		FuncionesService.POST("/MonitorAlertasPuebla/guardarDatosVehiculo", datosVehiculo).then(
+            function(respuesta) {
+				//console.log("Municipios: " + JSON.stringify(respuesta));
+                if (respuesta) {
+                	utilityService.mostrarMensaje(respuesta.descripcionCode);
+                }
+            }
+	    );
+	};
 	
 	$scope.faltanDatos = function(datosVehiculo) {
 		
@@ -29,9 +44,6 @@ app.controller("vehiculosRegistradosCtrl", ['$scope','utilityService','Funciones
 			faltanDatos = true;			
 		}else
 		if(datosVehiculo.empresa == undefined || datosVehiculo.iddispositivo == ''){
-			faltanDatos = true;
-		}else
-		if(datosVehiculo.imei == undefined || datosVehiculo.imei == ''){
 			faltanDatos = true;
 		}else
 		if(datosVehiculo.plate == undefined || datosVehiculo.plate == ''){
@@ -88,7 +100,7 @@ app.controller("vehiculosRegistradosCtrl", ['$scope','utilityService','Funciones
 		
 		//vm.sendEvent(datosVehiculo);
 		
-		FuncionesService.POST("/MonitorAlertasPuebla/eliminarVehiculo").then(
+		FuncionesService.POST("/MonitorAlertasPuebla/eliminarVehiculo",iddispositivo).then(
             function(respuesta) {
 				
                 if (respuesta) {
@@ -96,7 +108,7 @@ app.controller("vehiculosRegistradosCtrl", ['$scope','utilityService','Funciones
                 }
             }
         );
-	}
+	};
 			
 	function cargaVehiculosRegistrados() {
 		console.log('Cargando vehiculos registrados....');
@@ -109,11 +121,30 @@ app.controller("vehiculosRegistradosCtrl", ['$scope','utilityService','Funciones
                 	$rootScope.listaVehiculosRegistrados = respuesta.listaVehiculosRegistrados;
                 	
                 	$scope.infoVehiculos.total = $rootScope.listaVehiculosRegistrados.length;
+                	$scope.infoVehiculos.totalFaltaDatos = calculaVehiculosNoRegistrados($rootScope.listaVehiculosRegistrados);
+                	$scope.infoVehiculos.totalDatosCompletos = ($scope.infoVehiculos.total - $scope.infoVehiculos.totalFaltaDatos);
                 	
                 	console.log("Total vehiculos: " + $scope.infoVehiculos.total);
                 	//console.log("Total vehiculos: " + $scope.infoVehiculos.totalFaltaDatos.length);
                 }
             }
         );
+    };
+    
+    function calculaVehiculosNoRegistrados(listaVehiculosRegistrados){
+    	var contadorVehiculosNORegistrados = 0;
+    	
+    	for(indice in listaVehiculosRegistrados){
+    		var vehicle = listaVehiculosRegistrados[indice];
+//  			if(vehicle.empresa === undefined || vehicle.empresa === '' || vehicle.empresa === null){
+//  				contadorVehiculosNORegistrados++;
+//  			}
+  			if(vehicle.estatus === 'FALTAN_DATOS'){
+  				contadorVehiculosNORegistrados++;
+  			}
+
+    	}
+    	
+		return contadorVehiculosNORegistrados;
     };
 }]);

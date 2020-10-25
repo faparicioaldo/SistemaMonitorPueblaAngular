@@ -43,9 +43,11 @@ public interface AlertaSemoviRepository extends JpaRepository<AlertaSemoviEntity
 		    + "from "
 				+ "db_monitor.alertas_semovi a " 
 				+ "inner join "
-				+ "db_monitor.datos_vehiculo v " 
+				+ "db_monitor.datos_vehiculo v "
 			+ "on " 
 				+ "a.id_dispositivo = v.id_dispositivo "
+			+ "where "
+				+ "MONTH(a.ceiba_gpstime) = MONTH(CURRENT_DATE())"
 			+ " order by a.ceiba_gpstime desc"			
 			, nativeQuery=true)
 	public List<IDatosAlertaEnviadasDTO> consultaAlertasEnviadasSemovi();

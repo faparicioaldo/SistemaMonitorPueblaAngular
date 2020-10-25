@@ -15,8 +15,9 @@
 					<div>	
 						<div class="row">
 							<div class="col">
+								<span class="pull-right">Total Vehiculos Datos Completos: {{infoVehiculos.totalDatosCompletos}}</span><br/>
+								<span class="pull-right">Total Vehiculos Falta Datos: {{infoVehiculos.totalFaltaDatos}}</span><br/>
 								<span class="pull-right">Total Vehiculos: {{infoVehiculos.total}}</span><br/>
-								<span class="pull-right">Total Vehiculos Falta Datos: {{infoVehiculos.totalFaltaDatos}}</span>
 							</div>
 						</div>
 					</div>
@@ -70,10 +71,11 @@
 							    	<th ng-click="sort('eco')">
 							    		<strong>ECONOMICO</strong>
 				    	            	<span class="glyphicon sort-icon" 
-				    	            		  ng-show="sortKey=='imei'" 
+				    	            		  ng-show="sortKey=='eco'" 
 				    	            		  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
 				    	            	</span>
 							    	</th>
+							    	<th>ESTATUS</th>
 							    	<th></th>
 							    	<th></th>
 							    	<th></th>
@@ -87,6 +89,11 @@
 							    	<td>{{ x.plate }}</td>
 				 					<td>{{ x.route}}</td> 
 							    	<td>{{ x.eco }}</td>
+							    	<td>{{ x.estatus }}</td>
+
+							    	<td>						    
+							    		<input type="button" ng-click="guardarDatosVehiculo(x)" value = "ENVIAR SEMOVI" class="btn btn-primary"/>
+							    	</td>
 							    	<td>						    
 							    		<a href="{{x.urlcamera}}" target="_blank" class="btn btn-primary">CAMARAS</a>
 							    	</td>
