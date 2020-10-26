@@ -279,7 +279,7 @@ app.service('MonitorService',['$rootScope', '$q', '$timeout', 'FuncionesService'
     	 $rootScope.message.gpss += 1;
     	 var dataResponse = JSON.parse(data.body);
     	 var errors = dataResponse.errorsList;
-      	 console.log("ERRORES AL ENVIAR GPS: " + JSON.stringify(errors, null, '\t'));
+      	 //console.log("ERRORES AL ENVIAR GPS: " + JSON.stringify(errors, null, '\t'));
 
 		 $rootScope.sendGPSToSemoviErrors = [];
     	 $rootScope.sendGPSToSemoviErrors = errors;
@@ -301,10 +301,15 @@ app.service('MonitorService',['$rootScope', '$q', '$timeout', 'FuncionesService'
    	  console.log('inicializando conecion a websocket....');
       socket.client = new SockJS(service.SOCKET_URL);
       socket.stomp = Stomp.over(socket.client);
+      
+      //DISABLED STOMP LOG
+      //socket.stomp.debug = () => {};
+      socket.stomp.debug = function(str) {};
+      
       socket.stomp.connect({}, startListener, errorConexion);
       socket.stomp.onclose = reconnect;
     };
-    
+
     initialize();
     return service;
 }]);
