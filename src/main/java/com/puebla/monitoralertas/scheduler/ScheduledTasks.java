@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.puebla.monitoralertas.service.CeibaVehiculoService;
 import com.puebla.monitoralertas.service.EnviarAlarmaGobiernoService;
+import com.puebla.monitoralertas.service.EnviarGPSGobiernoService;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -19,7 +20,10 @@ public class ScheduledTasks {
 
 	@Autowired
 	private EnviarAlarmaGobiernoService enviarAlarmasSemovi;
-	
+
+	@Autowired
+	private EnviarGPSGobiernoService enviarGpsSemovi;
+
 	@Autowired
 	private CeibaVehiculoService ceibaVehiculoService;
 	
@@ -32,7 +36,7 @@ public class ScheduledTasks {
 		log.info("------------------------------------------");
 		log.info("SCHEDULER 1: Enviar GPS's (los que cambiaron) a WebMaps");
 		log.info("------------------------------------------");
-		enviarAlarmasSemovi.enviarGPSs();
+		enviarGpsSemovi.enviarGPSs();
 	}
 
 	/**
