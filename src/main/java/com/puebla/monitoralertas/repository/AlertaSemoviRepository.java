@@ -52,7 +52,6 @@ public interface AlertaSemoviRepository extends JpaRepository<AlertaSemoviEntity
 			, nativeQuery=true)
 	public List<IDatosAlertaEnviadasDTO> consultaAlertasEnviadasSemovi();
 	
-	
 	@Query(value=
 			"select " 
 				+ "a.ceiba_alarmid "
@@ -81,10 +80,5 @@ public interface AlertaSemoviRepository extends JpaRepository<AlertaSemoviEntity
 	@Modifying(clearAutomatically = true)
 	@Query(value="UPDATE alertas_Semovi c SET c.semovi_estatus =:estatus, c.semovi_mensaje =:mensaje WHERE c.id_alerta =:idalerta", nativeQuery=true)
 	public int updateAlarmaEstatusByAlarmaid(@Param("idalerta") Integer idalerta, @Param("estatus") String status, @Param("mensaje") String mensaje);
-
-//	@Transactional
-//	@Modifying(clearAutomatically = true)
-//	@Query("UPDATE AlertaSemoviEntity c SET c.placa = :placa, c.imei = :imei, c.ipdispositivo = :ipdispositivo, c.ruta=:ruta, c.empresa=:empresa, c.economico=:economico WHERE c.alarmaid = :alarmaid")
-//	int updateAlarmaDatos(@Param("alarmaid") Integer alarmaid, @Param("placa") String placa, @Param("imei") String imei, @Param("ipdispositivo") String ipdispositivo, @Param("ruta") String ruta, @Param("empresa") String empresa, @Param("economico") String economico);
 
 }
