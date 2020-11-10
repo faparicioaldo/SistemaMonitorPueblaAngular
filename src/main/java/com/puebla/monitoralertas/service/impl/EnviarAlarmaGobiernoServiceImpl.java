@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.puebla.monitoralertas.common.FechasCommon;
 import com.puebla.monitoralertas.config.GlobalSession;
@@ -25,7 +26,6 @@ import com.puebla.monitoralertas.dto.GpsCoordinatesDTO;
 import com.puebla.monitoralertas.dto.SemoviResponseDTO;
 import com.puebla.monitoralertas.dto.SemoviSendRequestDTO;
 import com.puebla.monitoralertas.dto.SendGPSToSemoviErrorDTO;
-import com.puebla.monitoralertas.dto.SendGPSToSemoviErrorResponseDTO;
 import com.puebla.monitoralertas.entity.AlertaSemoviEntity;
 import com.puebla.monitoralertas.entity.DatosVehiculoEntity;
 import com.puebla.monitoralertas.feign.client.SemoviSendFeignClient;
@@ -53,7 +53,7 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 	private GlobalSession session;
 	
 	@Autowired
-	private ObjectMapper objectMapper;
+	private ObjectMapper mapper;
 
 	@Autowired
 	private DatosVehiculoRepository datosVehiculoRepository;
@@ -215,54 +215,57 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 		SemoviSendRequestDTO datosAlertaSemovi = new SemoviSendRequestDTO();
 		SemoviResponseDTO semoviResponse = new SemoviResponseDTO(); 
 		semoviResponse.setStatus(false);
-		
-		Optional<AlertaSemoviEntity> alertaDB = alertaSemoviRepository.findById(idAlerta);
-		
-		if(!alertaDB.isPresent()) {
-			log.warn("Alerta no existe en la base de datos: " + idAlerta);
-			semoviResponse.setMsg("Alerta no existe en base");
-			return semoviResponse;
-		}
-		
-		AlertaSemoviEntity alertaEncontradaBase = alertaDB.get();
-
-		Optional<DatosVehiculoEntity> device = datosVehiculoRepository.findById(alertaEncontradaBase.getIddispositivo());
-		
-		if(!device.isPresent()) {
-			log.warn("Vehiculo no existe en la base de datos por lo que no se puede enviar alerta: " + idAlerta + " | vehice: " + alertaEncontradaBase.getIddispositivo());
-			semoviResponse.setMsg("Vehiculo no existe en la base de datos por lo que no se puede enviar alerta");
-			return semoviResponse;
-		}
-
-		if(device.get().getEstatus().equals(Constants.ESTATUS_VEHICULO_ELIMINADO)) {
-			log.warn("Vehiculo estatus eliminado por lo que no se puede enviar alerta: " + idAlerta + " | vehice: " + alertaEncontradaBase.getIddispositivo());
-			semoviResponse.setMsg("Vehiculo estatus eliminado por lo que no se puede enviar alerta");
-			return semoviResponse;
-		}
-
-		datosAlertaSemovi.setId(alertaEncontradaBase.getIddispositivo());
-		datosAlertaSemovi.setLongitude(alertaEncontradaBase.getLongitud());
-		datosAlertaSemovi.setLatitude(alertaEncontradaBase.getLatitud());
-		datosAlertaSemovi.setAddress(alertaEncontradaBase.getAddress());
-		datosAlertaSemovi.setSpeed(alertaEncontradaBase.getSpeed());
-		datosAlertaSemovi.setCourse(alertaEncontradaBase.getCourse());
-		datosAlertaSemovi.setDate(fechasCommon.dateToString(alertaEncontradaBase.getCeibagpstime()));
-		datosAlertaSemovi.setIgnition(IGNICION_NO_SE_APLICA_O_SE_DESCONOCE);
-		datosAlertaSemovi.setPannicbutton(alertaEncontradaBase.getPanicbutton());//BOTON DE PANICO			
+		Optional<AlertaSemoviEntity> alertaDB = null;
+		AlertaSemoviEntity alertaEncontradaBase = null;
+		Optional<DatosVehiculoEntity> device = null;
 		
 		try {
+
+			alertaDB = alertaSemoviRepository.findById(idAlerta);
+			
+			if(!alertaDB.isPresent()) {
+				log.warn("Alerta no existe en la base de datos: " + idAlerta);
+				semoviResponse.setMsg("Alerta no existe en base");
+				return semoviResponse;
+			}
+			
+			alertaEncontradaBase = alertaDB.get();
+	
+			device = datosVehiculoRepository.findById(alertaEncontradaBase.getIddispositivo());
+			
+			if(!device.isPresent()) {
+				log.warn("Vehiculo no existe en la base de datos por lo que no se puede enviar alerta: " + idAlerta + " | vehice: " + alertaEncontradaBase.getIddispositivo());
+				semoviResponse.setMsg("Vehiculo no existe en la base de datos por lo que no se puede enviar alerta");
+				return semoviResponse;
+			}
+	
+			if(device.get().getEstatus().equals(Constants.ESTATUS_VEHICULO_ELIMINADO)) {
+				log.warn("Vehiculo estatus eliminado por lo que no se puede enviar alerta: " + idAlerta + " | vehice: " + alertaEncontradaBase.getIddispositivo());
+				semoviResponse.setMsg("Vehiculo estatus eliminado por lo que no se puede enviar alerta");
+				return semoviResponse;
+			}
+	
+			datosAlertaSemovi.setId(alertaEncontradaBase.getIddispositivo());
+			datosAlertaSemovi.setLongitude(alertaEncontradaBase.getLongitud());
+			datosAlertaSemovi.setLatitude(alertaEncontradaBase.getLatitud());
+			datosAlertaSemovi.setAddress(alertaEncontradaBase.getAddress());
+			datosAlertaSemovi.setSpeed(alertaEncontradaBase.getSpeed());
+			datosAlertaSemovi.setCourse(alertaEncontradaBase.getCourse());
+			datosAlertaSemovi.setDate(fechasCommon.dateToString(alertaEncontradaBase.getCeibagpstime()));
+			datosAlertaSemovi.setIgnition(IGNICION_NO_SE_APLICA_O_SE_DESCONOCE);
+			datosAlertaSemovi.setPannicbutton(alertaEncontradaBase.getPanicbutton());//BOTON DE PANICO			
+			
 			String response = semoviSendFeignClient.send(datosAlertaSemovi);
-			semoviResponse = objectMapper.readValue(response, SemoviResponseDTO.class);
+			semoviResponse = mapper.readValue(response, SemoviResponseDTO.class);
 			
 			alertaEncontradaBase.setSemoviestatus(semoviResponse.getStatus().toString());
 			alertaEncontradaBase.setSemovimensaje(semoviResponse.getMsg());
-			alertaEncontradaBase.setSemovirespuesta(objectMapper.writeValueAsString(semoviResponse));
+			alertaEncontradaBase.setSemovirespuesta(mapper.writeValueAsString(semoviResponse));
 			log.info("Exito al enviar alerta a semovi: " + idAlerta);
 		} catch (Exception e) {
+			log.error("Fallo al enviar alerta a semovi: " + idAlerta, e);
 			alertaEncontradaBase.setSemoviestatus(semoviResponse.getStatus().toString());
-			alertaEncontradaBase.setSemovimensaje(semoviResponse.getMsg());
-			
-			log.error("Fallo al enviar alerta a semovi: " + idAlerta);
+			alertaEncontradaBase.setSemovimensaje(semoviResponse.getMsg());			
 		} finally {
 			log.info("Guarda en bitacora envio de alerta a semovi: " + idAlerta);
 			alertaSemoviRepository.save(alertaEncontradaBase);	
@@ -381,15 +384,40 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 					datosGps.setAddress("OBTENER DE GOOGLE");
 					datosGps.setSpeed(gps.getSpeed());
 					datosGps.setCourse(gps.getDirection());
-					datosGps.setDate(gps.getGpstime());
+//					datosGps.setDate(gps.getGpstime());
+					
+					SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					
+					datosGps.setDate(simpleDateFormat.format(new Date()));
 //					datosGps.setIgnition(gps.getState());
 					datosGps.setIgnition(IGNICION_NO_SE_APLICA_O_SE_DESCONOCE);//buscaSiEstaOnline(onlineVehicles, datosTerid.getIdDispositivo())?"1":"2");/*1-Encencido; 2-Apagado; 3-No Aplica(Se Desconoce)*/
 					datosGps.setPannicbutton("0");//GPS
 					
+					try {
+						if(gps.getTerid().equals("009900AA22")) {
+							log.info("---------------------------------------------------------------");
+							log.info("PETICION: 009900AA22");
+							String jsonPretty = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(datosGps);
+							log.info(jsonPretty);
+						}
+					} catch (JsonProcessingException e) {
+						log.error("No se pudo imprimir json request: ", e);
+					}
+					
 //					log.info("ENVIANDO GPS A SEMOVI: " + gps.getTerid());
 					String responseSemovi = semoviSendFeignClient.send(datosGps);
-					SemoviResponseDTO responseSemoviDTO = objectMapper.readValue(responseSemovi, SemoviResponseDTO.class);
-					
+					SemoviResponseDTO responseSemoviDTO = mapper.readValue(responseSemovi, SemoviResponseDTO.class);
+
+					try {
+						if(gps.getTerid().equals("009900AA22")) {
+							log.info("RESPUESTA: ");
+							String jsonPretty = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(responseSemoviDTO);
+							log.info(jsonPretty);
+						}
+					} catch (JsonProcessingException e) {
+						log.error("No se pudo imprimir json request: ", e);
+					}
+
 					if(responseSemoviDTO.getStatus()) {
 						gpssEnviadosOK+=1;
 						
@@ -482,7 +510,7 @@ public class EnviarAlarmaGobiernoServiceImpl implements EnviarAlarmaGobiernoServ
 				
 				log.info("FIN: ENVIO DE GPS's A SEMOVI");			
 		} catch (Exception e) {
-			log.error("No se pudo enviar GPS's a SEMOVI: ", e.getCause() , " - mensaje: " + e.getMessage());
+			log.error("No se pudo enviar GPS's a SEMOVI: ", e);
 		}
 	}
 	
