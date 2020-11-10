@@ -49,7 +49,7 @@ feign:
             load: http://semovi-puebla.webmaps.com.mx/api/2.2/load
             send: http://semovi-puebla.webmaps.com.mx/api/2.2/send
 semovi:
-    password: 6230dbb2179423c8b05d1f8d3920ff3856e34f85
+    password: 4721262d79e21446581c139a57297c7fb54b2139181f60ced7759ea6281f6915a76e2298bcf0afd0f43adb62faee0c88aa6a4d37eb4ced4804755726d6f8b380
     username: sinergia
 
 monitor:
