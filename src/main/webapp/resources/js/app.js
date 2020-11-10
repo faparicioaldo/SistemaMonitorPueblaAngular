@@ -24,11 +24,8 @@ app.config([ '$routeProvider', '$compileProvider',
 			$compileProvider.commentDirectivesEnabled(false);
 			$compileProvider.cssClassDirectivesEnabled(false);
 		
-			$routeProvider.when("/", {
-				templateUrl : "views/indexView.jsp",
-				controller : "indexCtrl"
-
-			}).when("/alertasBtnPanico", {
+			$routeProvider
+			.when("/alertasBtnPanico", {
 				templateUrl : "/MonitorAlertasPuebla/views.spa/alertasBtnPanicoView.jsp",
 				controller : "alertasBtnPanicoCtrl"
 			}).when("/vehiculosRegistrados", {
@@ -72,7 +69,9 @@ app.run([
 		
 		$rootScope.alertasNoVistas = [];
 		$rootScope.alertasNoVistasCount = 0;		
-		
+				
+		$location.path('/alertasBtnPanico');
+
 		FuncionesService.POST("/MonitorAlertasPuebla/getMunicipios").then(
             function(respuesta) {
                 if (respuesta) {
@@ -81,8 +80,6 @@ app.run([
                 }
             }
         );
-		
-		$location.path('/alertasBtnPanico');
 		
 		$rootScope.tabs = [ 
 				"Alertas Panico",
