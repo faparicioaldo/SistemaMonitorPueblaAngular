@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
 
 @Configuration
 @EnableWebSecurity
@@ -24,19 +25,45 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
         http
         	.cors()
         	.and()
-        	.csrf()
-        	.disable()
+        	.csrf().disable()
+        	
             .authorizeRequests()
                 .antMatchers("/resources/**", "/registration").permitAll()
+                .antMatchers("/js/**").permitAll()
                 .antMatchers("/video/**").permitAll()
                 .antMatchers("/ws/**","/app/**","/topic/**").permitAll()                
                 .antMatchers("/MonitorAlertasPuebla/**").permitAll()
                 .anyRequest()
                 .authenticated()
-                .and()
+//                .and()
+//        		.headers().frameOptions().disable()
+//                .and().headers().defaultsDisabled()
+            		.and()
+            			.headers()
+            			.frameOptions()
+//            				.sameOrigin()
+            				.disable()
+//            				.addHeaderWriter(
+//            						new XFrameOptionsHeaderWriter(
+//            								new StaticAllowFromStrategy(
+//            										URI.create("puebla.webmaps.com.mx"))))
+            				.addHeaderWriter(new StaticHeadersWriter("X-FRAME-OPTIONS"
+            						, "ALLOW-FROM puebla.webmaps.com.mx"
+//            						, "ALLOW-FROM localhost"
+            						)) 
+            				
+//            				.headers().addHeaderWriter(new StaticHeadersWriter(
+//            				        "X-Content-Security-Policy",
+//            				        "frame-ancestors self *.puebla.webmaps.com.mx *.localhost"))
+//            				.and()
+//            				.headers().addHeaderWriter(new StaticHeadersWriter(
+//            				        "Content-Security-Policy",
+//            				        "frame-ancestors self *.puebla.webmaps.com.mx *.localhost"))            				
+            	.and()
             .formLogin()
                 .loginPage("/login")
                 .permitAll()
