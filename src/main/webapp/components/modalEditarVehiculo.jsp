@@ -41,7 +41,7 @@
                                        size="250" 
                                        maxlength="250"
                                        readonly
-			               			   oninput="this.value = this.value.toUpperCase()" 
+			               			    
 			               		/>
                             </div>
                             <div class="col-sm-6" ng-class="{'has-error':datosVehiculoForm.empresa.$invalid && datosVehiculoForm.empresa.$touched}">
@@ -55,7 +55,7 @@
                                       maxlength="200"
                                       required
                                       required
-                                      oninput="this.value = this.value.toUpperCase()"                                      
+                                                                            
 			              		/>
                                 <small class="form-text form-text-error" ng-if="datosVehiculoForm.empresa.$invalid && datosVehiculoForm.empresa.$touched">El campo empresa es requerido</small>                              
                             </div>                            
@@ -71,7 +71,7 @@
                                       size="50" 
                                       maxlength="50"
                                       required
-			              			  oninput="this.value = this.value.toUpperCase()" 
+			              			   
 			              		/>
 			                    <small class="form-text form-text-error" ng-if="datosVehiculoForm.plate.$invalid && datosVehiculoForm.plate.$touched">El campo placa es requerido.</small>                              
                             </div>                            
@@ -85,7 +85,7 @@
                                        size="200" 
                                        maxlength="200"
                                        required
-			               			   oninput="this.value = this.value.toUpperCase()" 
+			               			    
 			               		/>
                                 <small class="form-text form-text-error" ng-if="datosVehiculoForm.vin.$invalid && datosVehiculoForm.vin.$touched">El campo vin es requerido.</small>                              
                             </div>
@@ -101,7 +101,7 @@
                                       size="200" 
                                       maxlength="200"
                                       required
-			              			  oninput="this.value = this.value.toUpperCase()" 
+			              			   
 			              		/>
 			                  	<small class="form-text form-text-error" ng-if="datosVehiculoForm.engine.$invalid && datosVehiculoForm.engine.$touched">El campo engine es requerido.</small>                              
                             </div>                            
@@ -115,7 +115,7 @@
                                        size="30" 
                                        maxlength="30"
                                        required
-			               			   oninput="this.value = this.value.toUpperCase()" 
+			               			    
 			               		/>
                                 <small class="form-text form-text-error" ng-if="datosVehiculoForm.year.$invalid && datosVehiculoForm.year.$touched">El campo year es requerido.</small>                              
                             </div>
@@ -131,7 +131,7 @@
                                       size="200" 
                                       maxlength="200"
                                       required
-			              			  oninput="this.value = this.value.toUpperCase()" 
+			              			   
 			              		/>
 			                    <small class="form-text form-text-error" ng-if="datosVehiculoForm.color.$invalid && datosVehiculoForm.color.$touched">El campo color es requerido.</small>                              
                             </div>                            
@@ -145,7 +145,7 @@
                                        size="250" 
                                        maxlength="250"
                                        required
-				               		   oninput="this.value = this.value.toUpperCase()" 
+				               		    
 				               	/>
                                 <small class="form-text form-text-error" ng-if="datosVehiculoForm.route.$invalid && datosVehiculoForm.route.$touched">El campo route es requerido.</small>                              
                             </div>
@@ -161,7 +161,7 @@
                                       size="500" 
                                       maxlength="500"
                                       required
-			              			  oninput="this.value = this.value.toUpperCase()" 
+			              			   
 			              		/>
 								<small class="form-text form-text-error" ng-if="datosVehiculoForm.rs.$invalid && datosVehiculoForm.rs.$touched">El campo rs es requerido.</small>                              
 			              
@@ -176,7 +176,7 @@
                                        size="50" 
                                        maxlength="50"
                                        required
-			               			   oninput="this.value = this.value.toUpperCase()" 
+			               			    
 			               		/>
                                 <small class="form-text form-text-error" ng-if="datosVehiculoForm.eco.$invalid && datosVehiculoForm.eco.$touched">El campo economico es requerido.</small>                              
                             </div>
@@ -192,7 +192,7 @@
                                       size="150" 
                                       maxlength="150"
                                       required
-			              			  oninput="this.value = this.value.toUpperCase()" 
+			              			   
 			              		/>
 			                    <small class="form-text form-text-error" ng-if="datosVehiculoForm.branch.$invalid && datosVehiculoForm.branch.$touched">El campo branch es requerido.</small>                              
 			              
@@ -207,7 +207,7 @@
                                        size="150" 
                                        maxlength="150"
                                        required
-			               			   oninput="this.value = this.value.toUpperCase()" 
+			               			    
 								/>
                                 <small class="form-text form-text-error" ng-if="datosVehiculoForm.subbranch.$invalid && datosVehiculoForm.subbranch.$touched">El campo subbranch es requerido.</small>                              
                             </div>
@@ -223,7 +223,7 @@
 <!--                                       size="200"  -->
 <!--                                       maxlength="200" -->
 <!--                                       required -->
-<!-- 			              			  oninput="this.value = this.value.toUpperCase()"  -->
+<!-- 			              			    -->
 <!-- 			              		/> -->
 			              		
 			              		<select name="municipio" class="form-control" 
@@ -246,7 +246,7 @@
                                        size="200" 
                                        maxlength="200"
                                        required
-			               			   oninput="this.value = this.value.toUpperCase()" 
+			               			    
 			               		/>
                                 <small class="form-text form-text-error" ng-if="datosVehiculoForm.concesion.$invalid && datosVehiculoForm.concesion.$touched">El campo concesion es requerido.</small>                              
                             </div>
@@ -262,7 +262,7 @@
                                       size="2000" 
                                       maxlength="2000"
                                       required
-			              			  oninput="this.value = this.value.toUpperCase()" 
+			              			   
 			              		/>
                                 <small class="form-text form-text-error" ng-if="datosVehiculoForm.urlcamera.$invalid && datosVehiculoForm.urlcamera.$touched">La url de las camaras es requerida</small>                              
 			              
