@@ -8,7 +8,9 @@
 <html>
 <head>
 	<title>Sistema de Monitoreo - PUEBLA</title>
-	<link href="favicon.ico" rel="shortcut icon">
+<!-- 	<link href="favicon.ico" rel="shortcut icon"> -->
+	<link href="<%=request.getContextPath()%>/img/favicon.ico" rel="shortcut icon">
+
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	

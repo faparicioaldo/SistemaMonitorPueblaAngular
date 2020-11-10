@@ -9,6 +9,7 @@
   <head>
       <meta charset="utf-8">
       <title>Sistema de Monitoreo</title>
+	  <link href="<%=request.getContextPath()%>/img/favicon.ico" rel="shortcut icon">
 
       <link href="${contextPath}/resources/css/bootstrap.min.css" rel="stylesheet">
       <link href="${contextPath}/resources/css/common.css" rel="stylesheet">
