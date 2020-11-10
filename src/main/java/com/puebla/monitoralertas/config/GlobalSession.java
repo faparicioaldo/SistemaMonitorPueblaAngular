@@ -18,8 +18,6 @@ import lombok.Setter;
 @Setter
 public class GlobalSession {
 
-	private Integer contadorEnviarGPSs = 0;
-	private Integer ciclosContadorGPS = 8;
 	private String keyCeiba2;
 	private Map<String,GpsCoordinatesDTO> mapLastGps = new HashMap<>();
 	private Map<String,Set<String>> mapGpsStatus = new HashMap<>();
