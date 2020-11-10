@@ -13,10 +13,7 @@ import com.puebla.monitoralertas.dto.RespuestaJSON;
 import com.puebla.monitoralertas.entity.DatosVehiculoEntity;
 import com.puebla.monitoralertas.service.DatosVehiculoService;
 
-import lombok.extern.log4j.Log4j2;
-
 @RestController
-@Log4j2
 public class VehicleController {
 
 	@Autowired

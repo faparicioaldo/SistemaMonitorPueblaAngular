@@ -16,7 +16,6 @@ import com.puebla.monitoralertas.json.pojo.Ceiba2DevicesGpsLastRequestPojo;
 import com.puebla.monitoralertas.json.pojo.Ceiba2DevicesGpsLastResponsePojo;
 import com.puebla.monitoralertas.json.pojo.Ceiba2DevicesPojo;
 import com.puebla.monitoralertas.json.pojo.Ceiba2KeyPojo;
-import com.puebla.monitoralertas.repository.AlertaSemoviRepository;
 import com.puebla.monitoralertas.service.APISistemaVideoVigilanciaService;
 import com.puebla.monitoralertas.service.VideoFrameService;
 
@@ -28,10 +27,7 @@ public class APISistemaVideoVigilanciaServiceImpl implements APISistemaVideoVigi
 
 	@Autowired
 	private GlobalSession session;
-	
-	@Autowired
-	private AlertaSemoviRepository alertasSemoviRepository;
-	
+		
 	@Autowired
 	private Ceiba2ArmaURLHelper ceiba2ArmaUrlHelper;
 

@@ -11,8 +11,6 @@ import org.springframework.stereotype.Component;
 import com.puebla.monitoralertas.common.CadenasCommon;
 import com.puebla.monitoralertas.config.CargaCeiba2ServerProperties;
 
-import lombok.extern.log4j.Log4j2;
-
 /**
  * Clase para armado de URL's de CEIBA2 para el consumo de su API
  * 
@@ -20,7 +18,6 @@ import lombok.extern.log4j.Log4j2;
  * 
  * */
 @Component
-@Log4j2
 public class Ceiba2ArmaURLHelper {
 
 	@Autowired
